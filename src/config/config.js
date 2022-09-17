@@ -1,5 +1,4 @@
-const baseUrl = "http://www.lingjiatong.cn";
-const baseUrlMinio = baseUrl + ":" + "30090" + "/rootelement";
+const baseUrlMinio = "http://f.lingjiatong.cn" + ":" + "30090" + "/rootelement";
 const imgDefault = "https://ftp.ljtnono.cn/re/images/default_img.jpg";
 const imgQrCodeWeChat = baseUrlMinio + "/sys/author_wx_qrcode.jpeg";
 const githubAddr = "https://github.com/ljtnono/re";
