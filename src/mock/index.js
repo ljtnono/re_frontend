@@ -1,4 +1,5 @@
 import Mock from 'mockjs'
+import {indeSliderList} from "@/config/config";
 
 // #################### 首页接口Mock数据 #################### //
 
@@ -50,10 +51,5 @@ Mock.mock('/api-frontend/index/articleList', 'get', {
 // 首页获取轮播图片接口
 Mock.mock("/api-frontend/index/sliderList", 'get', {
   code: 0,
-  'data': [
-    "http://192.168.31.132:30090/rootelement/sys/slider1.jpg",
-    "http://192.168.31.132:30090/rootelement/sys/slider2.jpg",
-    "http://192.168.31.132:30090/rootelement/sys/slider3.jpg",
-    "http://192.168.31.132:30090/rootelement/sys/slider4.jpg"
-  ]
+  'data': indeSliderList
 });

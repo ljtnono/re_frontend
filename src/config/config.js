@@ -1,8 +1,10 @@
+const baseUrl = "http://www.lingjiatong.cn";
+const baseUrlMinio = baseUrl + ":" + "30090" + "/rootelement";
 const imgDefault = "https://ftp.ljtnono.cn/re/images/default_img.jpg";
-const imgQrCodeWeChat = "http://192.168.31.132:30090/rootelement/sys/author_wx_qrcode.jpeg";
+const imgQrCodeWeChat = baseUrlMinio + "/sys/author_wx_qrcode.jpeg";
 const githubAddr = "https://github.com/ljtnono/re";
 const recordNum = "鄂ICP备18013706号";
-const author = "最后的疼爱";
+const author = "杂技程序员老凌";
 const authorAddr = "湖北-武汉";
 const email = "935188400@qq.com";
 const imgHuaWeiYun = "https://res.hc-cdn.com/cnpm-header-and-footer/2.0.6/base/header-china/components/images/logo.svg";
@@ -11,10 +13,18 @@ const imgMysql = "https://labs.mysql.com/common/logos/mysql-logo.svg?v2";
 const imgRedis = "https://redis.com/wp-content/themes/wpx/assets/images/icon-redis.svg";
 const imgNginx = "https://nginx.org/nginx.png";
 const imgTomcat = "https://tomcat.apache.org/res/images/tomcat.png";
-const imgAvatar = "http://192.168.31.132:30090/rootelement/sys/avatar.png";
-const imgLogoWord = "http://192.168.31.132:30090/rootelement/sys/header_logo.png";
-const imgQrCodeWeChatSk = "http://192.168.31.132:30090/rootelement/sys/wx_pay_qrcode.jpeg";
-const imgQrCodeZfb = "http://192.168.31.132:30090/rootelement/sys/alipay_pay_qrcode.jpeg";
+const imgAvatar = baseUrlMinio + "/sys/avatar.jpeg";
+const imgLogoWord = baseUrlMinio + "/sys/header_logo.png";
+const imgQrCodeWeChatSk = baseUrlMinio + "/sys/wx_pay_qrcode.jpeg";
+const imgQrCodeZfb = baseUrlMinio + "/sys/alipay_pay_qrcode.jpeg";
+
+const indeSliderList = [
+  baseUrlMinio + "/sys/slider1.jpg",
+  baseUrlMinio + "/sys/slider2.jpg",
+  baseUrlMinio + "/sys/slider3.jpg",
+  baseUrlMinio + "/sys/slider4.jpg"
+]
+
 const swiperOption = {
   speed: 800,
   loop: true,
@@ -70,5 +80,6 @@ module.exports = {
   swiperOption: swiperOption,
   valineConfig: valineConfig,
   authorAddr,
-  email
+  email,
+  indeSliderList
 };
