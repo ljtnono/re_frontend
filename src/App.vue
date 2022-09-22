@@ -15,6 +15,12 @@ export default {
   components: {
     Header,
     Footer
+  },
+  methods: {
+
+  },
+  mounted() {
+
   }
 }
 </script>

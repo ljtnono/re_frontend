@@ -108,6 +108,12 @@ export default {
     return {
       now: moment(new Date()).format("YYYY-MM-DD")
     }
+  },
+  methods: {
+
+  },
+  mounted() {
+
   }
 }
 </script>

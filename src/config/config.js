@@ -1,3 +1,4 @@
+const apiBaseUrl = "http://api.lingjiatong.cn" + ":" + "30083" + "/api-frontend";
 const baseUrlMinio = "http://f.lingjiatong.cn" + ":" + "30090" + "/rootelement";
 const imgDefault = "https://ftp.ljtnono.cn/re/images/default_img.jpg";
 const imgQrCodeWeChat = baseUrlMinio + "/sys/author_wx_qrcode.jpeg";
@@ -61,6 +62,8 @@ const valineConfig = {
   placeholder: '评论请留下您的邮箱和昵称....'
 };
 module.exports = {
+  baseUrlMinio,
+  apiBaseUrl,
   imgDefault: imgDefault,
   imgQrCodeWeChat: imgQrCodeWeChat,
   githubAddr: githubAddr,

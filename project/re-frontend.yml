@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: re-frontend
-          image: ljtnono/re-frontend:v0.0.4
+          image: ljtnono/re-frontend:<VERSION>
           imagePullPolicy: Always
           ports:
             - containerPort: 80
