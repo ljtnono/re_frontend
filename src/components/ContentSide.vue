@@ -6,27 +6,27 @@
       <!-- TODO 此组件已失效，替换为其他组件 -->
       <Poptip word-wrap content="微信号：a935188400" :trigger="trigger">
         <a href="javascript:" class="fl" style="background-color: #6FC299;">
-          <i class="fa fa-wechat" />
+          <i class="fa fa-wechat"/>
         </a>
       </Poptip>
       <Poptip word-wrap content="微博：最后d疼爱" :trigger="trigger">
         <a href="javascript:" class="fl" style="background-color: #F78585;">
-          <i class="fa fa-weibo" />
+          <i class="fa fa-weibo"/>
         </a>
       </Poptip>
       <Poptip word-wrap content="qq：935188400" :trigger="trigger">
         <a href="javascript:" class="fl" style="background-color: #E74C3C;">
-          <i class="fa fa-qq" />
+          <i class="fa fa-qq"/>
         </a>
       </Poptip>
       <Poptip word-wrap content="github：ljtnono" :trigger="trigger">
         <a href="javascript:" class="fl" style="background-color: #27CCC0;">
-          <i class="fa fa-github" />
+          <i class="fa fa-github"/>
         </a>
       </Poptip>
       <Poptip word-wrap content="点击按钮订阅本站" :trigger="trigger">
         <a href="javascript:" class="fl" style="background-color: #FF7C49;">
-          <i class="fa fa-rss" />
+          <i class="fa fa-rss"/>
         </a>
       </Poptip>
     </div>
@@ -79,9 +79,9 @@
     </div>
     <div class="links mb15">
       <div class="title">友情链接</div>
-      <Loading :show="linkDefaultFlag" style="height: 300px;"></Loading>
-      <a :href="link.url" target="_blank" class="link" v-show="link.status === 1" v-for="link in friendLinks" :key="link.id">
+      <a :href="link.url" target="_blank" class="link" v-for="link in friendLinkList" :key="link.url" :alt="link.name">
         {{ link.name }}
+        <i class="fa fa-home" />
       </a>
     </div>
   </div>
@@ -91,11 +91,13 @@
 import Loading from "./Loading";
 import axios from "axios";
 import "../mock/side";
+import {findFriendLinkList} from "../api/sy"
+
 import {
   DEFAULT_AUTHOR_NICKNAME,
   DEFAULT_AUTHOR_ADDR,
   DEFAULT_AUTHOR_EMAIL,
-  DEFAULT_AUTHOR_AVATAR
+  DEFAULT_AUTHOR_AVATAR, API_SUCCESS_CODE, API_SUCCESS_MESSAGE
 } from "@/constant/commonConstant";
 
 export default {
@@ -104,10 +106,9 @@ export default {
     return {
       trigger: "hover",
       guessDefaultFlag: true,
-      linkDefaultFlag: true,
       tagDefaultFlag: true,
       articleTags: [],
-      friendLinks: [],
+      friendLinkList: [],
       guessYouLikeList: [],
       // 站点配置相关数据
       authorAvatar: "",
@@ -147,15 +148,14 @@ export default {
         this.tagDefaultFlag = false;
       });
     },
-    friendLinkList() {
-      this.linkDefaultFlag = true;
-      axios.get("/api-frontend/side/friendLinkList").then(res => {
-        if (res.data.code === 0) {
-          this.friendLinks = res.data.data;
+    findFriendLinkList() {
+      findFriendLinkList().then(res => {
+        let outerData = res.data;
+        if (API_SUCCESS_CODE === outerData.code && API_SUCCESS_MESSAGE === outerData.message) {
+          let innerData = outerData.data;
+          console.log(innerData);
+          this.friendLinkList = innerData;
         }
-        this.linkDefaultFlag = false;
-      }).catch(() => {
-        this.linkDefaultFlag = false;
       });
     },
     guessYouLike() {
@@ -172,7 +172,7 @@ export default {
   },
   mounted() {
     this.articleTagList();
-    this.friendLinkList();
+    this.findFriendLinkList();
     this.guessYouLike();
     this.setFrontendWebsiteConfig();
   }

@@ -18,12 +18,17 @@ export const findFrontendWebsiteConfig = (acquireType, acquirekeyList) => {
   }
 }
 
-// TODO 获取所有的友情链接列表
-export const findFriendLinkAll = () => {
-  return axios.get(apiBaseUrl + pageRequestMapping + "/findFriendListAll");
+// 获取所有的友情链接列表
+export const findFriendLinkList = () => {
+  return axios.get(apiBaseUrl + pageRequestMapping + "/friendLinkList");
 }
 
 // 获取新闻消息列表
 export const findNoticeList = () => {
   return axios.get(apiBaseUrl + pageRequestMapping + "/noticeList");
+}
+
+// 获取前端封面图
+export const findSwiperImageList = () => {
+  return axios.get(apiBaseUrl + pageRequestMapping + "/swiperImageList");
 }
