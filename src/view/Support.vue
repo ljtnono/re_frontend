@@ -10,14 +10,14 @@
         <h1 class="f16 fb p10 name">赞助方式一</h1>
         <div class="zfb flex flex-direction-column flex-align-items-center m30">
           <h1 class="f16 fb p10">手机支付宝扫一扫</h1>
-          <img :src="this.$config.imgQrCodeZfb" alt="支付宝扫一扫" title="支付宝扫一扫"/>
+          <img :src="authorAliPayQrcodeUrl" alt="支付宝扫一扫" title="支付宝扫一扫"/>
         </div>
       </section>
       <section class="support2 flex-direction-column">
         <h1 class="f16 fb p10 name">赞助方式二</h1>
         <div class="wechat flex flex-direction-column flex-align-items-center m30">
           <h1 class="f16 fb p10">手机微信扫一扫</h1>
-          <img :src="this.$config.imgQrCodeWeChatSk" alt="微信扫一扫" title="微信扫一扫"/>
+          <img :src="authorWxPayQrcodeUrl" alt="微信扫一扫" title="微信扫一扫"/>
         </div>
       </section>
     </section>
@@ -25,12 +25,32 @@
 </template>
 
 <script>
+import {DEFAULT_AUTHOR_ALI_PAY_QRCODE_URL, DEFAULT_AUTHOR_WX_APY_QRCODE_URL} from "@/constant/commonConstant";
+
 export default {
   name: "Support",
   data() {
-    return {}
+    return {
+      authorWxPayQrcodeUrl: "",
+      authorAliPayQrcodeUrl: ""
+    }
   },
-  components: {}
+  methods: {
+    setFrontendWebsiteConfig() {
+      // 首先从localStorage中获取必要字段，如果不存在，那么使用默认配置
+      let config = JSON.parse(localStorage.getItem("FrontendWebsiteConfig"));
+      if (config === null || config === undefined) {
+        this.authorWxPayQrcodeUrl = DEFAULT_AUTHOR_WX_APY_QRCODE_URL;
+        this.authorAliPayQrcodeUrl = DEFAULT_AUTHOR_ALI_PAY_QRCODE_URL;
+      } else {
+        this.authorWxPayQrcodeUrl = config["AUTHOR_WX_PAY_QRCODE_URL"] ? config["AUTHOR_WX_PAY_QRCODE_URL"] : DEFAULT_AUTHOR_WX_APY_QRCODE_URL;
+        this.authorAliPayQrcodeUrl = config["AUTHOR_ALIPAY_PAY_QRCODE_URL"] ? config["AUTHOR_ALIPAY_PAY_QRCODE_URL"] : DEFAULT_AUTHOR_ALI_PAY_QRCODE_URL;
+      }
+    }
+  },
+  mounted() {
+    this.setFrontendWebsiteConfig();
+  }
 }
 </script>
 

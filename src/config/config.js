@@ -1,22 +1,6 @@
 const apiBaseUrl = "http://api.lingjiatong.cn" + ":" + "30083" + "/api-frontend";
 const baseUrlMinio = "http://f.lingjiatong.cn" + ":" + "30090" + "/rootelement";
 const imgDefault = "https://ftp.ljtnono.cn/re/images/default_img.jpg";
-const imgQrCodeWeChat = baseUrlMinio + "/sys/author_wx_qrcode.jpeg";
-const githubAddr = "https://github.com/ljtnono/re";
-const recordNum = "鄂ICP备18013706号";
-const author = "杂技程序员老凌";
-const authorAddr = "湖北-武汉";
-const email = "935188400@qq.com";
-const imgHuaWeiYun = "https://res.hc-cdn.com/cnpm-header-and-footer/2.0.6/base/header-china/components/images/logo.svg";
-const imgAliYun = "https://img.alicdn.com/tfs/TB13DzOjXP7gK0jSZFjXXc5aXXa-212-48.png";
-const imgMysql = "https://labs.mysql.com/common/logos/mysql-logo.svg?v2";
-const imgRedis = "https://redis.com/wp-content/themes/wpx/assets/images/icon-redis.svg";
-const imgNginx = "https://nginx.org/nginx.png";
-const imgTomcat = "https://tomcat.apache.org/res/images/tomcat.png";
-const imgAvatar = baseUrlMinio + "/sys/avatar.jpeg";
-const imgLogoWord = baseUrlMinio + "/sys/header_logo.png";
-const imgQrCodeWeChatSk = baseUrlMinio + "/sys/wx_pay_qrcode.jpeg";
-const imgQrCodeZfb = baseUrlMinio + "/sys/alipay_pay_qrcode.jpeg";
 
 const indeSliderList = [
   baseUrlMinio + "/sys/slider1.jpg",
@@ -61,27 +45,12 @@ const valineConfig = {
   avatar: 'wavatar',
   placeholder: '评论请留下您的邮箱和昵称....'
 };
+
 module.exports = {
   baseUrlMinio,
   apiBaseUrl,
   imgDefault: imgDefault,
-  imgQrCodeWeChat: imgQrCodeWeChat,
-  githubAddr: githubAddr,
-  recordNum: recordNum,
-  author: author,
-  imgHuaWeiYun: imgHuaWeiYun,
-  imgAliYun: imgAliYun,
-  imgMysql: imgMysql,
-  imgRedis: imgRedis,
-  imgNginx: imgNginx,
-  imgTomcat: imgTomcat,
-  imgAvatar: imgAvatar,
-  imgLogoWord: imgLogoWord,
-  imgQrCodeWeChatSk: imgQrCodeWeChatSk,
-  imgQrCodeZfb: imgQrCodeZfb,
   swiperOption: swiperOption,
   valineConfig: valineConfig,
-  authorAddr,
-  email,
   indeSliderList
 };

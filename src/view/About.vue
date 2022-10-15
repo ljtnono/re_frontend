@@ -8,13 +8,10 @@
         <h1 class="f16 fb p10 name">个人简介</h1>
         <div class="flex flex-direction-column flex-align-items-center">
           <a href="javascript:" class="mt10">
-            <img class="avatar" :src="this.$config.imgAvatar" :alt="this.$config.author" :title="this.$config.author">
+            <img class="avatar" :src="authorAvatar" :alt="authorNickName" :title="authorNickName">
           </a>
-          <p class="nick-name fb f20 m10">{{ this.$config.author }}</p>
-          <p class="m10">Java菜鸟一枚</p>
-          <p class="m10">喜欢折腾各种技术，web、linux、数据库、前端等</p>
-          <p class="m10">爱生活、爱科学、爱设计、爱编程</p>
-          <p class="m10">Talk is cheap, show me the code</p>
+          <p class="nick-name fb f20 m10">{{ authorNickName }}</p>
+          <p class="m10" v-for="item in aboutAuthor" :key="item">{{ item }}</p>
         </div>
       </section>
       <!-- 我的技能树 -->
@@ -28,6 +25,7 @@
       <section class="chat-me mt20 flex flex-direction-column">
         <h1 class="f16 fb p10 name">与我联系</h1>
         <div class="icons">
+          <!-- TODO 此组件已失效 -->
           <Poptip word-wrap content="微博：最后的疼爱" :trigger="trigger">
             <a href="javascript:" style="background-color: #F78585;">
               <i class="fa fa-weibo" aria-hidden="true"></i>
@@ -58,11 +56,11 @@
 </template>
 
 <script>
-
 import ECharts from 'vue-echarts'
 import 'echarts/lib/chart/bar'
 import 'echarts/lib/component/tooltip'
 import '../mock/about'
+import {DEFAULT_ABOUT_AUTHOR, DEFAULT_AUTHOR_AVATAR, DEFAULT_AUTHOR_NICKNAME} from "@/constant/commonConstant";
 
 export default {
   name: "About",
@@ -99,10 +97,34 @@ export default {
           data: [22, 33, 44, 55, 66]
         }]
       },
-      skillColor: ["#49c085", "#f2b63c", "#f58a87", "#6f92ff", "#7782d1", "#d56464"]
+      skillColor: ["#49c085", "#f2b63c", "#f58a87", "#6f92ff", "#7782d1", "#d56464"],
+
+      // 网站设置相关配置数据
+      authorAvatar: "",
+      authorNickName: "",
+      aboutAuthor: [],
     }
   },
   methods: {
+    // 设置网站配置
+    setFrontendWebsiteConfig() {
+      // 首先从localStorage中获取必要字段，如果不存在，那么使用默认配置
+      let config = JSON.parse(localStorage.getItem("FrontendWebsiteConfig"));
+      if (config === null || config === undefined) {
+        this.authorAvatar = DEFAULT_AUTHOR_AVATAR;
+        this.authorNickName = DEFAULT_AUTHOR_NICKNAME;
+        this.aboutAuthor = DEFAULT_ABOUT_AUTHOR;
+      } else {
+        this.authorAvatar = config["AVATAR_URL"] ? config["AVATAR_URL"] : DEFAULT_AUTHOR_AVATAR;
+        this.authorNickName = config["NICK_NAME"] ? config["NICK_NAME"] : DEFAULT_AUTHOR_NICKNAME;
+        if (config["ABOUT_AUTHOR"]) {
+          let ab = config["ABOUT_AUTHOR"].split("\n\n");
+          this.aboutAuthor = ab;
+        } else {
+          this.aboutAuthor = DEFAULT_ABOUT_AUTHOR;
+        }
+      }
+    },
     skillList() {
       this.$refs.mySkillTree.showLoading();
       this.axios.get("/api-frontend/about/skillList").then(res => {
@@ -148,6 +170,7 @@ export default {
       this.$refs.mySkillTree.resize();
     };
     this.skillList();
+    this.setFrontendWebsiteConfig();
   }
 }
 </script>

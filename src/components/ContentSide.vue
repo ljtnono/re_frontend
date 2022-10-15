@@ -3,29 +3,30 @@
   <div class="content-side pa">
     <!-- 联系方式 -->
     <div class="social p10 mb15">
+      <!-- TODO 此组件已失效，替换为其他组件 -->
       <Poptip word-wrap content="微信号：a935188400" :trigger="trigger">
         <a href="javascript:" class="fl" style="background-color: #6FC299;">
-          <i class="fa fa-wechat"></i>
+          <i class="fa fa-wechat" />
         </a>
       </Poptip>
       <Poptip word-wrap content="微博：最后d疼爱" :trigger="trigger">
         <a href="javascript:" class="fl" style="background-color: #F78585;">
-          <i class="fa fa-weibo"></i>
+          <i class="fa fa-weibo" />
         </a>
       </Poptip>
       <Poptip word-wrap content="qq：935188400" :trigger="trigger">
         <a href="javascript:" class="fl" style="background-color: #E74C3C;">
-          <i class="fa fa-qq"></i>
+          <i class="fa fa-qq" />
         </a>
       </Poptip>
       <Poptip word-wrap content="github：ljtnono" :trigger="trigger">
         <a href="javascript:" class="fl" style="background-color: #27CCC0;">
-          <i class="fa fa-github"></i>
+          <i class="fa fa-github" />
         </a>
       </Poptip>
       <Poptip word-wrap content="点击按钮订阅本站" :trigger="trigger">
         <a href="javascript:" class="fl" style="background-color: #FF7C49;">
-          <i class="fa fa-rss"></i>
+          <i class="fa fa-rss" />
         </a>
       </Poptip>
     </div>
@@ -34,13 +35,13 @@
       <div class="title mb15">博主信息</div>
       <div class="description mb15">
         <a href="javascript:" class="avatar mr15">
-          <img :src="this.$config.imgAvatar" :alt="this.$config.author" :title="this.$config.author">
+          <img :src="authorAvatar" :alt="authorNickName" :title="authorNickName">
         </a>
         <div class="description-text">
-          <p class="mb5 f14">网名：{{ this.$config.author }}</p>
+          <p class="mb5 f14">网名：{{ authorNickName }}</p>
           <p class="mb5 f14">职业：程序员</p>
-          <p class="mb5 f14">现居：{{ this.$config.authorAddr }}</p>
-          <p class="mb5 f14">Email：{{ this.$config.email }}</p>
+          <p class="mb5 f14">现居：{{ authorAddr }}</p>
+          <p class="mb5 f14">Email：{{ authorEmail }}</p>
         </div>
       </div>
       <div class="author-tags flex flex-justify-content-space-between">
@@ -88,8 +89,14 @@
 
 <script>
 import Loading from "./Loading";
-import '../mock/side'
 import axios from "axios";
+import "../mock/side";
+import {
+  DEFAULT_AUTHOR_NICKNAME,
+  DEFAULT_AUTHOR_ADDR,
+  DEFAULT_AUTHOR_EMAIL,
+  DEFAULT_AUTHOR_AVATAR
+} from "@/constant/commonConstant";
 
 export default {
   name: "ContentSide",
@@ -101,13 +108,34 @@ export default {
       tagDefaultFlag: true,
       articleTags: [],
       friendLinks: [],
-      guessYouLikeList: []
+      guessYouLikeList: [],
+      // 站点配置相关数据
+      authorAvatar: "",
+      authorNickName: "",
+      authorAddr: "",
+      authorEmail: ""
     }
   },
   components: {
     Loading
   },
   methods: {
+    // 设置前端网站配置
+    setFrontendWebsiteConfig() {
+      // 首先从localStorage中获取必要字段，如果不存在，那么使用默认配置
+      let config = JSON.parse(localStorage.getItem("FrontendWebsiteConfig"));
+      if (config === null || config === undefined) {
+        this.authorAvatar = DEFAULT_AUTHOR_AVATAR;
+        this.authorNickName = DEFAULT_AUTHOR_NICKNAME;
+        this.authorAddr = DEFAULT_AUTHOR_ADDR;
+        this.authorEmail = DEFAULT_AUTHOR_EMAIL;
+      } else {
+        this.authorNickName = config["NICK_NAME"] ? config["NICK_NAME"] : DEFAULT_AUTHOR_NICKNAME;
+        this.authorAddr = config[""] ? config[""] : DEFAULT_AUTHOR_ADDR;
+        this.authorAvatar = config["AVATAR_URL"] ? config["AVATAR_URL"] : DEFAULT_AUTHOR_AVATAR;
+        this.authorEmail = config["AUTHOR_EMAIL"] ? config["AUTHOR_EMAIL"] : DEFAULT_AUTHOR_EMAIL;
+      }
+    },
     articleTagList() {
       this.tagDefaultFlag = true;
       axios.get("/api-frontend/side/articleTagList").then(res => {
@@ -146,6 +174,7 @@ export default {
     this.articleTagList();
     this.friendLinkList();
     this.guessYouLike();
+    this.setFrontendWebsiteConfig();
   }
 }
 </script>

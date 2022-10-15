@@ -5,7 +5,7 @@
       <div class="logo">
         <a href="/" class="cursor-pointer">
           <h1>
-            <img :src="this.$config.imgLogoWord" alt="RootElement根元素" class="logo-word" title="RootElement根元素" />
+            <img :src="headerLogoUrl" alt="RootElement根元素" class="logo-word" title="RootElement根元素" />
           </h1>
         </a>
       </div>
@@ -63,6 +63,7 @@
 <script>
 import {mapActions} from "vuex";
 import NewsLabel from "./MessageLabel";
+import {DEFAULT_HEADER_LOGO_URL} from "@/constant/commonConstant";
 
 export default {
   name: 'Header',
@@ -78,13 +79,27 @@ export default {
         {name: "关于作者", url: "/about", icon: "fa fa-info-circle"}
       ],
       currentPage: this.getCurrentPage(),
-      messageShowIndex: 2
+      messageShowIndex: 2,
+
+      // 前端设置相关数据
+      headerLogoUrl: ""
+
     }
   },
   methods: {
     ...mapActions([
       "searchEsPageByCondition"
     ]),
+    // 设置前端配置
+    setFrontendWebsiteConfig() {
+      // 首先从localStorage中获取必要字段，如果不存在，那么使用默认配置
+      let config = JSON.parse(localStorage.getItem("FrontendWebsiteConfig"));
+      if (config === null || config === undefined) {
+        this.headerLogoUrl = DEFAULT_HEADER_LOGO_URL;
+      } else {
+        this.headerLogoUrl = config["HEADER_LOGO_URL"] ? config["HEADER_LOGO_URL"] : DEFAULT_HEADER_LOGO_URL;
+      }
+    },
     getCurrentPage() {
       let articleRex = /\/article[s]?|\/search/;
       if (articleRex.test(this.$route.path)) {
@@ -113,6 +128,9 @@ export default {
   },
   components: {
     NewsLabel
+  },
+  mounted() {
+    this.setFrontendWebsiteConfig();
   }
 }
 </script>
