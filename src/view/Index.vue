@@ -4,8 +4,8 @@
     <div class="content-main">
       <swiper :options="swiperOption" id="swiper">
         <!-- slides -->
-        <swiper-slide v-for="slider in slides" :key="slider">
-          <img :src="slider" style="width: 100%; height: 100%;" :alt="slider" />
+        <swiper-slide v-for="image in swiperImageList" :key="image.src">
+          <img :src="image" style="width: 100%; height: 100%;" />
         </swiper-slide>
         <!-- Optional controls -->
         <div class="swiper-pagination" slot="pagination"></div>
@@ -63,6 +63,8 @@ import 'swiper/dist/css/swiper.css'
 import {swiper, swiperSlide} from 'vue-awesome-swiper'
 import ArticleItem from "../components/ArticleItem";
 import '../mock/index'
+import {getSwiperImageList} from "../api/sy"
+import {API_SUCCESS_CODE, API_SUCCESS_MESSAGE} from '../constant/commonConstant'
 
 export default {
   name: "Index",
@@ -77,7 +79,8 @@ export default {
       articles: [],
       totalPages: 1,
       totalCount: 1,
-      slides: []
+      slides: [],
+      swiperImageList: []
     }
   },
   components: {
@@ -88,6 +91,17 @@ export default {
     Loading
   },
   methods: {
+    // 获取swiper轮播图列表
+    getSwiperImageList() {
+      getSwiperImageList().then(res =>{
+        let outerData = res.data;
+        if (API_SUCCESS_CODE === outerData.code && API_SUCCESS_MESSAGE === outerData.message) {
+          let innerData = outerData.data;
+          this.swiperImageList = innerData;
+        }
+      });
+    },
+
     loadData(page) {
       this.articles = [];
       this.articleList(page, this.count);
@@ -130,6 +144,7 @@ export default {
     this.articleList(this.page, this.count);
     this.hotArticleList();
     this.sliderList();
+    this.getSwiperImageList();
   }
 }
 </script>

@@ -32,3 +32,8 @@ export const findNoticeList = () => {
 export const findSwiperImageList = () => {
   return axios.get(apiBaseUrl + pageRequestMapping + "/swiperImageList");
 }
+
+// 获取前端swiper轮博图列表
+export const getSwiperImageList = () => {
+  return axios.get(apiBaseUrl + pageRequestMapping + "/getSwiperImageList")
+}
