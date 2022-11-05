@@ -1,4 +1,5 @@
-const apiBaseUrl = "http://api.lingjiatong.cn" + ":" + "30083" + "/api-frontend";
+const apiBaseUrl = "http://api.lingjiatong.cn" + ":" + "30152" + "/api-frontend";
+// const apiBaseUrl = "http://192.168.1.3" + ":" + "8152" + "/api-frontend";
 const baseUrlMinio = "http://f.lingjiatong.cn" + ":" + "30090" + "/rootelement";
 const imgDefault = "https://ftp.ljtnono.cn/re/images/default_img.jpg";
 
