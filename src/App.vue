@@ -11,6 +11,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import {findFrontendWebsiteConfig, FRONTEND_WEBSITE_CONFIG_ACQUIRE_TYPE_ALL} from "@/api/sy";
 import {API_SUCCESS_CODE, API_SUCCESS_MESSAGE} from './constant/commonConstant'
+import {findArticleById} from "@/api/article"
 
 export default {
   name: 'App',
@@ -39,6 +40,7 @@ export default {
   mounted() {
     // 每次页面刷新都请求一下保存前端站点配置
     this.saveFrontendWebsiteConfig();
+    console.log(findArticleById(5));
   }
 }
 </script>

@@ -153,7 +153,6 @@ export default {
         let outerData = res.data;
         if (API_SUCCESS_CODE === outerData.code && API_SUCCESS_MESSAGE === outerData.message) {
           let innerData = outerData.data;
-          console.log(innerData);
           this.friendLinkList = innerData;
         }
       });
