@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: rootelement
-  name: re-frontend-deployment
+  name: re-frontend
 spec:
   selector:
     matchLabels:
@@ -28,7 +28,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: re-frontend-service
+  name: re-frontend
   namespace: rootelement
 spec:
   selector:
