@@ -1,9 +1,9 @@
-import Mock from 'mockjs'
+import Mock from "mockjs";
 
 // #################### 页面公共部分Mock数据 #################### //
 
 // 获取消息列表mock接口
-Mock.mock('/api-frontend/header/messages', 'get', {
+Mock.mock("/api-frontend/header/messages", "get", {
   code: 0,
   data: [
     "看到网上新闻美国的贴吧将成为中国公司",
@@ -15,6 +15,6 @@ Mock.mock('/api-frontend/header/messages', 'get', {
     "国庆快乐，放假三天",
     "准备增加一个免登录支付功能",
     "微信扫码登录功能已经 ok 了",
-    "睡觉之前测试一下"
-  ]
+    "睡觉之前测试一下",
+  ],
 });

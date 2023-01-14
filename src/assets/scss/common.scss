@@ -33,28 +33,3 @@ $m40: 40px;
 $m45: 45px;
 $m50: 50px;
 $m55: 55px;
-
-/* 公共样式 */
-.article-label {
-  width: 70px;
-  padding: 2px 4px 2px 4px;
-  height: auto;
-  position: relative;
-  color: #ffffff;
-  display: inline-block !important;
-  background-color: #D9534F;
-  text-align: center;
-
-  .label-arrow {
-    top: 6px;
-    right: -4px;
-    border-left: 4px solid #D9534F;
-    border-top: 4px solid transparent;
-    border-bottom: 4px solid transparent;
-    position: absolute;
-    width: 0;
-    height: 0;
-    content: "";
-  }
-}
-

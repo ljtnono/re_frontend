@@ -1,4 +1,4 @@
-import Router from 'vue-router';
+import Router from "vue-router";
 import Index from "../view/Index";
 import Articles from "../view/Articles";
 import Support from "../view/Support";
@@ -10,65 +10,65 @@ let routes = [
   {
     path: "/",
     name: "index",
-    component: Index
+    component: Index,
   },
   {
     path: "/articles/:type",
     name: "articles",
-    component: Articles
+    component: Articles,
   },
   {
     path: "/article/:blogId",
     name: "article",
     component: Article,
-    props: true
+    props: true,
   },
   {
     path: "/support",
     name: "support",
-    component: Support
+    component: Support,
   },
   {
     path: "/about",
     name: "about",
-    component: About
+    component: About,
   },
   {
     path: "/search",
     name: "search",
-    component: Search
+    component: Search,
   },
   {
-    path: '/401',
-    name: 'error_401',
+    path: "/401",
+    name: "error_401",
     meta: {
-      hideInMenu: true
+      hideInMenu: true,
     },
-    component: () => import('@v/error-page/401.vue')
+    component: () => import("@v/error-page/401.vue"),
   },
   {
-    path: '/500',
-    name: 'error_500',
+    path: "/500",
+    name: "error_500",
     meta: {
-      hideInMenu: true
+      hideInMenu: true,
     },
-    component: () => import('@v/error-page/500.vue')
+    component: () => import("@v/error-page/500.vue"),
   },
   {
-    path: '*',
-    name: 'error_404',
+    path: "*",
+    name: "error_404",
     title: "404",
     meta: {
-      hideInMenu: true
+      hideInMenu: true,
     },
-    component: () => import('@v/error-page/404.vue')
-  }
+    component: () => import("@v/error-page/404.vue"),
+  },
 ];
 
 let router = new Router({
-  mode: 'history',
-  base: '/',
-  routes
+  mode: "history",
+  base: "/",
+  routes,
 });
 
-export default router
+export default router;

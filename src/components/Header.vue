@@ -1,95 +1,99 @@
 <template>
-  <div>
-    <!-- 头部分 -->
-    <header id="header">
-      <div class="logo">
-        <a href="/" class="cursor-pointer">
-          <h1>
-            <img :src="headerLogoUrl" alt="RootElement根元素" class="logo-word" title="RootElement根元素" />
-          </h1>
+  <!-- 头部分 -->
+  <header id="header">
+    <div class="logo">
+      <a href="/" class="cursor-pointer">
+        <h1>
+          <img
+            :src="headerLogoUrl"
+            alt="RootElement根元素"
+            class="logo-word"
+            title="RootElement根元素" />
+        </h1>
+      </a>
+    </div>
+    <!-- 导航按钮和搜索按钮 -->
+    <div class="side-nav-header">
+      <div class="side-nav-bar cursor-pointer fl" @click="showMiniMenuFlag = !showMiniMenuFlag">
+        <i class="fa fa-bars" aria-hidden="true" />
+      </div>
+      <div class="side-nav-search cursor-pointer fr">
+        <i class="fa fa-search" aria-hidden="true" @click="doSearch" />
+      </div>
+      <div class="side-nav-input cursor-pointer fr">
+        <b-form-input v-model="condition" :type="type" class="search" placeholder="请输入关键字" @keyup.enter.native="doSearch" />
+      </div>
+    </div>
+    <!-- 小分辨率下的导航栏 -->
+    <ul class="nav-mini flex flex-direction-column mb10" v-show="showMiniMenuFlag">
+      <li v-for="page in pages" :key="page.name">
+        <a :href="page.url">
+          <i :class="page.icon" aria-hidden="true" />
+          {{ page.name }}
         </a>
-      </div>
-      <!-- 导航按钮和搜索按钮 -->
-      <div class="side-nav-header">
-        <div class="side-nav-bar cursor-pointer fl" @click="showMiniMenuFlag = !showMiniMenuFlag">
-          <i class="fa fa-bars" aria-hidden="true" />
-        </div>
-        <div class="side-nav-search cursor-pointer fr">
-          <i class="fa fa-search" aria-hidden="true" @click="doSearch" />
-        </div>
-        <div class="side-nav-input cursor-pointer fr">
-          <b-form-input v-model="condition" :type="type" class="search" placeholder="请输入关键字" @keyup.enter.native="doSearch"/>
-        </div>
-      </div>
-      <!-- 小分辨率下的导航栏 -->
-      <ul class="nav-mini flex flex-direction-column mb10" v-show="showMiniMenuFlag">
-        <li v-for="page in pages" :key="page.name">
-          <a :href="page.url">
-            <i :class="page.icon" aria-hidden="true" />
+      </li>
+    </ul>
+    <!-- 导航栏 -->
+    <nav class="nav pr">
+      <ul class="nav-menu">
+        <li class="nav-item fl" v-for="page in pages" :key="page.name">
+          <a :href="page.url" class="nav-active" v-if="currentPage === page.url">
+            <i :class="page.icon" aria-hidden="true" />&nbsp;
+            {{ page.name }}
+          </a>
+          <a :href="page.url" v-else>
+            <i :class="page.icon" aria-hidden="true" />&nbsp;
             {{ page.name }}
           </a>
         </li>
+        <li class="nav-item nav-search fr" @click="doSearch">
+          <a href="javascript:" style="padding: 20px 22px;">
+            <i class="fa fa-search" aria-hidden="true" />
+          </a>
+        </li>
+        <li class="nav-item nav-search-input fr">
+          <div class="container flex flex-direction-column justify-content-center">
+            <b-form-input
+              v-model="condition"
+              :type="type"
+              class="search"
+              placeholder="请输入关键字"
+              @keyup.enter.native="doSearch"
+            />
+          </div>
+        </li>
       </ul>
-      <!-- 导航栏 -->
-      <nav class="nav pr">
-        <ul class="nav-menu">
-          <li class="nav-item fl" v-for="page in pages" :key="page.name">
-            <a :href="page.url" class="nav-active" v-if="currentPage === page.url">
-              <i :class="page.icon" aria-hidden="true" />&nbsp;{{ page.name }}
-            </a>
-            <a :href="page.url" v-else>
-              <i :class="page.icon" aria-hidden="true" />&nbsp;{{ page.name }}
-            </a>
-          </li>
-          <li class="nav-item nav-search fr" @click="doSearch">
-            <a href="javascript:" style="padding: 20px 22px; width: 100%">
-              <i class="fa fa-search" aria-hidden="true" />
-            </a>
-          </li>
-          <li class="nav-item nav-search-input fr">
-            <div class="container flex flex-direction-column justify-content-center">
-              <b-form-input v-model="condition" :type="type" class="search" placeholder="请输入关键字" @keyup.enter.native="doSearch"/>
-            </div>
-          </li>
-        </ul>
-      </nav>
-      <div class="line h10" style="opacity: 0.9"></div>
-    </header>
-    <!-- 消息通知栏 -->
-    <news-label />
-  </div>
+    </nav>
+    <div class="line h10" style="opacity: 0.9"></div>
+  </header>
 </template>
 
 <script>
-import {mapActions} from "vuex";
+import { mapActions } from "vuex";
 import NewsLabel from "./MessageLabel";
-import {DEFAULT_HEADER_LOGO_URL} from "@/constant/commonConstant";
+import { DEFAULT_HEADER_LOGO_URL } from "@/constant/commonConstant";
 
 export default {
-  name: 'Header',
+  name: "Header",
   data() {
     return {
       showMiniMenuFlag: false,
       type: "search",
       condition: "",
       pages: [
-        {name: "首页", url: "/", icon: "fa fa-home"},
-        {name: "技术文章", url: "/articles/ALL", icon: "fa fa-wrench"},
-        {name: "支持我", url: "/support", icon: "fa fa-thumbs-up"},
-        {name: "关于作者", url: "/about", icon: "fa fa-info-circle"}
+        { name: "首页", url: "/", icon: "fa fa-home" },
+        { name: "技术文章", url: "/articles/ALL", icon: "fa fa-wrench" },
+        { name: "支持我", url: "/support", icon: "fa fa-thumbs-up" },
+        { name: "关于作者", url: "/about", icon: "fa fa-info-circle" },
       ],
       currentPage: this.getCurrentPage(),
       messageShowIndex: 2,
-
       // 前端设置相关数据
-      headerLogoUrl: ""
-
-    }
+      headerLogoUrl: "",
+    };
   },
   methods: {
-    ...mapActions([
-      "searchEsPageByCondition"
-    ]),
+    ...mapActions(["searchEsPageByCondition"]),
     // 设置前端配置
     setFrontendWebsiteConfig() {
       // 首先从localStorage中获取必要字段，如果不存在，那么使用默认配置
@@ -97,7 +101,9 @@ export default {
       if (config === null || config === undefined) {
         this.headerLogoUrl = DEFAULT_HEADER_LOGO_URL;
       } else {
-        this.headerLogoUrl = config["HEADER_LOGO_URL"] ? config["HEADER_LOGO_URL"] : DEFAULT_HEADER_LOGO_URL;
+        this.headerLogoUrl = config["HEADER_LOGO_URL"]
+          ? config["HEADER_LOGO_URL"]
+          : DEFAULT_HEADER_LOGO_URL;
       }
     },
     getCurrentPage() {
@@ -113,30 +119,29 @@ export default {
         condition: this.condition,
         pageParam: {
           page: 1,
-          count: 10
-        }
+          count: 10,
+        },
       };
       let searchRex = /\/search[#]?/;
       this.searchEsPageByCondition(data);
       if (!searchRex.test(this.$route.path)) {
         this.$router.push({
-          name: "search"
+          name: "search",
         });
       }
       this.currentPage = this.getCurrentPage();
-    }
+    },
   },
   components: {
     NewsLabel
   },
   mounted() {
     this.setFrontendWebsiteConfig();
-  }
-}
+  },
+};
 </script>
 
 <style scoped lang="scss">
-
 @keyframes color-change-5x {
   0% {
     background: #19dcea;
@@ -155,12 +160,12 @@ export default {
   }
 }
 
-/* header */
+// header
 #header {
   max-width: 100%;
-  background: #1BDAEA;
+  background: #1bdaea;
   text-align: center;
-  animation: color-change-5x 10s ease-in-out .2s infinite alternate both;
+  animation: color-change-5x 10s ease-in-out 0.2s infinite alternate both;
   position: relative;
 
   .logo {
@@ -206,7 +211,8 @@ export default {
       }
     }
 
-    .side-nav-bar, .side-nav-search {
+    .side-nav-bar,
+    .side-nav-search {
       padding: 10px;
 
       i.fa {
@@ -219,18 +225,17 @@ export default {
     width: 100%;
     display: none;
     height: 60px;
-    background-color: #4A4A4A;
+    background-color: #4a4a4a;
     bottom: 0;
-    opacity: .9;
+    opacity: 0.9;
 
     .nav-menu {
-      height: 100%;
       width: auto;
       margin: 0 auto;
       max-width: 1200px;
 
       .nav-search {
-        background-color: #5F9EA0;
+        background-color: #5f9ea0;
       }
 
       .container {
@@ -240,7 +245,7 @@ export default {
           border-radius: 40px;
           -webkit-border-radius: 40px;
           -moz-border-radius: 40px;
-          background: #4A4A4A;
+          background: #4a4a4a;
           color: #ffffff;
           height: 30px;
           border: none;
@@ -254,15 +259,14 @@ export default {
         a {
           display: block;
           width: 110px;
-          height: 100%;
           padding: 20px 16px;
 
           &.nav-active {
-            background-color: #5F9EA0;
+            background-color: #5f9ea0;
           }
 
           &:hover {
-            background-color: #5F9EA0;
+            background-color: #5f9ea0;
           }
         }
       }
@@ -290,7 +294,6 @@ export default {
       }
     }
   }
-
 }
 
 /* ipad 768px以上 */
@@ -318,5 +321,4 @@ export default {
 @media screen and (min-width: 1200px) {
 
 }
-
 </style>

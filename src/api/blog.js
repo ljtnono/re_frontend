@@ -1,45 +1,45 @@
-import axios from 'axios'
+import axios from "axios";
 
 export const listBlogPage = (page, count) => {
   let p = page || 1;
   let c = count || 10;
-  return axios.get('/api/blog/listBlogPage', {
+  return axios.get("/api/blog/listBlogPage", {
     params: {
       page: p,
-      count: c
-    }
+      count: c,
+    },
   });
 };
 
 export const getBlogById = (blogId) => {
   let id = parseInt(blogId);
-  return axios.get('/api/blog/' + id);
+  return axios.get("/api/blog/" + id);
 };
 
 export const listHotArticles = () => {
-  return axios.get('/api/blog/listHotArticles');
+  return axios.get("/api/blog/listHotArticles");
 };
 
 export const listGuessYouLike = () => {
-  return axios.get('/api/blog/listGuessYouLike');
+  return axios.get("/api/blog/listGuessYouLike");
 };
 
 export const listBlogPageByType = (type, pageParam) => {
-  return axios.get('/api/blog/listBlogPageByType', {
+  return axios.get("/api/blog/listBlogPageByType", {
     params: {
       type: type,
       page: pageParam.page,
-      count: pageParam.count
-    }
+      count: pageParam.count,
+    },
   });
 };
 
 export const searchEsPageByCondition = (condition, pageParam) => {
-  return axios.get('/api/blog/search/es', {
+  return axios.get("/api/blog/search/es", {
     params: {
       condition: condition,
       page: pageParam.page,
-      count: pageParam.count
-    }
+      count: pageParam.count,
+    },
   });
 };

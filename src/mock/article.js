@@ -1,4 +1,4 @@
-import Mock from 'mockjs'
+import Mock from "mockjs";
 
 // #################### 文章详情页面Mock数据 #################### //
 
@@ -13,7 +13,8 @@ Mock.mock("/api-frontend/article/1", "get", {
     modifyTime: "@date(yyyy-MM-dd)",
     view: "@natural(100, 2000)",
     comment: "@natural(100, 2000)",
-    contentMarkdown: "# MySQL8安装教程\n" +
+    contentMarkdown:
+      "# MySQL8安装教程\n" +
       "\n" +
       "## centos7下MySQL最小安装\n" +
       "\n" +
@@ -146,6 +147,5 @@ Mock.mock("/api-frontend/article/1", "get", {
       "[mysqld_safe]\n" +
       "log-error=<baseDir>/logs/mysql.log\n" +
       "```\n",
-
-  }
+  },
 });

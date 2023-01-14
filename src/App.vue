@@ -1,50 +1,99 @@
 <template>
   <div id="app">
-    <Header />
-    <router-view />
-    <Footer />
+    <!-- 头部 -->
+    <Header/>
+    <!-- 消息通知栏 -->
+    <MessageLabel/>
+    <!-- 主要内容区域 -->
+    <div class="content flex flex-direction-row flex-justify-content-space-between">
+      <router-view class="flex"/>
+      <content-side v-if="contentSideVisiablity" class="flex" />
+    </div>
+    <!-- 底部信息 -->
+    <Footer/>
   </div>
 </template>
 
 <script>
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import {findFrontendWebsiteConfig, FRONTEND_WEBSITE_CONFIG_ACQUIRE_TYPE_ALL} from "@/api/sy";
-import {API_SUCCESS_CODE, API_SUCCESS_MESSAGE} from './constant/commonConstant'
-import {findArticleById} from "@/api/article"
+import MessageLabel from "@c/MessageLabel.vue";
+import ContentSide from "@c/ContentSide.vue";
+import {
+  findFrontendWebsiteConfig,
+  FRONTEND_WEBSITE_CONFIG_ACQUIRE_TYPE_ALL,
+} from "@/api/sy";
+import {
+  API_SUCCESS_CODE,
+  API_SUCCESS_MESSAGE,
+} from "./constant/commonConstant";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
+    ContentSide,
     Header,
-    Footer
+    Footer,
+    MessageLabel
+  },
+  data() {
+    return {
+      contentSideVisiablity: true
+    }
   },
   methods: {
     // 保存前端站点配置
     saveFrontendWebsiteConfig() {
-      findFrontendWebsiteConfig(FRONTEND_WEBSITE_CONFIG_ACQUIRE_TYPE_ALL).then(res => {
+      findFrontendWebsiteConfig(FRONTEND_WEBSITE_CONFIG_ACQUIRE_TYPE_ALL).then((res) => {
         let data = res.data;
-        if (data.code === API_SUCCESS_CODE && data.message === API_SUCCESS_MESSAGE) {
+        if (
+          data.code === API_SUCCESS_CODE &&
+          data.message === API_SUCCESS_MESSAGE
+        ) {
           let item = data.data.values;
           localStorage.setItem("FrontendWebsiteConfig", JSON.stringify(item));
         } else {
           // TODO 使用本地默认图片代替
           console.log("==========获取站点信息失败！");
         }
-      }).catch(e => {
+      }).catch((e) => {
         // TODO 使用本地默认图片代替，考虑定时任务刷新
         console.log("==========接口调用失败！", e);
-      })
-    }
+      });
+    },
   },
   mounted() {
     // 每次页面刷新都请求一下保存前端站点配置
     this.saveFrontendWebsiteConfig();
-    console.log(findArticleById(5));
-  }
-}
+    // TODO 当显示关于作者、支持我页面时，隐藏侧边栏
+    // TODO 当屏幕很小时，隐藏侧边栏
+  },
+};
 </script>
 
 <style scoped lang="scss">
+#app {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+}
 
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.content {
+  height: auto;
+  width: auto;
+  max-width: 1200px;
+  margin: 15px auto 0;
+  z-index: 998;
+  font: 14px Helvetica Neue, Helvetica, PingFang SC, Tahoma, Arial, sans-serif;
+}
 </style>

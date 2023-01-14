@@ -1,7 +1,7 @@
 <template>
   <div class="loading-content" v-if="show">
     <Spin size="large" fix>
-      <Icon type="ios-loading" size=18 class="spin-icon-load"></Icon>
+      <Icon type="ios-loading" size="18" class="spin-icon-load"></Icon>
       <div>Loading</div>
     </Spin>
   </div>
@@ -13,14 +13,13 @@ export default {
   props: {
     show: {
       type: Boolean,
-      default: true
-    }
-  }
-}
+      default: true,
+    },
+  },
+};
 </script>
 
 <style scoped lang="scss">
-
 .loading-content {
   width: 100%;
   height: 100%;
@@ -30,5 +29,4 @@ export default {
 .spin-icon-load {
   animation: ani-spin 1s linear infinite;
 }
-
 </style>

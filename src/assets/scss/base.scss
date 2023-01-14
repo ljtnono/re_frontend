@@ -1,48 +1,88 @@
 @charset "UTF-8";
+
 /**
-  @author ljt
+  @author lingjiatong
   @time 2019/10/9
   @description 前端通用css
-  @website https://www.ljtnono.cn/root_element
-*/
+ */
 /*样式重置*/
-body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote, th, td {
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+form,
+fieldset,
+input,
+textarea,
+p,
+blockquote,
+th,
+td {
   margin: 0;
   padding: 0;
 }
 
 table {
   border-collapse: collapse;
-  border-spacing: 0;
+  border-spacing: 1px;
 }
 
-fieldest, img {
+fieldest,
+img {
   border: 0;
 }
 
-address, caption, cite, code, dfn, em, strong, th, var {
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+strong,
+th,
+var {
   font-style: normal;
   font-weight: normal;
 }
 
-ol, ul {
+ol,
+ul {
   list-style: none;
 }
 
-caption, th {
+caption,
+th {
   text-align: left;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-size: 100%;
   font-weight: normal;
 }
 
-p:before, q:after {
-  content: '';
+p:before,
+q:after {
+  content: "";
 }
 
-abbr, acronym {
+abbr,
+acronym {
   border: 0;
 }
 
@@ -62,19 +102,22 @@ a {
 }
 
 /*基础样式*/
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
+  height: 100%;
+  width: 100%;
   background: #f1f1f1;
   color: #333333;
   font-size: 14px;
-  font-family: 'Microsoft YaHei', 'SF Pro Display', Roboto, Noto, Arial, 'PingFang SC', sans-serif;
-  box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
+  font-family: "Microsoft YaHei", "SF Pro Display", Roboto, Noto, Arial,
+    "PingFang SC", sans-serif;
 }
 
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: inherit;
 }
 
@@ -92,11 +135,18 @@ html, body {
 }
 
 .clearfix:after {
-  content: '.';
+  content: ".";
   display: block;
   height: 0;
   clear: both;
   visibility: hidden;
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: keep-all;
 }
 
 .pr {
@@ -116,7 +166,7 @@ html, body {
 }
 
 .none {
-  display: none;
+  display: none !important;
 }
 
 .block {
@@ -131,6 +181,11 @@ html, body {
   display: -webkit-box; /* 老版本语法: Safari, iOS, Android browser, older WebKit browsers. */
   display: -webkit-flex; /* 新版本语法: Chrome 21+ */
   display: flex; /* 新版本语法: Opera 12.1, Firefox 22+ */
+}
+
+.flex1 {
+  flex: 1 1 0%;
+  -webkit-flex: 1 1 0%;
 }
 
 .flex-direction-row {
@@ -223,7 +278,6 @@ html, body {
   align-items: stretch;
 }
 
-
 .f10 {
   font-size: 10px;
 }
@@ -292,6 +346,22 @@ html, body {
   margin: 30px;
 }
 
+.m35 {
+  margin: 35px;
+}
+
+.m40 {
+  margin: 40px;
+}
+
+.m45 {
+  margin: 45px;
+}
+
+.m50 {
+  margin: 50px;
+}
+
 .mt5 {
   margin-top: 5px;
 }
@@ -308,8 +378,22 @@ html, body {
   margin-top: 20px;
 }
 
+.mt25 {
+  margin-top: 25px;
+}
+
 .mt30 {
   margin-top: 30px;
+}
+
+.mt35 {
+  margin-top: 35px;
+}
+.mt40 {
+  margin-top: 40px;
+}
+.mt45 {
+  margin-top: 45px;
 }
 
 .mt50 {
@@ -319,6 +403,8 @@ html, body {
 .mt100 {
   margin-top: 100px;
 }
+
+
 
 .mb5 {
   margin-bottom: 5px;
@@ -336,8 +422,24 @@ html, body {
   margin-bottom: 20px;
 }
 
+.mb25 {
+  margin-bottom: 25px;
+}
+
 .mb30 {
   margin-bottom: 30px;
+}
+
+.mb35 {
+  margin-bottom: 35px;
+}
+
+.mb40 {
+  margin-bottom: 40px;
+}
+
+.mb45 {
+  margin-bottom: 45px;
 }
 
 .mb50 {
@@ -364,8 +466,25 @@ html, body {
   margin-left: 20px;
 }
 
+
+.ml25 {
+  margin-left: 25px;
+}
+
 .ml30 {
   margin-left: 30px;
+}
+
+.ml35 {
+  margin-left: 35px;
+}
+
+.ml40 {
+  margin-left: 40px;
+}
+
+.ml45 {
+  margin-left: 45px;
 }
 
 .ml50 {
@@ -391,9 +510,24 @@ html, body {
 .mr20 {
   margin-right: 20px;
 }
+.mr25 {
+  margin-right: 25px;
+}
 
 .mr30 {
   margin-right: 30px;
+}
+
+.mr35 {
+  margin-right: 35px;
+}
+
+.mr40 {
+  margin-right: 40px;
+}
+
+.mr45 {
+  margin-right: 45px;
 }
 
 .mr50 {
@@ -636,14 +770,12 @@ html, body {
   height: 10px;
 }
 
-
 .line {
   width: 100%;
   display: block;
-  background-color: #5F9EA0;
+  background-color: #5f9ea0;
 }
 
 .cursor-pointer {
   cursor: pointer;
 }
-
