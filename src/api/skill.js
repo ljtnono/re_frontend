@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "@/config/axiosConfig";
 import qs from "qs";
 
 export const listSkillPage = (page, count) => {

@@ -23,8 +23,8 @@
 import "../mock/common";
 import { findNoticeList } from "@/api/sy";
 import {
-  API_SUCCESS_CODE,
-  API_SUCCESS_MESSAGE,
+  HTTP_RESULT_SUCCESS_CODE,
+  HTTP_RESULT_SUCCESS_MESSAGE,
 } from "@/constant/commonConstant";
 import {
   NOTICE_NEWS_MESSAGE_STATE_NEW,
@@ -74,8 +74,8 @@ export default {
       findNoticeList().then((res) => {
         let outerData = res.data;
         if (
-          API_SUCCESS_CODE === outerData.code &&
-          API_SUCCESS_MESSAGE === outerData.message
+          HTTP_RESULT_SUCCESS_CODE === outerData.code &&
+          HTTP_RESULT_SUCCESS_MESSAGE === outerData.message
         ) {
           let innerData = outerData.data;
           let noticeList = [];

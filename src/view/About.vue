@@ -2,70 +2,40 @@
   <!-- 关于作者 -->
   <div class="content-author mb15 flex flex-direction-column">
     <div class="title flex">关于作者</div>
-    <section class="personal mt20 flex flex-direction-column">
-      <h1 class="f16 fb p10 name">个人简介</h1>
+    <div class="personal mt20 flex flex-direction-column">
+      <h1 class="f16 fb p10 name flex">个人简介</h1>
       <div class="flex flex-direction-column flex-align-items-center">
         <a href="javascript:" class="mt10">
-          <img
-            class="avatar"
-            :src="authorAvatar"
-            :alt="authorNickName"
-            :title="authorNickName"
-          />
+          <img class="avatar" :src="authorAvatar" :alt="authorNickName" :title="authorNickName"/>
         </a>
         <p class="nick-name fb f20 m10">{{ authorNickName }}</p>
         <p class="m10" v-for="item in aboutAuthor" :key="item">{{ item }}</p>
       </div>
-    </section>
+    </div>
     <!-- 我的技能树 -->
-    <section class="skill mt20 flex flex-direction-column">
+    <div class="skill mt20 flex flex-direction-column">
       <h1 class="f16 fb p10 name flex">我的技能树</h1>
-      <section class="chart p10 flex" style="height: 500px; width: 100%">
-        <div class="mySkillTree" style="width: 100%; height: 100%"/>
-      </section>
-    </section>
+      <div class="mySkillTree chart mt10 flex flex-direction-column flex-align-items-center" style="width: 100%; height: 100%"/>
+    </div>
     <!-- 与我联系 -->
-    <section class="chat-me mt20 flex flex-direction-column">
-      <h1 class="f16 fb p10 name">与我联系</h1>
-      <div class="icons">
-        <!-- TODO 此组件已失效 -->
-        <Poptip word-wrap content="微博：最后的疼爱" :trigger="trigger">
-          <a href="javascript:" style="background-color: #f78585">
-            <i class="fa fa-weibo" aria-hidden="true"></i>
-          </a>
-        </Poptip>
-        <Poptip
-          word-wrap
-          content="给我发送邮件：https://mail.qq.com/cgi-bin/loginpage"
-          :trigger="trigger"
-        >
-          <a
-            href="https://mail.qq.com/cgi-bin/loginpage"
-            style="background-color: #e74c3c"
-          >
-            <i class="fa fa-envelope-o" aria-hidden="true" />
-          </a>
-        </Poptip>
-        <Poptip
-          word-wrap
-          content="github：https://github.com/ljtnono"
-          :trigger="trigger"
-        >
-          <a
-            href="https://github.com/ljtnono"
-            style="background-color: #27ccc0"
-          >
-            <i class="fa fa-github" aria-hidden="true" />
-          </a>
-        </Poptip>
-        <Poptip word-wrap content="点击按钮订阅本站" :trigger="trigger">
-          <a href="javascript:" style="background-color: #ff7c49">
-            <i class="fa fa-rss" aria-hidden="true" />
-          </a>
-        </Poptip>
+    <div class="chat-me mt20 flex flex-direction-column">
+      <h1 class="f16 fb p10 name flex">与我联系</h1>
+      <div class="icons flex">
+        <a href="javascript:" style="background-color: #f78585">
+          <i class="fa fa-weibo" aria-hidden="true"></i>
+        </a>
+        <a href="https://mail.qq.com/cgi-bin/loginpage" style="background-color: #e74c3c">
+          <i class="fa fa-envelope-o" aria-hidden="true" />
+        </a>
+        <a href="https://github.com/ljtnono" style="background-color: #27ccc0">
+          <i class="fa fa-github" aria-hidden="true" />
+        </a>
+        <a href="javascript:" style="background-color: #ff7c49">
+          <i class="fa fa-rss" aria-hidden="true" />
+        </a>
       </div>
-      <div class="apply-btn f16 cursor-pointer">申请友链</div>
-    </section>
+      <span class="apply-btn f16 cursor-pointer flex">申请友链</span>
+    </div>
   </div>
 </template>
 
@@ -85,33 +55,18 @@ export default {
     return {
       trigger: "hover",
       mySkillTreeOption: {
-        left: "100%",
-        top: "100%",
-        tooltip: {},
-        legend: {
-          show: true,
-        },
-        xAxis: {
-          name: "技能",
-          position: "bottom",
-          data: [1, 2, 3, 4, 5],
-        },
         yAxis: {
           name: "分数",
           min: 0,
-          max: 100,
+          max: 100
         },
         series: [
           {
             name: "技能",
             type: "bar",
-            label: {
-              show: true,
-              position: "top",
-            },
-            data: [22, 33, 44, 55, 66],
-          },
-        ],
+            data: [22, 33, 44, 55, 66]
+          }
+        ]
       },
       skillColor: [
         "#49c085",
@@ -173,16 +128,11 @@ export default {
           }
           this.mySkillTreeOption.xAxis = {
             name: "技能",
-            position: "bottom",
             data: xAxis
           };
           this.mySkillTreeOption.series = [{
             name: "技能",
             type: "bar",
-            label: {
-              show: true,
-              position: "top"
-            },
             data: mapData
           }];
           mySkillTree.setOption(this.mySkillTreeOption);
@@ -322,6 +272,7 @@ export default {
     .apply-btn {
       width: 310px;
       height: 40px;
+      display: block;
       background-color: #03cab1;
       text-align: center;
       line-height: 40px;

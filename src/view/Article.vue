@@ -1,7 +1,7 @@
 <template>
   <!-- 文章详情部分 -->
   <div class="content-main flex flex-direction-column">
-    <section class="content-detail mt15">
+    <div class="content-detail mt15">
       <nav class="detail-nav p10">
         <a href="/">
           <i class="fa fa-home" />
@@ -38,7 +38,7 @@
         ><span>{{ article.favorite }}评论</span></a
         >
       </header>
-      <section
+      <div
         class="detail-content"
         id="detail-content"
         style="min-height: 1000px"
@@ -58,21 +58,21 @@
           style="border: none; padding: 0"
         >
         </mavon-editor>
-      </section>
-      <section class="detail-label p10">
+      </div>
+      <div class="detail-label p10">
         <i class="fa fa-tag f20"></i>
         <a class="label" :href="'/articles/' + article.category">
           {{ article.category }}
         </a>
-      </section>
+      </div>
       <!--留言区-->
       <div class="title p10">网友评论</div>
-      <section
+      <div
         class="mb20 p10"
         id="comments"
         style="background-color: #ffffff">
-      </section>
-    </section>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -80,8 +80,8 @@
 import ContentSide from "../components/ContentSide";
 import { findArticleById } from "@/api/article";
 import {
-  API_SUCCESS_CODE,
-  API_SUCCESS_MESSAGE,
+  HTTP_RESULT_SUCCESS_CODE,
+  HTTP_RESULT_SUCCESS_MESSAGE,
 } from "@/constant/commonConstant";
 
 export default {
@@ -114,8 +114,8 @@ export default {
       findArticleById(articleId).then((res) => {
         let outerData = res.data;
         if (
-          API_SUCCESS_CODE === outerData.code &&
-          API_SUCCESS_MESSAGE === outerData.message
+          HTTP_RESULT_SUCCESS_CODE === outerData.code &&
+          HTTP_RESULT_SUCCESS_MESSAGE === outerData.message
         ) {
           let innerData = outerData.data;
           this.article = innerData;
@@ -217,7 +217,6 @@ export default {
     }
     .title {
       background-color: #ffffff;
-      width: 100%;
       color: #00a67c;
       border-bottom: 1px solid #00a67c;
     }

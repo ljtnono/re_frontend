@@ -1,11 +1,8 @@
-// const apiBaseUrl = "http://api.lingjiatong.cn" + ":" + "30152" + "/api-frontend";
-const apiBaseUrl = "http://192.168.1.3" + ":" + "8152" + "/api-frontend";
+// const apiBaseUrl = "http://127.0.0.1:8152/api-frontend";
+const apiBaseUrl = process.env.NODE_ENV === "production" ? "http://api.lingjiatong.cn:30152/api-frontend" : "http://127.0.0.1:8152/api-frontend";
+const baseUrlMinio = "http://f.lingjiatong.cn:30090/rootelement";
 
-const baseUrlMinio = "http://f.lingjiatong.cn" + ":" + "30090" + "/rootelement";
-
-const imgDefault = "https://ftp.ljtnono.cn/re/images/default_img.gif";
-
-const indeSliderList = [
+const indexSliderList = [
   baseUrlMinio + "/sys/slider1.jpg",
   baseUrlMinio + "/sys/slider2.jpg",
   baseUrlMinio + "/sys/slider3.jpg",
@@ -52,8 +49,7 @@ const valineConfig = {
 module.exports = {
   baseUrlMinio,
   apiBaseUrl,
-  imgDefault: imgDefault,
   swiperOption: swiperOption,
-  valineConfig: valineConfig,
-  indeSliderList,
+  valineConfig,
+  indexSliderList
 };

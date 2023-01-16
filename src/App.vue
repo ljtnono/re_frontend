@@ -24,9 +24,10 @@ import {
   FRONTEND_WEBSITE_CONFIG_ACQUIRE_TYPE_ALL,
 } from "@/api/sy";
 import {
-  API_SUCCESS_CODE,
-  API_SUCCESS_MESSAGE,
+  HTTP_RESULT_SUCCESS_CODE,
+  HTTP_RESULT_SUCCESS_MESSAGE,
 } from "./constant/commonConstant";
+import {mapState} from "vuex";
 
 export default {
   name: "App",
@@ -38,8 +39,18 @@ export default {
   },
   data() {
     return {
-      contentSideVisiablity: true
     }
+  },
+  computed: {
+    ...mapState({
+      contentSideVisiablity: state => {
+        let route = state.common.activeRoute;
+        if (route.name === "Support" || route.name === "About") {
+          return false;
+        }
+        return true;
+      }
+    })
   },
   methods: {
     // 保存前端站点配置
@@ -47,8 +58,8 @@ export default {
       findFrontendWebsiteConfig(FRONTEND_WEBSITE_CONFIG_ACQUIRE_TYPE_ALL).then((res) => {
         let data = res.data;
         if (
-          data.code === API_SUCCESS_CODE &&
-          data.message === API_SUCCESS_MESSAGE
+          data.code === HTTP_RESULT_SUCCESS_CODE &&
+          data.message === HTTP_RESULT_SUCCESS_MESSAGE
         ) {
           let item = data.data.values;
           localStorage.setItem("FrontendWebsiteConfig", JSON.stringify(item));
@@ -65,8 +76,6 @@ export default {
   mounted() {
     // 每次页面刷新都请求一下保存前端站点配置
     this.saveFrontendWebsiteConfig();
-    // TODO 当显示关于作者、支持我页面时，隐藏侧边栏
-    // TODO 当屏幕很小时，隐藏侧边栏
   },
 };
 </script>

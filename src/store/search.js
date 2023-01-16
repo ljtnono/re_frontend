@@ -1,6 +1,7 @@
 import {searchEsPageByCondition} from "@/api/blog";
 
 export default {
+  namespaced: true,
   state: () => ({
     condition: "", totalPages: 1, totalCount: 1, count: 10, page: 1, searchArticleList: [], articlesDefaultFlag: false
   }), mutations: {

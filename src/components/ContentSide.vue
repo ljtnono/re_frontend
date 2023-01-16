@@ -2,44 +2,29 @@
   <!-- 首页侧边栏部分 -->
   <div class="content-side flex flex-direction-column">
     <!-- 联系方式 -->
-    <div class="social p10 mb15">
-      <!-- TODO 此组件已失效，替换为其他组件 -->
-      <Poptip word-wrap content="微信号：a935188400" :trigger="trigger">
-        <a href="javascript:" class="fl" style="background-color: #6fc299">
-          <i class="fa fa-wechat" />
-        </a>
-      </Poptip>
-      <Poptip word-wrap content="微博：最后d疼爱" :trigger="trigger">
-        <a href="javascript:" class="fl" style="background-color: #f78585">
-          <i class="fa fa-weibo" />
-        </a>
-      </Poptip>
-      <Poptip word-wrap content="qq：935188400" :trigger="trigger">
-        <a href="javascript:" class="fl" style="background-color: #e74c3c">
-          <i class="fa fa-qq" />
-        </a>
-      </Poptip>
-      <Poptip word-wrap content="github：ljtnono" :trigger="trigger">
-        <a href="javascript:" class="fl" style="background-color: #27ccc0">
-          <i class="fa fa-github" />
-        </a>
-      </Poptip>
-      <Poptip word-wrap content="点击按钮订阅本站" :trigger="trigger">
-        <a href="javascript:" class="fl" style="background-color: #ff7c49">
-          <i class="fa fa-rss" />
-        </a>
-      </Poptip>
+    <div class="social p10 mb15 flex flex-direction-row flex-justify-content-space-between">
+      <a href="javascript:" class="fl" style="background-color: #6fc299">
+        <i class="fa fa-wechat" />
+      </a>
+      <a href="javascript:" class="fl" style="background-color: #f78585">
+        <i class="fa fa-weibo" />
+      </a>
+      <a href="javascript:" class="fl" style="background-color: #e74c3c">
+        <i class="fa fa-qq" />
+      </a>
+      <a href="javascript:" class="fl" style="background-color: #27ccc0">
+        <i class="fa fa-github" />
+      </a>
+      <a href="javascript:" class="fl" style="background-color: #ff7c49">
+        <i class="fa fa-rss" />
+      </a>
     </div>
     <!-- 博主信息 -->
     <div class="author-info mb15">
       <div class="title mb15">博主信息</div>
       <div class="description mb15">
         <a href="javascript:" class="avatar mr15">
-          <img
-            :src="authorAvatar"
-            :alt="authorNickName"
-            :title="authorNickName"
-          />
+          <img :src="authorAvatar" :alt="authorNickName" :title="authorNickName" />
         </a>
         <div class="description-text">
           <p class="mb5 f14">网名：{{ authorNickName }}</p>
@@ -57,13 +42,8 @@
     <!-- 猜你喜欢 -->
     <div class="guess mb15">
       <div class="title mb15">猜你喜欢</div>
-      <Loading :show="guessDefaultFlag" style="height: 300px"></Loading>
-      <div
-        class="guess-item pb10 mb10"
-        v-for="blog in guessYouLikeList"
-        :key="blog.id"
-      >
-        <a :href="'/article/' + blog.id" class="thumb mr5">
+      <div class="guess-item pb10 mb10" v-for="blog in guessYouLikeList" :key="blog.id">
+        <a :href="'/article/' + blog.id" class="thumb mr5 flex">
           <img :src="blog.coverImage" :alt="blog.title" />
         </a>
         <div class="guess-text pr">
@@ -77,29 +57,17 @@
         </div>
       </div>
     </div>
+    <!-- 热门标签 -->
     <div class="tags mb15">
       <div class="title mb15">热门标签</div>
-      <Loading :show="tagDefaultFlag" style="height: 300px"></Loading>
-      <a
-        :href="'/articles/' + articleTag.name"
-        class="tag"
-        v-for="articleTag in articleTags"
-        :key="articleTag.id"
-        v-show="articleTag.status === 1"
-      >
-        {{ articleTag.name }}
-      </a>
+        <a :href="'/articles/' + articleTag.name" class="tag" v-for="articleTag in articleTags" :key="articleTag.id" v-show="articleTag.status === 1">
+          {{ articleTag.name }}
+        </a>
     </div>
+    <!-- 友情链接 -->
     <div class="links mb15">
       <div class="title">友情链接</div>
-      <a
-        :href="link.url"
-        target="_blank"
-        class="link"
-        v-for="link in friendLinkList"
-        :key="link.url"
-        :alt="link.name"
-      >
+      <a :href="link.url" target="_blank" class="link" v-for="link in friendLinkList" :key="link.url" :alt="link.name">
         {{ link.name }}
         <i class="fa fa-home" />
       </a>
@@ -118,8 +86,8 @@ import {
   DEFAULT_AUTHOR_ADDR,
   DEFAULT_AUTHOR_EMAIL,
   DEFAULT_AUTHOR_AVATAR,
-  API_SUCCESS_CODE,
-  API_SUCCESS_MESSAGE,
+  HTTP_RESULT_SUCCESS_CODE,
+  HTTP_RESULT_SUCCESS_MESSAGE,
 } from "@/constant/commonConstant";
 
 export default {
@@ -183,8 +151,8 @@ export default {
       findFriendLinkList().then((res) => {
         let outerData = res.data;
         if (
-          API_SUCCESS_CODE === outerData.code &&
-          API_SUCCESS_MESSAGE === outerData.message
+          HTTP_RESULT_SUCCESS_CODE === outerData.code &&
+          HTTP_RESULT_SUCCESS_MESSAGE === outerData.message
         ) {
           let innerData = outerData.data;
           this.friendLinkList = innerData;
@@ -296,7 +264,6 @@ export default {
 
   .social {
     width: auto;
-    height: 65px;
     background-color: #ffffff;
 
     a {
@@ -304,7 +271,6 @@ export default {
       height: 45px;
       display: block;
       text-align: center;
-      margin-right: 12px;
       border-radius: 6px;
 
       i {
@@ -397,7 +363,6 @@ export default {
       color: #ffffff;
       background-color: #00a67c;
       display: inline-block;
-      margin: 0 5px 5px 0;
       padding: 2px 6px;
       line-height: 21px;
 
@@ -468,27 +433,6 @@ export default {
       &:hover {
         color: #007046;
         text-decoration: none;
-      }
-    }
-  }
-
-  .wechat {
-    background-color: #ffffff;
-    width: auto;
-    height: auto;
-    padding: 10px 18px;
-
-    .title {
-      width: auto;
-      height: 26px;
-      color: #03a9f4;
-      border-bottom: 1px solid #03a9f4;
-    }
-
-    a {
-      img {
-        display: inline-block;
-        width: 100%;
       }
     }
   }

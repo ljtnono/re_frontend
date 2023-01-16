@@ -1,9 +1,9 @@
 export default {
+  namespaced: true,
   state: () => ({
-    blogTypeList: [],
+    currentPage: "",
   }),
   getters: {},
   mutations: {},
-  actions: {},
-  modules: {},
+  actions: {}
 };

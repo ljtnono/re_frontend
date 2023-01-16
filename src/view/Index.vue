@@ -1,63 +1,41 @@
 <template>
   <!-- 内容区 -->
   <div class="content-main flex flex-direction-column">
-<!--    <div class="swiper-container flex">-->
-<!--      <swiper :options="swiperOption" id="swiper">-->
-<!--        &lt;!&ndash; slides &ndash;&gt;-->
-<!--        <swiper-slide v-for="image in swiperImageList" :key="image.src">-->
-<!--          <img :src="image" style="width: 100%; height: 100%" />-->
-<!--        </swiper-slide>-->
-<!--        &lt;!&ndash; Optional controls &ndash;&gt;-->
-<!--        <div class="swiper-pagination" slot="pagination" />-->
-<!--        <div class="swiper-button-prev" slot="button-prev" />-->
-<!--        <div class="swiper-button-next" slot="button-next" />-->
-<!--      </swiper>-->
-<!--    </div>-->
-    <!-- hot -->
-    <div class="hot f16 flex">
-      <div class="title f14">热门文章</div>
-      <div class="hot-content">
-        <Loading :show="hotDefaultFlag" style="height: 182px"></Loading>
-        <ul class="hot-list">
-          <li class="hot-item mb10" v-for="(blog, index) in hotArticles" :key="blog.id">
-            <span class="hot-label mr5">{{ index + 1 }}</span>
-            <a class="hot-title f14" :href="'/article/' + blog.id">{{blog.title }}</a>
-            <span class="hot-comment fr">
-                <i class="fa fa-comment" style="color: #ff8e8e">
-                  &nbsp;{{ blog.comment }}评论
-                </i>
-              </span>
-            <span class="hot-view mr15 fr">
-                <i class="fa fa-eye" style="color: #3db1ad">
-                  &nbsp;{{ blog.view }}浏览
-                </i>
-              </span>
+    <!-- TODO 轮播图 -->
+    <!-- 置顶文章 -->
+    <div class="top f16 flex">
+      <div class="title f14">置顶文章</div>
+      <div class="top-content">
+        <ul class="top-list">
+          <li class="top-item mb10" v-for="(article, index) in topArticleList" :key="article.id">
+            <span class="top-label mr5">{{ index + 1 }}</span>
+            <a class="top-title f14" :href="'/article/' + article.id">{{article.title }}</a>
+            <span class="top-view mr15 fr" style="color: #3db1ad">
+              <span>{{ article.view }} 浏览</span>
+            </span>
+            <span class="top-favorite mr15 fr" style="color: #ff8e8e">
+              <span>{{ article.favorite }} 喜欢</span>
+            </span>
           </li>
         </ul>
       </div>
     </div>
-    <!-- 文章列表项 -->
+    <!-- 无限滚动文章列表项 -->
     <div class="articles flex flex-direction-column">
-      <ArticleItem
-        :article="article"
-        v-for="article in articles"
-        :key="article.id">
-      </ArticleItem>
+      <ul class="infinite-list" v-infinite-scroll="load">
+        <ArticleItem :articleItem="article" v-for="article in articles" :key="article.id" />
+      </ul>
     </div>
-    <!-- 分页导航 -->
-    <div></div>
   </div>
 </template>
 
 <script>
 import ContentSide from "../components/ContentSide";
-import Loading from "../components/Loading";
 import "swiper/dist/css/swiper.css";
-import {swiper, swiperSlide} from "vue-awesome-swiper";
 import ArticleItem from "../components/ArticleItem";
 import "../mock/index";
 import {getSwiperImageList} from "@/api/sy";
-import {API_SUCCESS_CODE, API_SUCCESS_MESSAGE,} from "@/constant/commonConstant";
+import {HTTP_RESULT_SUCCESS_CODE, HTTP_RESULT_SUCCESS_MESSAGE,} from "@/constant/commonConstant";
 
 export default {
   name: "Index",
@@ -66,7 +44,7 @@ export default {
       hotDefaultFlag: true,
       articlesDefaultFlag: true,
       swiperOption: this.$config.swiperOption,
-      hotArticles: [],
+      topArticleList: [],
       count: 10,
       page: 1,
       articles: [],
@@ -78,32 +56,45 @@ export default {
   },
   components: {
     ContentSide,
-    swiper,
-    swiperSlide,
-    ArticleItem,
-    Loading,
+    ArticleItem
   },
   methods: {
+    load () {
+      this.articlesDefaultFlag = true;
+      this.$http.get("/api-frontend/index/articleList").then((res) => {
+        let outData = res.data;
+        if (outData.code === 0) {
+          let articles = outData.data;
+          this.totalPages = outData.totalPages;
+          this.totalCount = outData.totalCount;
+          for (let i of articles) {
+            this.articles.push(i);
+          }
+        }
+        this.articlesDefaultFlag = false;
+      }).catch(() => {
+        this.articlesDefaultFlag = false;
+      });
+    },
     // 获取swiper轮播图列表
     getSwiperImageList() {
       getSwiperImageList().then((res) => {
         let outerData = res.data;
         if (
-          API_SUCCESS_CODE === outerData.code &&
-          API_SUCCESS_MESSAGE === outerData.message
+          HTTP_RESULT_SUCCESS_CODE === outerData.code &&
+          HTTP_RESULT_SUCCESS_MESSAGE === outerData.message
         ) {
           this.swiperImageList = outerData.data;
         }
       });
     },
-
     loadData(page) {
       this.articles = [];
       this.articleList(page, this.count);
     },
     articleList(page, count) {
       this.articlesDefaultFlag = true;
-      this.axios
+      this.$http
         .get("/api-frontend/index/articleList")
         .then((res) => {
           if (res.data.code === 0) {
@@ -121,11 +112,11 @@ export default {
     },
     hotArticleList() {
       this.hotDefaultFlag = true;
-      this.axios
-        .get("/api-frontend/index/hotArticleList")
+      this.$http
+        .get("/api-frontend/index/topArticleList")
         .then((res) => {
           if (res.data.code === 0) {
-            this.hotArticles = res.data.data;
+            this.topArticleList = res.data.data;
           }
           this.hotDefaultFlag = false;
         })
@@ -134,7 +125,7 @@ export default {
         });
     },
     sliderList() {
-      this.axios.get("/api-frontend/index/sliderList").then((res) => {
+      this.$http.get("/api-frontend/index/sliderList").then((res) => {
         if (res.data.code === 0) {
           this.slides = res.data.data;
         }
@@ -162,7 +153,7 @@ export default {
   min-height: 1870px;
 
   // 热门文章
-  .hot {
+  .top {
     background-color: #ffffff;
     padding: 10px 20px;
     display: none;
@@ -174,29 +165,29 @@ export default {
       border-bottom: 1px solid #1abc9c;
     }
 
-    .hot-content {
+    .top-content {
       width: 100%;
       margin-top: 2px;
 
-      .hot-list {
+      .top-list {
         width: 100%;
         height: auto;
 
-        .hot-item {
+        .top-item {
           &:nth-of-type(1) {
-            .hot-label {
+            .top-label {
               background-color: #ff858e;
             }
           }
 
           &:nth-of-type(2) {
-            .hot-label {
+            .top-label {
               background-color: #6fc299;
             }
           }
 
           &:nth-of-type(3) {
-            .hot-label {
+            .top-label {
               background-color: #81c1f2;
             }
           }
@@ -206,7 +197,7 @@ export default {
             font-size: 14px;
           }
 
-          .hot-label {
+          .top-label {
             width: 20px;
             height: 20px;
             color: #ffffff;
@@ -216,7 +207,7 @@ export default {
             text-align: center;
           }
 
-          .hot-title {
+          .top-title {
             color: #00a67c;
 
             &:hover {
@@ -224,8 +215,9 @@ export default {
             }
           }
 
-          .hot-view,
-          .hot-comment {
+          .top-view,
+          .top-favorite,
+          .top-comment {
             color: #666666;
           }
         }
@@ -236,75 +228,6 @@ export default {
   // 文章列表
   .articles {
     font-size: 10px;
-
-    .article {
-      background-color: #ffffff;
-      height: 115px;
-
-      .article-header {
-        .article-title {
-          vertical-align: middle;
-          color: #00a67c;
-        }
-      }
-
-      .article-detail {
-        a {
-          text-decoration: none;
-          display: inline-block !important;
-          overflow: hidden;
-        }
-
-        .article-thumb {
-          overflow: hidden;
-          width: 90px;
-          height: 60px;
-
-          &:hover {
-            img {
-              transform: scale(1.2);
-              -webkit-transform: scale(1.2);
-              -moz-transform: scale(1.2);
-            }
-          }
-
-          img {
-            width: 100%;
-            height: 100%;
-            display: block;
-            transition: all ease-in-out 0.8s;
-            -webkit-transition: all ease-in-out 0.8s;
-            -moz-transition: all ease-in-out 0.8s;
-          }
-        }
-
-        .article-summary {
-          overflow: hidden;
-          height: 60px;
-          flex: 1;
-
-          a {
-            color: #00a67c;
-            line-height: 14px;
-            overflow: hidden;
-
-            &:hover {
-              text-decoration: underline;
-              text-underline: #00a67c;
-            }
-          }
-
-          .article-info {
-            height: 18px;
-
-            a,
-            span {
-              color: #999999;
-            }
-          }
-        }
-      }
-    }
   }
 
   // 轮播图
@@ -320,40 +243,8 @@ export default {
 @media screen and (min-width: 768px) {
   .content-main {
     max-width: 100%;
-
     .articles {
       font-size: 14px;
-
-      .article {
-        height: 170px;
-
-        .article-detail {
-          height: 120px;
-
-          .article-thumb {
-            width: 180px;
-            height: 120px;
-          }
-
-          .article-summary {
-            height: 120px;
-
-            a {
-              height: 80px;
-              line-height: 16px;
-            }
-
-            .article-info {
-              height: 20px;
-
-              a {
-                height: 20px;
-                line-height: 20px;
-              }
-            }
-          }
-        }
-      }
     }
   }
 }
@@ -363,21 +254,10 @@ export default {
   .content-main {
     max-width: 850px;
 
-    .hot {
+    .top {
       margin-top: 15px;
       margin-bottom: 15px;
       display: block;
-    }
-
-    .articles {
-      .article {
-        .article-detail {
-          .article-thumb {
-            width: 180px;
-            height: 120px;
-          }
-        }
-      }
     }
   }
 }

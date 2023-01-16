@@ -1,9 +1,11 @@
 // #################### 通用常量 #################### //
 
+// 页面基础访问url
+export const BASE_URL = process.env.NODE_ENV === "production" ? "http://api.lingjiatong.cn:30152" : "http://127.0.0.1:8152";
 // 接口响应成功代码
-export const API_SUCCESS_CODE = 0;
+export const HTTP_RESULT_SUCCESS_CODE = 0;
 // 接口响应成功消息
-export const API_SUCCESS_MESSAGE = "success";
+export const HTTP_RESULT_SUCCESS_MESSAGE = "success";
 // TODO 默认头像 base64形式或者svg形式，尽量小
 export const DEFAULT_AUTHOR_AVATAR =
   "http://f.lingjiatong.cn:30090/rootelement/sys/avatar.jpeg";

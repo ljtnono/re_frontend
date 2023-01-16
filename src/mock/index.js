@@ -1,5 +1,5 @@
 import Mock from "mockjs";
-import { indeSliderList } from "@/config/commonConfig";
+import { indexSliderList } from "@/config/commonConfig";
 
 // #################### 首页接口Mock数据 #################### //
 
@@ -35,14 +35,15 @@ Mock.Random.extend({
   },
 });
 
-// 首页获取推荐热门文章接口
-Mock.mock("/api-frontend/index/hotArticleList", "get", {
+// 首页获取置顶文章接口
+Mock.mock("/api-frontend/index/topArticleList", "get", {
   code: 0,
   "data|5-10": [
     {
       id: "@increment(1)",
       title: "@cword(10, 20)",
       view: "@increment(200)",
+      favorite: "@increment(200)",
       comment: "@increment(200)",
     },
   ],
@@ -59,8 +60,9 @@ Mock.mock("/api-frontend/index/articleList", "get", {
       title: "@cword(10, 20)",
       view: "@increment(200)",
       comment: "@increment(200)",
+      favorite: "@increment(200)",
       status: 1,
-      type: "@randomArticleTag()",
+      category: "@randomArticleTag()",
       coverImage: "@dataImage(180x120)",
       summary: "@cword(200, 300)",
       author: "最后的疼爱",
@@ -72,5 +74,5 @@ Mock.mock("/api-frontend/index/articleList", "get", {
 // 首页获取轮播图片接口
 Mock.mock("/api-frontend/index/sliderList", "get", {
   code: 0,
-  data: indeSliderList,
+  data: indexSliderList,
 });

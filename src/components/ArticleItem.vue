@@ -1,76 +1,80 @@
 <template>
-  <article class="article mb10 p10 flex flex-direction-column" >
-    <header class="article-header mb10 flex">
-      <a :href="'/articles/' + article.type" class="mr5">
-        <span class="article-label f12 mr5">
-          {{ article.type }}
-          <i class="label-arrow"/>
-        </span>
+  <div class="article-item mb10 flex flex-direction-column">
+    <!-- 标题部分 -->
+    <div class="article-item-header mb10">
+      <a class="mr5" :href="'/articles/' + articleItem.category">
+        {{ articleItem.category }}
       </a>
-      <a :href="'/article/' + article.id">
-        <span class="article-title f14">
-          {{ article.title }}
-        </span>
+      <a class="article-item-title f14" href="javascript:" @click="$router.push({path: '/article/' + articleItem.id})">
+        {{ articleItem.title }}
       </a>
-    </header>
-    <section class="article-detail flex">
-      <div class="mr10 article-thumb cursor-pointer">
-        <img :src="article.coverImage" :alt="article.title" :title="article.title"/>
+    </div>
+    <!-- 内容部分 -->
+    <div class="article-item-body flex flex-direction-row flex-justify-content-space-between" @click="$router.push({path: '/article/' + articleItem.id})">
+      <!-- 缩略图 -->
+      <div class="article-item-thumb cursor-pointer mr5 flex" >
+        <img :src="articleItem.coverImage" :alt="articleItem.title" :title="articleItem.title"/>
       </div>
-      <div class="article-summary flex flex-direction-column flex-justify-content-space-between">
-        <a :href="'/article/' + article.id">{{ article.summary }}</a>
-        <div class="article-info">
-          <a href="#" class="pr5">
-            <i class="fa fa-user pr5" aria-hidden="true"></i>
-            <span style="color: #00a67c">{{ article.author }}</span>
-          </a>
-          <a href="#" class="pr5">
-            <i class="fa fa-clock-o pr5" aria-hidden="true"></i>
-            <span>{{ article.modifyTime | timeFormat }}</span>
-          </a>
-          <a href="#" class="pr5">
-            <i class="fa fa-eye pr5" aria-hidden="true"></i>
-            <span>{{ article.view }}浏览</span>
-          </a>
-          <a href="#" class="pr5">
-            <i class="fa fa-comment pr5" aria-hidden="true"></i>
-            <span>{{ article.comment }}评论</span>
-          </a>
+      <!-- 详情 -->
+      <div class="article-item-detail flex flex1">
+        <div class="article-item-summary">
+          <!-- 简介 -->
+          <p>{{ articleItem.summary }}</p>
+          <!-- 文章数据信息 -->
+          <div class="article-item-info" >
+            <a href="#" class="pr5">
+              <i class="fa fa-user pr5" aria-hidden="true"></i>
+              <span style="color: #00a67c">{{ articleItem.author }}</span>
+            </a>
+            <a href="#" class="pr5">
+              <i class="fa fa-clock-o pr5" aria-hidden="true"></i>
+              <span>{{ articleItem.modifyTime | timeFormat }}</span>
+            </a>
+            <a href="#" class="pr5">
+              <i class="fa fa-eye pr5" aria-hidden="true"></i>
+              <span>{{ articleItem.view }}浏览</span>
+            </a>
+            <a href="#" class="pr5">
+              <i class="fa fa-comment pr5" aria-hidden="true"></i>
+              <span>{{ articleItem.comment }}评论</span>
+            </a>
+          </div>
         </div>
       </div>
-    </section>
-  </article>
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
   name: "ArticleItem",
   props: {
-    article: Object,
+    articleItem: Object
   }
 };
 </script>
 
 <style scoped lang="scss">
-.article {
-  background-color: #ffffff;
+.article-item {
   height: 115px;
+  width: 100%;
+  padding: 10px 10px 0;
+  background-color: #ffffff;
+  box-sizing: border-box;
 
-  .article-header {
-    .article-title {
+  .article-item-header {
+
+    .article-item-title {
       vertical-align: middle;
       color: #00a67c;
+
     }
   }
 
-  .article-detail {
-    a {
-      text-decoration: none;
-      display: inline-block !important;
-      overflow: hidden;
-    }
+  .article-item-body {
+    height: 100%;
 
-    .article-thumb {
+    .article-item-thumb {
       overflow: hidden;
       width: 90px;
       height: 60px;
@@ -93,28 +97,29 @@ export default {
       }
     }
 
-    .article-summary {
-      overflow: hidden;
-      height: 60px;
-      flex: 1;
+    .article-item-detail {
 
-      a {
-        color: #00a67c;
-        line-height: 14px;
+      .article-item-summary {
+        height: 60px;
         overflow: hidden;
 
-        &:hover {
-          text-decoration: underline;
-          text-underline: #00a67c;
+        p {
+          overflow: hidden;
+          display: inline-block !important;
+          color: #00a67c;
+          cursor: pointer;
+
+          &:hover {
+            text-decoration: underline;
+            text-underline: #00a67c;
+          }
         }
-      }
 
-      .article-info {
-        height: 18px;
-
-        a,
-        span {
-          color: #999999;
+        .article-item-info {
+          height: 18px;
+          a, span {
+            color: #999999;
+          }
         }
       }
     }
@@ -123,31 +128,35 @@ export default {
 
 // ipad 768px以上
 @media screen and (min-width: 768px) {
-  .article {
+  .article-item {
     height: 170px;
 
-    .article-detail {
-      height: 120px;
+    .article-item-body {
 
-      .article-thumb {
+      .article-item-thumb {
         width: 180px;
         height: 120px;
       }
 
-      .article-summary {
+      .article-item-detail {
         height: 120px;
 
-        a {
-          height: 80px;
-          line-height: 16px;
-        }
+        .article-item-summary {
+          height: 120px;
+          position: relative;
 
-        .article-info {
-          height: 20px;
+          p {
+            height: 80px;
+            line-height: 16px;
+          }
 
-          a {
+          .article-item-info {
             height: 20px;
-            line-height: 20px;
+
+            a {
+              height: 20px;
+              line-height: 20px;
+            }
           }
         }
       }
@@ -157,9 +166,11 @@ export default {
 
 // 1200px以上
 @media screen and (min-width: 1200px) {
-  .article {
-    .article-detail {
-      .article-thumb {
+  .article-item {
+
+    .article-item-body {
+
+      .article-item-thumb {
         width: 180px;
         height: 120px;
       }

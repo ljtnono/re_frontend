@@ -1,8 +1,10 @@
 export default {
+  namespaced: true,
   state: () => ({
-    currentPage: "",
+    blogTypeList: [],
   }),
   getters: {},
   mutations: {},
   actions: {},
+  modules: {},
 };

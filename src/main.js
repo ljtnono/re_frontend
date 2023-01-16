@@ -1,9 +1,9 @@
 import Vue from "vue";
 import App from "./App";
-import axios from "axios";
+import axios from "@/config/axiosConfig";
 import VueAxios from "vue-axios";
 import VueRouter from "vue-router";
-import router from "./router/router";
+import router from "./router";
 import store from "./store";
 import config from "./config/commonConfig";
 import moment from "moment";
@@ -15,6 +15,7 @@ import ElementUI from "element-ui";
 import "mavon-editor/dist/css/index.css";
 import "font-awesome/css/font-awesome.min.css";
 import "@a/css/style.min.css";
+import "element-ui/lib/theme-chalk/index.css";
 
 Vue.prototype.$echarts = echarts;
 Vue.use(mavonEditor);
@@ -22,6 +23,7 @@ Vue.use(VueAxios, axios);
 Vue.use(VueRouter);
 // 使用ElementUI
 Vue.use(ElementUI);
+
 // 配置全局过滤器
 Vue.filter("timeFormat", function (time) {
   return moment(time).format("YYYY-MM-DD");

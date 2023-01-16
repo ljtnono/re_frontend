@@ -1,15 +1,10 @@
 <template>
   <!-- 头部分 -->
   <header id="header">
+    <!-- logo -->
     <div class="logo">
       <a href="/" class="cursor-pointer">
-        <h1>
-          <img
-            :src="headerLogoUrl"
-            alt="RootElement根元素"
-            class="logo-word"
-            title="RootElement根元素" />
-        </h1>
+        <h1><img :src="headerLogoUrl" alt="RootElement根元素" class="logo-word" title="RootElement根元素" /></h1>
       </a>
     </div>
     <!-- 导航按钮和搜索按钮 -->
@@ -17,60 +12,49 @@
       <div class="side-nav-bar cursor-pointer fl" @click="showMiniMenuFlag = !showMiniMenuFlag">
         <i class="fa fa-bars" aria-hidden="true" />
       </div>
-      <div class="side-nav-search cursor-pointer fr">
-        <i class="fa fa-search" aria-hidden="true" @click="doSearch" />
-      </div>
-      <div class="side-nav-input cursor-pointer fr">
-        <b-form-input v-model="condition" :type="type" class="search" placeholder="请输入关键字" @keyup.enter.native="doSearch" />
-      </div>
+<!--      <div class="side-nav-search cursor-pointer fr">-->
+<!--        <i class="fa fa-search" aria-hidden="true" @click="doSearch" />-->
+<!--      </div>-->
+<!--      <div class="side-nav-input cursor-pointer fr">-->
+<!--        <el-input v-model="searchCondition" type="text" placeholder="请输入关键字" @keyup.enter.native="doSearch" />-->
+<!--      </div>-->
     </div>
     <!-- 小分辨率下的导航栏 -->
     <ul class="nav-mini flex flex-direction-column mb10" v-show="showMiniMenuFlag">
       <li v-for="page in pages" :key="page.name">
-        <a :href="page.url">
+        <a href="javascript:" @click="$router.push({name: page.name})">
           <i :class="page.icon" aria-hidden="true" />
-          {{ page.name }}
+          {{ page.title }}
         </a>
       </li>
     </ul>
     <!-- 导航栏 -->
     <nav class="nav pr">
       <ul class="nav-menu">
-        <li class="nav-item fl" v-for="page in pages" :key="page.name">
-          <a :href="page.url" class="nav-active" v-if="currentPage === page.url">
-            <i :class="page.icon" aria-hidden="true" />&nbsp;
-            {{ page.name }}
-          </a>
-          <a :href="page.url" v-else>
-            <i :class="page.icon" aria-hidden="true" />&nbsp;
-            {{ page.name }}
+        <li class="nav-item fl" v-for="page in pages" :key="page.name" >
+          <a href="javascript:" :class="activeMenuClass(page.name)" @click="$router.push({name: page.name})">
+            <i :class="page.icon" aria-hidden="true" />
+            {{ page.title }}
           </a>
         </li>
-        <li class="nav-item nav-search fr" @click="doSearch">
-          <a href="javascript:" style="padding: 20px 22px;">
+        <li class="nav-item nav-search fr ml10" @click="doSearch">
+          <a href="javascript:">
             <i class="fa fa-search" aria-hidden="true" />
+            搜索
           </a>
         </li>
-        <li class="nav-item nav-search-input fr">
-          <div class="container flex flex-direction-column justify-content-center">
-            <b-form-input
-              v-model="condition"
-              :type="type"
-              class="search"
-              placeholder="请输入关键字"
-              @keyup.enter.native="doSearch"
-            />
-          </div>
+        <li class="nav-item fr" style="line-height: 60px">
+          <el-input  v-model="searchCondition" type="text" placeholder="请输入关键字" @keyup.enter.native="doSearch" />
         </li>
       </ul>
     </nav>
-    <div class="line h10" style="opacity: 0.9"></div>
+    <!-- 分割线 -->
+    <div class="line h10" style="opacity: 0.9" />
   </header>
 </template>
 
 <script>
 import { mapActions } from "vuex";
-import NewsLabel from "./MessageLabel";
 import { DEFAULT_HEADER_LOGO_URL } from "@/constant/commonConstant";
 
 export default {
@@ -78,22 +62,33 @@ export default {
   data() {
     return {
       showMiniMenuFlag: false,
-      type: "search",
-      condition: "",
+      searchCondition: null,
       pages: [
-        { name: "首页", url: "/", icon: "fa fa-home" },
-        { name: "技术文章", url: "/articles/ALL", icon: "fa fa-wrench" },
-        { name: "支持我", url: "/support", icon: "fa fa-thumbs-up" },
-        { name: "关于作者", url: "/about", icon: "fa fa-info-circle" },
+        { title: "首页", name: "Index", url: "/", icon: "fa fa-home" },
+        { title: "技术文章", name: "Articles", url: "/articles/ALL", icon: "fa fa-wrench" },
+        { title: "支持我", name: "Support", url: "/support", icon: "fa fa-thumbs-up" },
+        { title: "关于作者", name: "About", url: "/about", icon: "fa fa-info-circle" },
       ],
       currentPage: this.getCurrentPage(),
-      messageShowIndex: 2,
       // 前端设置相关数据
-      headerLogoUrl: "",
+      headerLogoUrl: null
     };
   },
   methods: {
-    ...mapActions(["searchEsPageByCondition"]),
+    activeMenuClass(name) {
+      let routeName = this.$route.name;
+      let path = this.$route.path;
+      if (name === routeName) {
+        return "nav-active";
+      } else if (routeName === "Article" && name === "Articles") {
+        return "nav-active";
+      } else {
+        return "";
+      }
+    },
+    ...mapActions({
+      searchEsPageByCondition: "search/searchEsPageByCondition"
+    }),
     // 设置前端配置
     setFrontendWebsiteConfig() {
       // 首先从localStorage中获取必要字段，如果不存在，那么使用默认配置
@@ -116,7 +111,7 @@ export default {
     },
     doSearch() {
       let data = {
-        condition: this.condition,
+        condition: this.searchCondition,
         pageParam: {
           page: 1,
           count: 10,
@@ -133,7 +128,6 @@ export default {
     },
   },
   components: {
-    NewsLabel
   },
   mounted() {
     this.setFrontendWebsiteConfig();
@@ -199,16 +193,6 @@ export default {
       width: 200px;
       position: relative;
       top: 8px;
-
-      .search {
-        border-radius: 40px;
-        -webkit-border-radius: 40px;
-        -moz-border-radius: 40px;
-        background: none;
-        color: #ffffff;
-        height: 25px;
-        border: none;
-      }
     }
 
     .side-nav-bar,
@@ -234,32 +218,22 @@ export default {
       margin: 0 auto;
       max-width: 1200px;
 
-      .nav-search {
-        background-color: #5f9ea0;
-      }
-
-      .container {
-        height: 100%;
-
-        .search {
-          border-radius: 40px;
-          -webkit-border-radius: 40px;
-          -moz-border-radius: 40px;
-          background: #4a4a4a;
-          color: #ffffff;
-          height: 30px;
-          border: none;
-        }
-      }
-
       .nav-item {
         height: 100%;
         color: #ffffff;
 
+        .nav-search {
+          height: 100%;
+          a {
+            display: block;
+            height: 100%;
+          }
+        }
+
         a {
           display: block;
           width: 110px;
-          padding: 20px 16px;
+          padding: 20px 0;
 
           &.nav-active {
             background-color: #5f9ea0;
@@ -296,7 +270,7 @@ export default {
   }
 }
 
-/* ipad 768px以上 */
+// ipad 768px以上
 @media screen and (min-width: 768px) {
   #header {
     .side-nav-header {
@@ -317,7 +291,7 @@ export default {
   }
 }
 
-/* web 1200px以上 */
+// web 1200px以上
 @media screen and (min-width: 1200px) {
 
 }
