@@ -39,7 +39,7 @@
         <a href="javascript:" class="author-tag">天然呆</a>
       </div>
     </div>
-    <!-- 猜你喜欢 -->
+    <!-- 推荐文章列表 -->
     <div class="guess mb15">
       <div class="title mb15">猜你喜欢</div>
       <div class="guess-item pb10 mb10" v-for="blog in guessYouLikeList" :key="blog.id">

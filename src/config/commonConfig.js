@@ -1,5 +1,3 @@
-// const apiBaseUrl = "http://127.0.0.1:8152/api-frontend";
-const apiBaseUrl = process.env.NODE_ENV === "production" ? "http://api.lingjiatong.cn:30152/api-frontend" : "http://127.0.0.1:8152/api-frontend";
 const baseUrlMinio = "http://f.lingjiatong.cn:30090/rootelement";
 
 const indexSliderList = [
@@ -48,7 +46,6 @@ const valineConfig = {
 
 module.exports = {
   baseUrlMinio,
-  apiBaseUrl,
   swiperOption: swiperOption,
   valineConfig,
   indexSliderList

@@ -22,8 +22,8 @@
     </div>
     <!-- 无限滚动文章列表项 -->
     <div class="articles flex flex-direction-column">
-      <ul class="infinite-list" v-infinite-scroll="load">
-        <ArticleItem :articleItem="article" v-for="article in articles" :key="article.id" />
+      <ul class="infinite-list" v-infinite-scroll="getArticleScroll">
+        <ArticleItem :articleItem="article" v-for="article of scrollArticleList" :key="article.id"/>
       </ul>
     </div>
   </div>
@@ -36,6 +36,8 @@ import ArticleItem from "../components/ArticleItem";
 import "../mock/index";
 import {getSwiperImageList} from "@/api/sy";
 import {HTTP_RESULT_SUCCESS_CODE, HTTP_RESULT_SUCCESS_MESSAGE,} from "@/constant/commonConstant";
+import {findArticleTopList, findArticleScroll} from "@/api/article";
+import commonUtil from "@/util/commonUtil";
 
 export default {
   name: "Index",
@@ -44,7 +46,6 @@ export default {
       hotDefaultFlag: true,
       articlesDefaultFlag: true,
       swiperOption: this.$config.swiperOption,
-      topArticleList: [],
       count: 10,
       page: 1,
       articles: [],
@@ -52,30 +53,74 @@ export default {
       totalCount: 1,
       slides: [],
       swiperImageList: [],
+      // 置顶文章当前页码
+      topArticleListPageNum: 1,
+      // 置顶文章每页条数
+      topArticleListPageSize: 10,
+      // 置顶文章列表
+      topArticleList: [],
+      // 无限滚动文章当前页码
+      scrollArticlePageNum: 1,
+      // 无限滚动文章每页条数
+      scrollArticlePageSize: 10,
+      scrollArticleTotal: null,
+      scrollArticleList: [],
     };
+  },
+  computed: {
   },
   components: {
     ContentSide,
     ArticleItem
   },
   methods: {
-    load () {
-      this.articlesDefaultFlag = true;
-      this.$http.get("/api-frontend/index/articleList").then((res) => {
-        let outData = res.data;
-        if (outData.code === 0) {
-          let articles = outData.data;
-          this.totalPages = outData.totalPages;
-          this.totalCount = outData.totalCount;
-          for (let i of articles) {
-            this.articles.push(i);
-          }
+    // 去重
+    unique(arr, key) {
+      let map = new Map()
+      arr.forEach((item,index) => {
+        if (!map.has(item[key])) {
+          map.set(item[key], item);
         }
-        this.articlesDefaultFlag = false;
-      }).catch(() => {
-        this.articlesDefaultFlag = false;
+      })
+      return [...map.values()];
+    },
+    // 获取置顶文章列表
+    getTopArticleList() {
+      let pageNum = this.topArticleListPageNum;
+      let pageSize = this.topArticleListPageSize;
+      findArticleTopList(pageNum, pageSize).then(res => {
+        let data = res.data.data;
+        this.topArticleList = data.records;
       });
     },
+    // 初始化无限滚动
+    initScrollData() {
+      this.scrollArticleTotal = null;
+      this.scrollArticlePageNum = 1;
+      this.scrollArticlePageSize = 10;
+      this.scrollArticleList = [];
+    },
+    // 无限滚动获取文章列表
+    getArticleScroll: commonUtil.throttle(function() {
+      let pageNum = this.scrollArticlePageNum;
+      let pageSize = this.scrollArticlePageSize;
+      // 判断是否发送请求
+      let total = this.scrollArticleTotal;
+      let length = this.scrollArticleList.length;
+      let scrollArticleList = [...this.scrollArticleList];
+      if (length < total || total === null) {
+        findArticleScroll(pageNum, pageSize).then(res => {
+          let data = res.data.data;
+          let records = data.records;
+          // 去重
+          scrollArticleList.push(...records);
+          this.scrollArticleList = this.unique(scrollArticleList, "id");
+          this.scrollArticlePageSize = data.size;
+          this.scrollArticlePageNum = data.current + 1;
+          this.scrollArticleTotal = data.total;
+        });
+      }
+    }),
     // 获取swiper轮播图列表
     getSwiperImageList() {
       getSwiperImageList().then((res) => {
@@ -88,56 +133,14 @@ export default {
         }
       });
     },
-    loadData(page) {
-      this.articles = [];
-      this.articleList(page, this.count);
-    },
-    articleList(page, count) {
-      this.articlesDefaultFlag = true;
-      this.$http
-        .get("/api-frontend/index/articleList")
-        .then((res) => {
-          if (res.data.code === 0) {
-            this.articles = res.data.data;
-            this.page = page;
-            this.count = count;
-            this.totalPages = res.data.totalPages;
-            this.totalCount = res.data.totalCount;
-          }
-          this.articlesDefaultFlag = false;
-        })
-        .catch(() => {
-          this.articlesDefaultFlag = false;
-        });
-    },
-    hotArticleList() {
-      this.hotDefaultFlag = true;
-      this.$http
-        .get("/api-frontend/index/topArticleList")
-        .then((res) => {
-          if (res.data.code === 0) {
-            this.topArticleList = res.data.data;
-          }
-          this.hotDefaultFlag = false;
-        })
-        .catch(() => {
-          this.hotDefaultFlag = false;
-        });
-    },
-    sliderList() {
-      this.$http.get("/api-frontend/index/sliderList").then((res) => {
-        if (res.data.code === 0) {
-          this.slides = res.data.data;
-        }
-      });
-    },
   },
   mounted() {
-    this.articleList(this.page, this.count);
-    this.hotArticleList();
-    this.sliderList();
     this.getSwiperImageList();
-  },
+    // 获取置顶文章列表
+    this.getTopArticleList();
+    // 初始化无限滚动
+    this.initScrollData();
+  }
 };
 </script>
 

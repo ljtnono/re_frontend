@@ -13,7 +13,7 @@
     <div class="article-item-body flex flex-direction-row flex-justify-content-space-between" @click="$router.push({path: '/article/' + articleItem.id})">
       <!-- 缩略图 -->
       <div class="article-item-thumb cursor-pointer mr5 flex" >
-        <img :src="articleItem.coverImage" :alt="articleItem.title" :title="articleItem.title"/>
+        <img :src="articleItem.coverUrl" :alt="articleItem.title" :title="articleItem.title"/>
       </div>
       <!-- 详情 -->
       <div class="article-item-detail flex flex1">

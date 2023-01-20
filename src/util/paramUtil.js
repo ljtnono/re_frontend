@@ -13,7 +13,7 @@ import qs from "qs";
 // qs.stringify({ids: [1, 2, 3]}, {arrayFormat: 'repeat'})
 
 // 将数组类型的参数转换为URL参数形式
-export function arrayParamToUrlFormat(param, format) {
+export const arrayParamToUrlFormat = (param, format) => {
   if (format === 1) {
     return qs.stringify(param, { indices: false });
   } else if (format === 2) {
