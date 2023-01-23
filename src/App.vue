@@ -57,19 +57,8 @@ export default {
     saveFrontendWebsiteConfig() {
       findFrontendWebsiteConfig(FRONTEND_WEBSITE_CONFIG_ACQUIRE_TYPE_ALL).then((res) => {
         let data = res.data;
-        if (
-          data.code === HTTP_RESULT_SUCCESS_CODE &&
-          data.message === HTTP_RESULT_SUCCESS_MESSAGE
-        ) {
-          let item = data.data.values;
-          localStorage.setItem("FrontendWebsiteConfig", JSON.stringify(item));
-        } else {
-          // TODO 使用本地默认图片代替
-          console.log("==========获取站点信息失败！");
-        }
-      }).catch((e) => {
-        // TODO 使用本地默认图片代替，考虑定时任务刷新
-        console.log("==========接口调用失败！", e);
+        let item = data.data.values;
+        localStorage.setItem("FrontendWebsiteConfig", JSON.stringify(item));
       });
     },
   },

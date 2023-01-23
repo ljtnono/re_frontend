@@ -32,7 +32,7 @@
     <nav class="nav pr">
       <ul class="nav-menu">
         <li class="nav-item fl" v-for="page in pages" :key="page.name" >
-          <a href="javascript:" :class="activeMenuClass(page.name)" @click="$router.push({name: page.name})">
+          <a href="javascript:" :class="activeMenuClass(page.name)" @click="$router.push({path: page.url})">
             <i :class="page.icon" aria-hidden="true" />
             {{ page.title }}
           </a>

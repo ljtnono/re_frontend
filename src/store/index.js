@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import search from "@/store/search";
-import web from "@/store/web";
 import category from "@/store/category";
 import common from "@/store/common";
 import createPersistedState from "vuex-persistedstate";
@@ -16,7 +15,6 @@ export default new Vuex.Store({
   actions: {},
   modules: {
     search,
-    web,
     category,
     common
   },
@@ -27,7 +25,7 @@ export default new Vuex.Store({
       // 本地存储的key
       key: SESSION_STORAGE_KEY,
       // 指定需要存储的模块
-      paths: ["search", "web", "category", "common"],
+      paths: ["search", "category", "common"],
       storage: window.sessionStorage
     })
   ]

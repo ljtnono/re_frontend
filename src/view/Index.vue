@@ -120,22 +120,9 @@ export default {
           this.scrollArticleTotal = data.total;
         });
       }
-    }),
-    // 获取swiper轮播图列表
-    getSwiperImageList() {
-      getSwiperImageList().then((res) => {
-        let outerData = res.data;
-        if (
-          HTTP_RESULT_SUCCESS_CODE === outerData.code &&
-          HTTP_RESULT_SUCCESS_MESSAGE === outerData.message
-        ) {
-          this.swiperImageList = outerData.data;
-        }
-      });
-    },
+    })
   },
   mounted() {
-    this.getSwiperImageList();
     // 获取置顶文章列表
     this.getTopArticleList();
     // 初始化无限滚动

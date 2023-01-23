@@ -15,10 +15,11 @@ export default [
       title: "文章列表",
       hideInMenu: true
     },
-    component: () => import("@v/Articles.vue")
+    component: () => import("@v/Articles.vue"),
+    props: true
   },
   {
-    path: "/article/:blogId",
+    path: "/article/:articleId",
     name: "Article",
     meta: {
       title: "文章详情",

@@ -2,100 +2,95 @@
   <!-- 文章详情部分 -->
   <div class="content-main flex flex-direction-column">
     <div class="content-detail mt15">
-      <nav class="detail-nav p10">
-        <a href="/">
-          <i class="fa fa-home" />
-        </a>
-        <i class="fa fa-angle-double-right mr5 ml5" />
-        <a href="/articles/ALL">
-          <span>技术文章</span>
-        </a>
-        <i class="fa fa-angle-double-right mr5 ml5" />
-        <a :href="'/articles/' + article.category">
-          <span>{{ article.category }}</span>
-        </a>
-        <i class="fa fa-angle-double-right mr5 ml5" />
-        <a :href="'/article/' + article.id">
-          <span>{{ article.title }}</span>
-        </a>
-      </nav>
-      <header class="detail-header p10">
-        <a href="javascript:" class="mr5"
-        ><i class="fa fa-list"></i><span>{{ article.category }}</span></a
-        >
-        <a href="javascript:" class="mr5"
-        ><i class="fa fa-user"></i><span>{{ article.author }}</span></a
-        >
-        <a href="javascript:" class="mr5">
-          <i class="fa fa-calendar-times-o"></i
-          ><span>{{ article.finalUpdateTime | timeFormat }}</span>
-        </a>
-        <a href="javascript:" class="mr5"
-        ><i class="fa fa-eye"></i><span>{{ article.view }}浏览</span></a
-        >
-        <a href="javascript:" class="mr5"
-        ><i class="fa fa-comment"></i
-        ><span>{{ article.favorite }}评论</span></a
-        >
-      </header>
-      <div
-        class="detail-content"
-        id="detail-content"
-        style="min-height: 1000px"
-      >
+      <!-- 文章详情面包屑导航 -->
+<!--      <nav class="detail-nav p10">-->
+<!--        <a href="/">-->
+<!--          <i class="fa fa-home" />-->
+<!--        </a>-->
+<!--        <i class="fa fa-angle-double-right mr5 ml5" />-->
+<!--        <a href="/articles/ALL">-->
+<!--          <span>技术文章</span>-->
+<!--        </a>-->
+<!--        <i class="fa fa-angle-double-right mr5 ml5" />-->
+<!--        <a :href="'/articles/' + article.category">-->
+<!--          <span>{{ article.category }}</span>-->
+<!--        </a>-->
+<!--        <i class="fa fa-angle-double-right mr5 ml5" />-->
+<!--        <a :href="'/article/' + article.id">-->
+<!--          <span>{{ article.title }}</span>-->
+<!--        </a>-->
+<!--      </nav>-->
+      <!-- 文章详情头部 -->
+<!--      <header class="detail-header p10">-->
+<!--        <a href="javascript:" class="mr5">-->
+<!--          <i class="fa fa-list" />-->
+<!--          <span>{{ article.category }}</span>-->
+<!--        </a>-->
+<!--        <a href="javascript:" class="mr5">-->
+<!--          <i class="fa fa-user" />-->
+<!--          <span>{{ article.author }}</span>-->
+<!--        </a>-->
+<!--        <a href="javascript:" class="mr5">-->
+<!--          <i class="fa fa-calendar-times-o" />-->
+<!--          <span>{{ article.finalUpdateTime | timeFormat }}</span>-->
+<!--        </a>-->
+<!--        <a href="javascript:" class="mr5"><i class="fa fa-eye" />-->
+<!--          <span>{{ article.view }}浏览</span>-->
+<!--        </a>-->
+<!--        <a href="javascript:" class="mr5">-->
+<!--          <i class="fa fa-comment" />-->
+<!--          <span>{{ article.favorite }}评论</span>-->
+<!--        </a>-->
+<!--      </header>-->
+      <!-- 文章内容部分 -->
+      <div class="detail-content" id="detail-content" style="min-height: 1000px">
         <mavon-editor
-          class="md"
+          ref="md"
+          :scroll-style="editorConfig.scrollStyle"
+          :box-shadow="editorConfig.boxShadow"
+          :transition="editorConfig.transition"
+          :subfield="editorConfig.subfield"
+          :defaultOpen="editorConfig.defaultOpen"
+          :editable="editorConfig.editable"
+          :code-style="editorConfig.codeStyle"
+          :toolbars-flag="editorConfig.toolbarsFlag"
+          :ishljs="editorConfig.ishljs"
+          :preview-background="editorConfig.previewBackground"
           :value="article.markdownContent"
-          :subfield="false"
-          :defaultOpen="'preview'"
-          :toolbarsFlag="false"
-          :editable="false"
-          :scrollStyle="true"
-          :boxShadow="false"
-          :transition="true"
-          :previewBackground="'#ffffff'"
-          :ishljs="true"
-          style="border: none; padding: 0"
-        >
-        </mavon-editor>
+          style="width: 100%; height: 100%" />
       </div>
-      <div class="detail-label p10">
-        <i class="fa fa-tag f20"></i>
-        <a class="label" :href="'/articles/' + article.category">
-          {{ article.category }}
-        </a>
-      </div>
+<!--      <div class="detail-label p10">-->
+<!--        <i class="fa fa-tag f20"></i>-->
+<!--        <a class="label" :href="'/articles/' + article.category">-->
+<!--          {{ article.category }}-->
+<!--        </a>-->
+<!--      </div>-->
       <!--留言区-->
-      <div class="title p10">网友评论</div>
-      <div
-        class="mb20 p10"
-        id="comments"
-        style="background-color: #ffffff">
-      </div>
+<!--      <div class="title p10">网友评论</div>-->
+<!--      <div class="mb20 p10" id="comments" style="background-color: #ffffff">-->
+<!--      </div>-->
     </div>
   </div>
 </template>
 
 <script>
-import ContentSide from "../components/ContentSide";
-import { findArticleById } from "@/api/article";
-import {
-  HTTP_RESULT_SUCCESS_CODE,
-  HTTP_RESULT_SUCCESS_MESSAGE,
-} from "@/constant/commonConstant";
+import ContentSide from "@/components/ContentSide";
+import {EDITOR_CONFIG} from "@/config/commonConfig";
+import {findArticleById} from "@/api/article";
 
 export default {
   name: "Article",
   data() {
     return {
+      // 文章详情
       article: {
         id: null,
-        title: "",
-        summary: "",
-        markdownContent: "",
-        htmlContent: "",
-        category: "",
-        author: "",
+        title: null,
+        summary: null,
+        markdownContent: null,
+        htmlContent: null,
+        category: null,
+        author: null,
         coverUrl: "",
         view: 0,
         favorite: 0,
@@ -105,43 +100,42 @@ export default {
         transportInfo: null,
         quoteInfo: null,
         finalUpdateTime: null,
-        tagList: [],
+        tagList: []
       },
+      // mavonEditor配置项
+      editorConfig: EDITOR_CONFIG
     };
   },
   methods: {
-    findArticleById(articleId) {
-      findArticleById(articleId).then((res) => {
-        let outerData = res.data;
-        if (
-          HTTP_RESULT_SUCCESS_CODE === outerData.code &&
-          HTTP_RESULT_SUCCESS_MESSAGE === outerData.message
-        ) {
-          let innerData = outerData.data;
-          this.article = innerData;
-        }
+    // 初始化文章详情数据
+    initArticleDetail(articleId) {
+      findArticleById(articleId).then(res => {
+        this.article = res.data.data;
       });
-    },
+    }
+  },
+  created() {
   },
   mounted() {
-    this.findArticleById(5);
+    let articleId = this.$route.params.articleId;
+    this.initArticleDetail(articleId);
   },
   components: {
-    ContentSide,
-  },
-  props: {
-    articleId: {
-      type: Number,
-      default: 1,
-    },
-  },
+    ContentSide
+  }
 };
 </script>
 
 <style scoped lang="scss">
+
+// 修复部分因base.scss文件中重置样式导致的markdown渲染问题
+::v-deep ul, ::v-deep ol {
+  list-style: disc;
+}
+
 // 主要部分
 .content-main {
-  min-height: 1870px;
+
   width: 100%;
 
   .content-detail {
@@ -193,7 +187,6 @@ export default {
     }
 
     .detail-content {
-      background-color: #ffffff;
       margin-bottom: 2px;
     }
 
