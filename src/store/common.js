@@ -7,7 +7,9 @@ export default {
     // 热门标签列表
     hotTagList: [],
     // 友情链接列表
-    friendLinkList: []
+    friendLinkList: [],
+    // 博主相关信息
+
   }),
   getters: {},
   mutations: {
@@ -22,7 +24,8 @@ export default {
     // 修改友情链接列表
     changeFriendLinkList(state, friendLinkList) {
       state.friendLinkList = friendLinkList;
-    }
+    },
+    
   },
   actions: {},
   modules: {},
