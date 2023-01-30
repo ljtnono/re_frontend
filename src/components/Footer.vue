@@ -17,34 +17,34 @@
             <a href="javascript:">版权声明</a>
           </header>
           <p class="mt20" style="text-align: left">
-            {{ footerCopyRight }}
+            {{ websiteConfig.FOOTER_COPYRIGHT }}
           </p>
         </div>
         <div class="footer-main-item">
           <header class="item-title">
             <a href="javascript:">网站驱动</a>
           </header>
-          <div class="logo-container mt20 flex flex-direction-column">
-            <div class="logo-container-row flex flex-direction-row">
-              <img :src="footerHuaweiCloudImage" alt="华为云" /><br />
-              <img :src="footerAliCloudImage" alt="阿里云" /><br />
-            </div>
-            <div class="logo-container-row flex flex-direction-row">
-              <img :src="footerMysqlImage" alt="mysql" /><br />
-              <img :src="footerRedisImage" alt="redis" /><br />
-            </div>
-            <div class="logo-container-row flex flex-direction-row">
-              <img :src="footerNginxImage" alt="nginx" /><br />
-              <img :src="footerTomcatImage" alt="tomcat" /><br />
-            </div>
-          </div>
+<!--          <div class="logo-container mt20 flex flex-direction-column">-->
+<!--            <div class="logo-container-row flex flex-direction-row">-->
+<!--              <img :src="websiteConfig." alt="华为云" /><br />-->
+<!--              <img :src="footerAliCloudImage" alt="阿里云" /><br />-->
+<!--            </div>-->
+<!--            <div class="logo-container-row flex flex-direction-row">-->
+<!--              <img :src="footerMysqlImage" alt="mysql" /><br />-->
+<!--              <img :src="footerRedisImage" alt="redis" /><br />-->
+<!--            </div>-->
+<!--            <div class="logo-container-row flex flex-direction-row">-->
+<!--              <img :src="footerNginxImage" alt="nginx" /><br />-->
+<!--              <img :src="footerTomcatImage" alt="tomcat" /><br />-->
+<!--            </div>-->
+<!--          </div>-->
         </div>
         <div class="footer-main-item">
           <header class="item-title">
             <a href="javascript:">站长微信</a>
           </header>
           <div class="site-wechat mt20">
-            <img :src="authorWxQrcodeUrl" alt="加我微信" />
+            <img :src="author.wechatQrCodeUrl" alt="加我微信" />
           </div>
         </div>
         <div class="footer-main-item">
@@ -52,42 +52,30 @@
             <a href="javascript:">关于本站</a>
           </header>
           <div class="site-rss mt20">
-            <div
-              class="site-rss-info flex flex-direction-row flex-justify-content-space-between"
-            >
-              <img
-                :src="authorAvatar"
-                :alt="authorNickName"
-                :title="authorNickName"
-              />
+            <div class="site-rss-info flex flex-direction-row flex-justify-content-space-between">
+              <img :src="author.avatar" :alt="author.nickName" :title="author.nickName"/>
               <p style="width: 120px; text-align: left">
-                {{ footerAboutWebsite }}
+                {{ websiteConfig.FOOTER_ABOUT_WEBSITE }}
               </p>
             </div>
-            <div
-              class="site-rss-email mt20 flex flex-direction-row flex-justify-content-space-between"
-            >
+            <div class="site-rss-email mt20 flex flex-direction-row flex-justify-content-space-between">
               <input type="email" placeholder="输入邮箱订阅本站" />
-              <button><i class="fa fa-rss" />订阅</button>
+              <button>
+                <i class="fa fa-rss" />
+                订阅
+              </button>
             </div>
           </div>
         </div>
       </div>
-      <div
-        class="footer-info"
-        style="
-          border-top: 1px solid #03a9f4;
-          background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAUAAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAAgICAgICAgICAgMCAgIDBAMCAgMEBQQEBAQEBQYFBQUFBQUGBgcHCAcHBgkJCgoJCQwMDAwMDAwMDAwMDAwMDAEDAwMFBAUJBgYJDQsJCw0PDg4ODg8PDAwMDAwPDwwMDAwMDA8MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwM/8AAEQgAAgAKAwERAAIRAQMRAf/EAEwAAQEAAAAAAAAAAAAAAAAAAAAJAQEAAAAAAAAAAAAAAAAAAAAAEAEBAAAAAAAAAAAAAAAAAAAAlREBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8Ah7DAhg//2Q==');
-          background-repeat: repeat;
-        "
-      >
+      <div class="footer-info" style="border-top: 1px solid #03a9f4;background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAUAAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAAgICAgICAgICAgMCAgIDBAMCAgMEBQQEBAQEBQYFBQUFBQUGBgcHCAcHBgkJCgoJCQwMDAwMDAwMDAwMDAwMDAEDAwMFBAUJBgYJDQsJCw0PDg4ODg8PDAwMDAwPDwwMDAwMDA8MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwM/8AAEQgAAgAKAwERAAIRAQMRAf/EAEwAAQEAAAAAAAAAAAAAAAAAAAAJAQEAAAAAAAAAAAAAAAAAAAAAEAEBAAAAAAAAAAAAAAAAAAAAlREBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8Ah7DAhg//2Q==');background-repeat: repeat;">
         <p>
           <span class="author">
             copyright
-            <i class="fa fa-copyright" aria-hidden="true"></i>
-            {{ authorNickName }}
+            <i class="fa fa-copyright" aria-hidden="true" />
+            {{ author.nickName }}
           </span>
-          <i class="fa">|</i>
+          |
           <span>
             版权所有 参考
             <a href="https://gitcafe.net/"> GitCafe </a>
@@ -96,14 +84,15 @@
             创建
           </span>
         </p>
-        <p>基于JAVA构建 2019-10-20至 {{ now }}</p>
+        <p>基于JAVA构建 2019-10-20 至 {{ new Date() | timeFormat("YYYY-MM-DD") }}</p>
         <p class="mr10">
-          <a href="javascript:">{{ footerICPCode }}</a>
+          <a href="javascript:"> {{ websiteConfig.WEBSITE_ICP_CODE }} </a>
         </p>
         <p class="mr10">
-          本项目github地址：<a :href="footerGithubWebsiteAddr">{{
-            footerGithubWebsiteAddr
-          }}</a>
+          本项目github地址：
+          <a :href="websiteConfig.GITHUB_WEBSITE">
+            {{ websiteConfig.GITHUB_WEBSITE }}
+          </a>
         </p>
       </div>
     </footer>
@@ -111,23 +100,8 @@
 </template>
 
 <script>
-import moment from "moment";
 import vueToTop from "vue-totop";
-import {
-  DEFAULT_AUTHOR_AVATAR,
-  DEFAULT_AUTHOR_NICKNAME,
-  DEFAULT_AUTHOR_WX_QRCODE_URL,
-  DEFAULT_FOOTER_ABOUT_WEBSITE,
-  DEFAULT_FOOTER_COPYRIGHT,
-  DEFAULT_GITHUB_WEBSITE_ADDR,
-  DEFAULT_IMAGE_ALI_CLOUD,
-  DEFAULT_IMAGE_HUAWEI_CLOUD,
-  DEFAULT_IMAGE_MYSQL,
-  DEFAULT_IMAGE_NGINX,
-  DEFAULT_IMAGE_REDIS,
-  DEFAULT_IMAGE_TOMCAT,
-  DEFAULT_WEBSITE_ICP_CODE,
-} from "@/constant/commonConstant";
+import {mapState} from "vuex";
 
 export default {
   name: "Footer",
@@ -136,87 +110,18 @@ export default {
   },
   data() {
     return {
-      now: moment(new Date()).format("YYYY-MM-DD"),
-      // 前端站点配置相关数据
-      footerCopyRight: "",
-      footerICPCode: "",
-      footerHuaweiCloudImage: "",
-      footerAliCloudImage: "",
-      footerMysqlImage: "",
-      footerRedisImage: "",
-      footerNginxImage: "",
-      footerTomcatImage: "",
-      authorWxQrcodeUrl: "",
-      authorAvatar: "",
-      authorNickName: "",
-      footerAboutWebsite: "",
-      footerGithubWebsiteAddr: "",
     };
   },
+  computed: {
+    ...mapState({
+      websiteConfig: state => state.common.websiteConfig,
+      author: state => state.common.author
+    })
+  },
   methods: {
-    // 设置前端站点配置
-    setFrontendWebsiteConfig() {
-      // 首先从localStorage中获取必要字段，如果不存在，那么使用默认配置
-      let config = JSON.parse(localStorage.getItem("FrontendWebsiteConfig"));
-      if (config === null || config === undefined) {
-        this.footerCopyRight = DEFAULT_FOOTER_COPYRIGHT;
-        this.footerICPCode = DEFAULT_WEBSITE_ICP_CODE;
-        this.footerHuaweiCloudImage = DEFAULT_IMAGE_HUAWEI_CLOUD;
-        this.footerAliCloudImage = DEFAULT_IMAGE_ALI_CLOUD;
-        this.footerMysqlImage = DEFAULT_IMAGE_MYSQL;
-        this.footerRedisImage = DEFAULT_IMAGE_REDIS;
-        this.footerNginxImage = DEFAULT_IMAGE_NGINX;
-        this.footerTomcatImage = DEFAULT_IMAGE_TOMCAT;
-        // 默认微信
-        this.authorWxQrcodeUrl = DEFAULT_AUTHOR_WX_QRCODE_URL;
-        this.authorAvatar = DEFAULT_AUTHOR_AVATAR;
-        this.authorNickName = DEFAULT_AUTHOR_NICKNAME;
-        this.footerAboutWebsite = DEFAULT_FOOTER_ABOUT_WEBSITE;
-        this.footerGithubWebsiteAddr = DEFAULT_GITHUB_WEBSITE_ADDR;
-      } else {
-        this.footerCopyRight = config["FOOTER_COPYRIGHT"]
-          ? config["FOOTER_COPYRIGHT"]
-          : DEFAULT_FOOTER_COPYRIGHT;
-        this.footerICPCode = config["WEBSITE_ICP_CODE"]
-          ? config["WEBSITE_ICP_CODE"]
-          : DEFAULT_WEBSITE_ICP_CODE;
-        if (config["FOOTER_DRIVER"]) {
-          let driverImages = config["FOOTER_DRIVER"].split(",");
-          this.footerHuaweiCloudImage = driverImages[0];
-          this.footerAliCloudImage = driverImages[1];
-          this.footerMysqlImage = driverImages[2];
-          this.footerRedisImage = driverImages[3];
-          this.footerNginxImage = driverImages[4];
-          this.footerTomcatImage = driverImages[5];
-        } else {
-          this.footerHuaweiCloudImage = DEFAULT_IMAGE_HUAWEI_CLOUD;
-          this.footerAliCloudImage = DEFAULT_IMAGE_ALI_CLOUD;
-          this.footerMysqlImage = DEFAULT_IMAGE_MYSQL;
-          this.footerRedisImage = DEFAULT_IMAGE_REDIS;
-          this.footerNginxImage = DEFAULT_IMAGE_NGINX;
-          this.footerTomcatImage = DEFAULT_IMAGE_TOMCAT;
-        }
-        // 默认微信
-        this.authorWxQrcodeUrl = config["AUTHOR_WX_QRCODE_URL"]
-          ? config["AUTHOR_WX_QRCODE_URL"]
-          : DEFAULT_AUTHOR_WX_QRCODE_URL;
-        this.authorAvatar = config["AVATAR_URL"]
-          ? config["AVATAR_URL"]
-          : DEFAULT_AUTHOR_AVATAR;
-        this.authorNickName = config["NICK_NAME"]
-          ? config["NICK_NAME"]
-          : DEFAULT_AUTHOR_NICKNAME;
-        this.footerAboutWebsite = config["FOOTER_ABOUT_WEBSITE"]
-          ? config["FOOTER_ABOUT_WEBSITE"]
-          : DEFAULT_FOOTER_ABOUT_WEBSITE;
-        this.footerGithubWebsiteAddr = config["GITHUB_WEBSITE"]
-          ? config["GITHUB_WEBSITE"]
-          : DEFAULT_GITHUB_WEBSITE_ADDR;
-      }
-    },
+
   },
   mounted() {
-    this.setFrontendWebsiteConfig();
   },
 };
 </script>

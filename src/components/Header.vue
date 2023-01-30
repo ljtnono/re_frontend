@@ -4,7 +4,7 @@
     <!-- logo -->
     <div class="logo">
       <a href="/" class="cursor-pointer">
-        <h1><img :src="headerLogoUrl" alt="RootElement根元素" class="logo-word" title="RootElement根元素" /></h1>
+        <h1><img :src="HEADER_LOGO_URL" alt="RootElement根元素" class="logo-word" title="RootElement根元素" /></h1>
       </a>
     </div>
     <!-- 导航按钮和搜索按钮 -->
@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import {mapActions, mapState} from "vuex";
 import { DEFAULT_HEADER_LOGO_URL } from "@/constant/commonConstant";
 
 export default {
@@ -69,10 +69,13 @@ export default {
         { title: "支持我", name: "Support", url: "/support", icon: "fa fa-thumbs-up" },
         { title: "关于作者", name: "About", url: "/about", icon: "fa fa-info-circle" },
       ],
-      currentPage: this.getCurrentPage(),
-      // 前端设置相关数据
-      headerLogoUrl: null
+      currentPage: this.getCurrentPage()
     };
+  },
+  computed: {
+    ...mapState({
+      HEADER_LOGO_URL: state => state.common.websiteConfig.HEADER_LOGO_URL
+    })
   },
   methods: {
     activeMenuClass(name) {
@@ -89,18 +92,6 @@ export default {
     ...mapActions({
       searchEsPageByCondition: "search/searchEsPageByCondition"
     }),
-    // 设置前端配置
-    setFrontendWebsiteConfig() {
-      // 首先从localStorage中获取必要字段，如果不存在，那么使用默认配置
-      let config = JSON.parse(localStorage.getItem("FrontendWebsiteConfig"));
-      if (config === null || config === undefined) {
-        this.headerLogoUrl = DEFAULT_HEADER_LOGO_URL;
-      } else {
-        this.headerLogoUrl = config["HEADER_LOGO_URL"]
-          ? config["HEADER_LOGO_URL"]
-          : DEFAULT_HEADER_LOGO_URL;
-      }
-    },
     getCurrentPage() {
       let articleRex = /\/article[s]?|\/search/;
       if (articleRex.test(this.$route.path)) {
@@ -130,7 +121,6 @@ export default {
   components: {
   },
   mounted() {
-    this.setFrontendWebsiteConfig();
   },
 };
 </script>

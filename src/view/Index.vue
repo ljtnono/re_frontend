@@ -9,7 +9,7 @@
         <ul class="top-list">
           <li class="top-item mb10" v-for="(article, index) in topArticleList" :key="article.id">
             <span class="top-label mr5">{{ index + 1 }}</span>
-            <a class="top-title f14" :href="'/article/' + article.id">{{article.title }}</a>
+            <a class="top-title f14" :href="'/article/' + article.id">{{ article.title }}</a>
             <span class="top-view mr15 fr" style="color: #3db1ad">
               <span>{{ article.view }} 浏览</span>
             </span>
@@ -34,9 +34,7 @@ import ContentSide from "../components/ContentSide";
 import "swiper/dist/css/swiper.css";
 import ArticleItem from "../components/ArticleItem";
 import "../mock/index";
-import {getSwiperImageList} from "@/api/sy";
-import {HTTP_RESULT_SUCCESS_CODE, HTTP_RESULT_SUCCESS_MESSAGE,} from "@/constant/commonConstant";
-import {findArticleTopList, findArticleScroll} from "@/api/article";
+import {findArticleScroll, findArticleTopList} from "@/api/article";
 import commonUtil from "@/util/commonUtil";
 
 export default {

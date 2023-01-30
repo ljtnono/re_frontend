@@ -9,7 +9,55 @@ export default {
     // 友情链接列表
     friendLinkList: [],
     // 博主相关信息
-
+    author: {
+      // 头像地址
+      avatar: "",
+      // 博主网名
+      nickName: "",
+      // 博主邮箱
+      email: "",
+      // 博主地址
+      addr: "",
+      // 自己给自己贴标签
+      tagList: ["理想主义者", "技术宅", "天然呆"],
+      // 职业
+      job: "程序员",
+      // 微信
+      wechat: "",
+      // QQ
+      qq: "",
+      // github
+      github: "",
+      // 微信二维码地址
+      wechatQrCodeUrl: "",
+      // github用户名
+      githubUsername: "",
+      // 微信支付二维码地址
+      wechatPayQrCodeUrl: "",
+      // 关于作者信息
+      about: "",
+      // 支付宝支付二维码地址
+      alipayPayQrCode: ""
+    },
+    // 网站相关配置
+    websiteConfig: {
+      // 博客的github地址
+      GITHUB_WEBSITE: "",
+      // 博客footer部分关于相关信息
+      FOOTER_ABOUT_WEBSITE: "",
+      // 博客版权信息
+      FOOTER_COPYRIGHT: "",
+      // 博客备案号
+      WEBSITE_ICP_CODE: "",
+      // footer网站驱动信息
+      FOOTER_DRIVER: "",
+      // 博客头部的LOGO地址
+      HEADER_LOGO_URL: "",
+      // TODO rss订阅地址，暂时没有该功能
+      RSS_URL: "",
+      // 发送邮件给我
+      SEND_ME_EMAIL: ""
+    }
   }),
   getters: {},
   mutations: {
@@ -25,7 +73,14 @@ export default {
     changeFriendLinkList(state, friendLinkList) {
       state.friendLinkList = friendLinkList;
     },
-    
+    // 修改博主信息
+    changeAuthor(state, author) {
+      state.author = author;
+    },
+    // 修改网站设置
+    changeWebsiteConfig(state, websiteConfig) {
+      state.websiteConfig = websiteConfig;
+    }
   },
   actions: {},
   modules: {},

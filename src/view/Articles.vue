@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import { listBlogPageByType } from "@/api/blog";
 import ContentSide from "../components/ContentSide";
 import ArticleItem from "../components/ArticleItem";
 import Loading from "../components/Loading";
@@ -38,40 +37,8 @@ export default {
     };
   },
   methods: {
-    loadData(page) {
-      let pageParam = {
-        page: page,
-        count: this.count,
-      };
-      this.articles = [];
-      this.listBlogPageByType(this.type, pageParam);
-    },
-    listBlogPageByType(type, pageParam) {
-      this.articlesDefaultFlag = true;
-      listBlogPageByType(type, pageParam)
-        .then((res) => {
-          if (res.data.request === "success" && res.data.status === 200) {
-            let data = res.data.data;
-            this.articles = data;
-            this.page = pageParam.page;
-            this.count = pageParam.count;
-            this.totalPages = parseInt(res.data.fields.totalPages);
-            this.totalCount = parseInt(res.data.fields.totalCount);
-          }
-          this.articlesDefaultFlag = false;
-        })
-        .catch(() => {
-          this.articlesDefaultFlag = false;
-        });
-    },
   },
   mounted() {
-    let pageParam = {
-      page: 1,
-      count: this.count,
-    };
-    this.type = this.$route.params.type || "ALL";
-    this.listBlogPageByType(this.type, pageParam);
   },
   components: {
     ContentSide,

@@ -3,65 +3,71 @@
   <div class="content-side flex flex-direction-column">
     <!-- 联系方式 -->
     <div class="social p10 mb15 flex flex-direction-row flex-justify-content-space-between">
-      <a href="javascript:" class="fl" style="background-color: #6fc299">
-        <i class="fa fa-wechat" />
-      </a>
-      <a href="javascript:" class="fl" style="background-color: #f78585">
-        <i class="fa fa-weibo" />
-      </a>
-      <a href="javascript:" class="fl" style="background-color: #e74c3c">
-        <i class="fa fa-qq" />
-      </a>
-      <a href="javascript:" class="fl" style="background-color: #27ccc0">
-        <i class="fa fa-github" />
-      </a>
-      <a href="javascript:" class="fl" style="background-color: #ff7c49">
-        <i class="fa fa-rss" />
-      </a>
+      <el-tooltip effect="dark" :content="author.wechat" placement="top">
+        <a href="javascript:" style="background-color: #6fc299">
+          <i class="fa fa-wechat" />
+        </a>
+      </el-tooltip>
+      <el-tooltip effect="dark" :content="author.qq" placement="top">
+        <a href="javascript:" style="background-color: #e74c3c">
+          <i class="fa fa-qq" />
+        </a>
+      </el-tooltip>
+      <el-tooltip effect="dark" :content="author.githubUsername" placement="top">
+        <a :href="author.github" style="background-color: #27ccc0">
+          <i class="fa fa-github" />
+        </a>
+      </el-tooltip>
+      <!-- rss订阅 -->
+      <el-tooltip effect="dark" :content="websiteConfig.RSS_URL" placement="top">
+        <a href="javascript:" style="background-color: #ff7c49">
+          <i class="fa fa-rss" />
+        </a>
+      </el-tooltip>
     </div>
     <!-- 博主信息 -->
     <div class="author-info mb15">
       <div class="title mb15">博主信息</div>
       <div class="description mb15">
         <a href="javascript:" class="avatar mr15">
-          <img :src="authorAvatar" :alt="authorNickName" :title="authorNickName" />
+          <img :src="author.avatar" :alt="author.nickName" :title="author.nickName" />
         </a>
         <div class="description-text">
-          <p class="mb5 f14">网名：{{ authorNickName }}</p>
-          <p class="mb5 f14">职业：程序员</p>
-          <p class="mb5 f14">现居：{{ authorAddr }}</p>
-          <p class="mb5 f14">Email：{{ authorEmail }}</p>
+          <p class="mb5 f14">网名：{{ author.nickName }}</p>
+          <p class="mb5 f14">职业：{{ author.job }}</p>
+          <p class="mb5 f14">现居：{{ author.addr }}</p>
+          <p class="mb5 f14">Email：{{ author.email }}</p>
         </div>
       </div>
       <div class="author-tags flex flex-justify-content-space-between">
-        <a href="javascript:" class="author-tag">理想主义者</a>
-        <a href="javascript:" class="author-tag">技术宅</a>
-        <a href="javascript:" class="author-tag">天然呆</a>
+        <a href="javascript:" class="author-tag">{{ author.tagList[0] }}</a>
+        <a href="javascript:" class="author-tag">{{ author.tagList[1] }}</a>
+        <a href="javascript:" class="author-tag">{{ author.tagList[2] }}</a>
       </div>
     </div>
-    <!-- 推荐文章列表 -->
-    <div class="guess mb15">
-      <div class="title mb15">猜你喜欢</div>
-      <div class="guess-item pb10 mb10" v-for="blog in guessYouLikeList" :key="blog.id">
-        <a :href="'/article/' + blog.id" class="thumb mr5 flex">
-          <img :src="blog.coverImage" :alt="blog.title" />
-        </a>
-        <div class="guess-text pr">
-          <a class="guess-title pa" :href="'/article/' + blog.id">
-            {{ blog.title }}
-          </a>
-          <a class="guess-info pa">
-            <span class="mr5">{{ blog.modifyTime | timeFormat }}</span>
-            <span>{{ blog.comment }}评论</span>
-          </a>
-        </div>
-      </div>
-    </div>
+<!--    &lt;!&ndash; 推荐文章列表 &ndash;&gt;-->
+<!--    <div class="guess mb15">-->
+<!--      <div class="title mb15">猜你喜欢</div>-->
+<!--      <div class="guess-item pb10 mb10" v-for="blog in guessYouLikeList" :key="blog.id">-->
+<!--        <a :href="'/article/' + blog.id" class="thumb mr5 flex">-->
+<!--          <img :src="blog.coverImage" :alt="blog.title" />-->
+<!--        </a>-->
+<!--        <div class="guess-text pr">-->
+<!--          <a class="guess-title pa" :href="'/article/' + blog.id">-->
+<!--            {{ blog.title }}-->
+<!--          </a>-->
+<!--          <a class="guess-info pa">-->
+<!--            <span class="mr5">{{ blog.modifyTime | timeFormat }}</span>-->
+<!--            <span>{{ blog.comment }}评论</span>-->
+<!--          </a>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
     <!-- 热门标签 -->
     <div class="tags mb15">
       <div class="title mb15">热门标签</div>
-        <a :href="'/articles/' + articleTag.name" class="tag" v-for="articleTag in articleTags" :key="articleTag.id" v-show="articleTag.status === 1">
-          {{ articleTag.name }}
+        <a href="javascript:" class="tag" v-for="tag in hotTagList" :key="tag.id">
+          {{ tag.name }} ({{ tag.articleCount }})
         </a>
     </div>
     <!-- 友情链接 -->
@@ -89,96 +95,31 @@ import {
   HTTP_RESULT_SUCCESS_CODE,
   HTTP_RESULT_SUCCESS_MESSAGE,
 } from "@/constant/commonConstant";
+import {mapState} from "vuex";
 
 export default {
   name: "ContentSide",
   data() {
     return {
-      trigger: "hover",
-      guessDefaultFlag: true,
-      tagDefaultFlag: true,
-      articleTags: [],
-      friendLinkList: [],
-      guessYouLikeList: [],
-      // 站点配置相关数据
-      authorAvatar: "",
-      authorNickName: "",
-      authorAddr: "",
-      authorEmail: "",
+      // guessDefaultFlag: true,
+      // tagDefaultFlag: true,
+      // guessYouLikeList: [],
     };
+  },
+  computed: {
+    ...mapState({
+      hotTagList: state => state.common.hotTagList,
+      author: state => state.common.author,
+      friendLinkList: state => state.common.friendLinkList,
+      websiteConfig: state => state.common.websiteConfig
+    })
   },
   components: {
     Loading,
   },
   methods: {
-    // 设置前端网站配置
-    setFrontendWebsiteConfig() {
-      // 首先从localStorage中获取必要字段，如果不存在，那么使用默认配置
-      let config = JSON.parse(localStorage.getItem("FrontendWebsiteConfig"));
-      if (config === null || config === undefined) {
-        this.authorAvatar = DEFAULT_AUTHOR_AVATAR;
-        this.authorNickName = DEFAULT_AUTHOR_NICKNAME;
-        this.authorAddr = DEFAULT_AUTHOR_ADDR;
-        this.authorEmail = DEFAULT_AUTHOR_EMAIL;
-      } else {
-        this.authorNickName = config["NICK_NAME"]
-          ? config["NICK_NAME"]
-          : DEFAULT_AUTHOR_NICKNAME;
-        this.authorAddr = config[""] ? config[""] : DEFAULT_AUTHOR_ADDR;
-        this.authorAvatar = config["AVATAR_URL"]
-          ? config["AVATAR_URL"]
-          : DEFAULT_AUTHOR_AVATAR;
-        this.authorEmail = config["AUTHOR_EMAIL"]
-          ? config["AUTHOR_EMAIL"]
-          : DEFAULT_AUTHOR_EMAIL;
-      }
-    },
-    articleTagList() {
-      this.tagDefaultFlag = true;
-      axios
-        .get("/api-frontend/side/articleTagList")
-        .then((res) => {
-          if (res.data.code === 0) {
-            this.articleTags = res.data.data;
-          }
-          this.tagDefaultFlag = false;
-        })
-        .catch(() => {
-          this.tagDefaultFlag = false;
-        });
-    },
-    findFriendLinkList() {
-      findFriendLinkList().then((res) => {
-        let outerData = res.data;
-        if (
-          HTTP_RESULT_SUCCESS_CODE === outerData.code &&
-          HTTP_RESULT_SUCCESS_MESSAGE === outerData.message
-        ) {
-          let innerData = outerData.data;
-          this.friendLinkList = innerData;
-        }
-      });
-    },
-    guessYouLike() {
-      this.guessDefaultFlag = true;
-      axios
-        .get("/api-frontend/side/guessYouLike")
-        .then((res) => {
-          if (res.data.code === 0) {
-            this.guessYouLikeList = res.data.data;
-          }
-          this.guessDefaultFlag = false;
-        })
-        .catch(() => {
-          this.guessDefaultFlag = false;
-        });
-    },
   },
   mounted() {
-    this.articleTagList();
-    this.findFriendLinkList();
-    this.guessYouLike();
-    this.setFrontendWebsiteConfig();
   },
 };
 </script>
