@@ -5,9 +5,9 @@ export default {
     activeRoute: null,
     //########## 侧边栏相关数据 ##########//
     // 热门标签列表
-    hotTagList: [],
+    hotTagList: null,
     // 友情链接列表
-    friendLinkList: [],
+    friendLinkList: null,
     // 博主相关信息
     author: {
       // 头像地址
