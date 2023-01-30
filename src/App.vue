@@ -11,6 +11,14 @@
     </div>
     <!-- 底部信息 -->
     <Footer/>
+    <!-- 回到顶部 -->
+    <vueToTop
+      type="4"
+      size="50"
+      color="#2189AE"
+      bottom="100"
+      top="0">
+    </vueToTop>
   </div>
 </template>
 
@@ -19,16 +27,8 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import MessageLabel from "@c/MessageLabel.vue";
 import ContentSide from "@c/ContentSide.vue";
-import {
-  findFriendLinkList,
-  findFrontendWebsiteConfig,
-  FRONTEND_WEBSITE_CONFIG_ACQUIRE_TYPE_ALL,
-} from "@/api/sy";
-import {
-  HTTP_RESULT_SUCCESS_CODE,
-  HTTP_RESULT_SUCCESS_MESSAGE,
-} from "./constant/commonConstant";
-import {mapMutations, mapState} from "vuex";
+import {findFriendLinkList, findFrontendWebsiteConfig, FRONTEND_WEBSITE_CONFIG_ACQUIRE_TYPE_ALL,} from "@/api/sy";
+import {mapState} from "vuex";
 import {findHotTagList} from "@/api/tag";
 
 export default {
@@ -145,14 +145,6 @@ export default {
   overflow-y: auto;
   margin: 0;
   padding: 0;
-}
-
-body,
-html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
 }
 
 .content {

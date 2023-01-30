@@ -1,113 +1,84 @@
 <template>
-  <div>
-    <!-- 回到顶部 -->
-    <vueToTop
-      style="z-index: 10000"
-      type="4"
-      size="50"
-      color="#2189AE"
-      bottom="100"
-      top="0">
-    </vueToTop>
-    <!-- footer部分 -->
-    <footer id="footer" class="mt30 pr">
-      <div class="footer-main flex flex-direction-row pr">
-        <div class="footer-main-item">
-          <header class="item-title">
-            <a href="javascript:">版权声明</a>
-          </header>
-          <p class="mt20" style="text-align: left">
-            {{ websiteConfig.FOOTER_COPYRIGHT }}
-          </p>
+  <!-- footer部分 -->
+  <footer id="footer" class="mt30 pr">
+    <div class="footer-main flex flex-direction-row pr">
+      <div class="footer-main-item">
+        <header class="item-title">
+          <a href="javascript:">版权声明</a>
+        </header>
+        <p class="mt20" style="text-align: left">
+          {{ websiteConfig.FOOTER_COPYRIGHT }}
+        </p>
+      </div>
+      <div class="footer-main-item">
+        <header class="item-title">
+          <a href="javascript:">网站驱动</a>
+        </header>
+      </div>
+      <div class="footer-main-item">
+        <header class="item-title">
+          <a href="javascript:">站长微信</a>
+        </header>
+        <div class="site-wechat mt20">
+          <img :src="author.wechatQrCodeUrl" alt="加我微信" />
         </div>
-        <div class="footer-main-item">
-          <header class="item-title">
-            <a href="javascript:">网站驱动</a>
-          </header>
-<!--          <div class="logo-container mt20 flex flex-direction-column">-->
-<!--            <div class="logo-container-row flex flex-direction-row">-->
-<!--              <img :src="websiteConfig." alt="华为云" /><br />-->
-<!--              <img :src="footerAliCloudImage" alt="阿里云" /><br />-->
-<!--            </div>-->
-<!--            <div class="logo-container-row flex flex-direction-row">-->
-<!--              <img :src="footerMysqlImage" alt="mysql" /><br />-->
-<!--              <img :src="footerRedisImage" alt="redis" /><br />-->
-<!--            </div>-->
-<!--            <div class="logo-container-row flex flex-direction-row">-->
-<!--              <img :src="footerNginxImage" alt="nginx" /><br />-->
-<!--              <img :src="footerTomcatImage" alt="tomcat" /><br />-->
-<!--            </div>-->
-<!--          </div>-->
-        </div>
-        <div class="footer-main-item">
-          <header class="item-title">
-            <a href="javascript:">站长微信</a>
-          </header>
-          <div class="site-wechat mt20">
-            <img :src="author.wechatQrCodeUrl" alt="加我微信" />
+      </div>
+      <div class="footer-main-item">
+        <header class="item-title">
+          <a href="javascript:">关于本站</a>
+        </header>
+        <div class="site-rss mt20">
+          <div class="site-rss-info flex flex-direction-row flex-justify-content-space-between">
+            <img :src="author.avatar" :alt="author.nickName" :title="author.nickName"/>
+            <p style="width: 120px; text-align: left">
+              {{ websiteConfig.FOOTER_ABOUT_WEBSITE }}
+            </p>
           </div>
-        </div>
-        <div class="footer-main-item">
-          <header class="item-title">
-            <a href="javascript:">关于本站</a>
-          </header>
-          <div class="site-rss mt20">
-            <div class="site-rss-info flex flex-direction-row flex-justify-content-space-between">
-              <img :src="author.avatar" :alt="author.nickName" :title="author.nickName"/>
-              <p style="width: 120px; text-align: left">
-                {{ websiteConfig.FOOTER_ABOUT_WEBSITE }}
-              </p>
-            </div>
-            <div class="site-rss-email mt20 flex flex-direction-row flex-justify-content-space-between">
-              <input type="email" placeholder="输入邮箱订阅本站" />
-              <button>
-                <i class="fa fa-rss" />
-                订阅
-              </button>
-            </div>
+          <div class="site-rss-email mt20 flex flex-direction-row flex-justify-content-space-between">
+            <input type="email" placeholder="输入邮箱订阅本站" />
+            <button>
+              <i class="fa fa-rss" />
+              订阅
+            </button>
           </div>
         </div>
       </div>
-      <div class="footer-info" style="border-top: 1px solid #03a9f4;background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAUAAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAAgICAgICAgICAgMCAgIDBAMCAgMEBQQEBAQEBQYFBQUFBQUGBgcHCAcHBgkJCgoJCQwMDAwMDAwMDAwMDAwMDAEDAwMFBAUJBgYJDQsJCw0PDg4ODg8PDAwMDAwPDwwMDAwMDA8MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwM/8AAEQgAAgAKAwERAAIRAQMRAf/EAEwAAQEAAAAAAAAAAAAAAAAAAAAJAQEAAAAAAAAAAAAAAAAAAAAAEAEBAAAAAAAAAAAAAAAAAAAAlREBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8Ah7DAhg//2Q==');background-repeat: repeat;">
-        <p>
+    </div>
+    <div class="footer-info" style="border-top: 1px solid #03a9f4;background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAUAAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAAgICAgICAgICAgMCAgIDBAMCAgMEBQQEBAQEBQYFBQUFBQUGBgcHCAcHBgkJCgoJCQwMDAwMDAwMDAwMDAwMDAEDAwMFBAUJBgYJDQsJCw0PDg4ODg8PDAwMDAwPDwwMDAwMDA8MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwM/8AAEQgAAgAKAwERAAIRAQMRAf/EAEwAAQEAAAAAAAAAAAAAAAAAAAAJAQEAAAAAAAAAAAAAAAAAAAAAEAEBAAAAAAAAAAAAAAAAAAAAlREBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8Ah7DAhg//2Q==');background-repeat: repeat;">
+      <p>
           <span class="author">
             copyright
             <i class="fa fa-copyright" aria-hidden="true" />
             {{ author.nickName }}
           </span>
-          |
-          <span>
+        |
+        <span>
             版权所有 参考
             <a href="https://gitcafe.net/"> GitCafe </a>
             和
             <a href="https://yusi123.com/">欲思主题</a>
             创建
           </span>
-        </p>
-        <p>基于JAVA构建 2019-10-20 至 {{ new Date() | timeFormat("YYYY-MM-DD") }}</p>
-        <p class="mr10">
-          <a href="javascript:"> {{ websiteConfig.WEBSITE_ICP_CODE }} </a>
-        </p>
-        <p class="mr10">
-          本项目github地址：
-          <a :href="websiteConfig.GITHUB_WEBSITE">
-            {{ websiteConfig.GITHUB_WEBSITE }}
-          </a>
-        </p>
-      </div>
-    </footer>
-  </div>
+      </p>
+      <p>基于JAVA构建 2019-10-20 至 {{ new Date() | timeFormat("YYYY-MM-DD") }}</p>
+      <p class="mr10">
+        <a href="javascript:"> {{ websiteConfig.WEBSITE_ICP_CODE }} </a>
+      </p>
+      <p class="mr10">
+        本项目github地址：
+        <a :href="websiteConfig.GITHUB_WEBSITE">
+          {{ websiteConfig.GITHUB_WEBSITE }}
+        </a>
+      </p>
+    </div>
+  </footer>
 </template>
 
 <script>
-import vueToTop from "vue-totop";
 import {mapState} from "vuex";
 
 export default {
   name: "Footer",
-  components: {
-    vueToTop,
-  },
   data() {
     return {
     };

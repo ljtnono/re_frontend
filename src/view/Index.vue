@@ -22,7 +22,7 @@
     </div>
     <!-- 无限滚动文章列表项 -->
     <div class="articles flex flex-direction-column">
-      <ul class="infinite-list" v-infinite-scroll="getArticleScroll">
+      <ul class="infinite-list" v-infinite-scroll="getArticleScroll"  infinite-scroll-delay="200" infinite-scroll-distance="50" infinite-scroll-immediate="true">
         <ArticleItem :articleItem="article" v-for="article of scrollArticleList" :key="article.id"/>
       </ul>
     </div>
@@ -35,7 +35,7 @@ import "swiper/dist/css/swiper.css";
 import ArticleItem from "../components/ArticleItem";
 import "../mock/index";
 import {findArticleScroll, findArticleTopList} from "@/api/article";
-import commonUtil from "@/util/commonUtil";
+
 
 export default {
   name: "Index",
@@ -75,7 +75,7 @@ export default {
     // 去重
     unique(arr, key) {
       let map = new Map()
-      arr.forEach((item,index) => {
+      arr.forEach((item, index) => {
         if (!map.has(item[key])) {
           map.set(item[key], item);
         }
@@ -99,7 +99,7 @@ export default {
       this.scrollArticleList = [];
     },
     // 无限滚动获取文章列表
-    getArticleScroll: commonUtil.throttle(function() {
+    getArticleScroll() {
       let pageNum = this.scrollArticlePageNum;
       let pageSize = this.scrollArticlePageSize;
       // 判断是否发送请求
@@ -118,7 +118,7 @@ export default {
           this.scrollArticleTotal = data.total;
         });
       }
-    })
+    },
   },
   mounted() {
     // 获取置顶文章列表

@@ -9,7 +9,7 @@
           <img class="avatar" :src="author.avatar" :alt="author.nickName" :title="author.nickName"/>
         </a>
         <p class="nick-name fb f20 m10">{{ author.nickName }}</p>
-        <p class="m10" v-for="item in author.about.split('\n')" :key="item">{{ item }}</p>
+        <p class="m10" v-for="(item, index) in author.about.split('\n')" :key="index">{{ item }}</p>
       </div>
     </div>
     <!-- 与我联系 -->
