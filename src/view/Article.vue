@@ -1,47 +1,29 @@
 <template>
   <!-- 文章详情部分 -->
   <div class="content-main flex flex-direction-column">
-    <div class="content-detail mt15">
-      <!-- 文章详情面包屑导航 -->
-<!--      <nav class="detail-nav p10">-->
-<!--        <a href="/">-->
-<!--          <i class="fa fa-home" />-->
-<!--        </a>-->
-<!--        <i class="fa fa-angle-double-right mr5 ml5" />-->
-<!--        <a href="/articles/ALL">-->
-<!--          <span>技术文章</span>-->
-<!--        </a>-->
-<!--        <i class="fa fa-angle-double-right mr5 ml5" />-->
-<!--        <a :href="'/articles/' + article.category">-->
-<!--          <span>{{ article.category }}</span>-->
-<!--        </a>-->
-<!--        <i class="fa fa-angle-double-right mr5 ml5" />-->
-<!--        <a :href="'/article/' + article.id">-->
-<!--          <span>{{ article.title }}</span>-->
-<!--        </a>-->
-<!--      </nav>-->
-      <!-- 文章详情头部 -->
-<!--      <header class="detail-header p10">-->
-<!--        <a href="javascript:" class="mr5">-->
-<!--          <i class="fa fa-list" />-->
-<!--          <span>{{ article.category }}</span>-->
-<!--        </a>-->
-<!--        <a href="javascript:" class="mr5">-->
-<!--          <i class="fa fa-user" />-->
-<!--          <span>{{ article.author }}</span>-->
-<!--        </a>-->
-<!--        <a href="javascript:" class="mr5">-->
-<!--          <i class="fa fa-calendar-times-o" />-->
-<!--          <span>{{ article.finalUpdateTime | timeFormat }}</span>-->
-<!--        </a>-->
-<!--        <a href="javascript:" class="mr5"><i class="fa fa-eye" />-->
-<!--          <span>{{ article.view }}浏览</span>-->
-<!--        </a>-->
-<!--        <a href="javascript:" class="mr5">-->
-<!--          <i class="fa fa-comment" />-->
-<!--          <span>{{ article.favorite }}评论</span>-->
-<!--        </a>-->
-<!--      </header>-->
+    <div class="content-detail">
+<!--       文章详情头部-->
+      <header class="detail-header p10">
+        <a href="javascript:" class="mr5">
+          <i class="fa fa-list" />
+          <span>{{ article.category }}</span>
+        </a>
+        <a href="javascript:" class="mr5">
+          <i class="fa fa-user" />
+          <span>{{ article.author }}</span>
+        </a>
+        <a href="javascript:" class="mr5">
+          <i class="fa fa-calendar-times-o" />
+          <span>{{ article.finalUpdateTime | timeFormat("YYYY-MM-DD HH:mm:ss") }}</span>
+        </a>
+        <a href="javascript:" class="mr5"><i class="fa fa-eye" />
+          <span>{{ article.view }}浏览</span>
+        </a>
+        <a href="javascript:" class="mr5">
+          <i class="fa fa-comment" />
+          <span>{{ article.favorite }}评论</span>
+        </a>
+      </header>
       <!-- 文章内容部分 -->
       <div class="detail-content" id="detail-content" style="min-height: 1000px">
         <mavon-editor
@@ -57,18 +39,18 @@
           :ishljs="editorConfig.ishljs"
           :preview-background="editorConfig.previewBackground"
           :value="article.markdownContent"
-          style="width: 100%; height: 100%" />
+          style="width: 100%; height: 100%; box-sizing: border-box; border-radius: 0;" />
+        <!-- 文章底部相关信息 -->
+        <div class="detail-label p10" style="width: 100%; box-sizing: border-box">
+          <i class="fa fa-tag f20" />
+          <a class="label" :href="'/articles/' + article.category">
+            {{ article.category }}
+          </a>
+        </div>
       </div>
-<!--      <div class="detail-label p10">-->
-<!--        <i class="fa fa-tag f20"></i>-->
-<!--        <a class="label" :href="'/articles/' + article.category">-->
-<!--          {{ article.category }}-->
-<!--        </a>-->
-<!--      </div>-->
       <!--留言区-->
-<!--      <div class="title p10">网友评论</div>-->
-<!--      <div class="mb20 p10" id="comments" style="background-color: #ffffff">-->
-<!--      </div>-->
+      <div class="title p10 mt20">网友评论</div>
+      <div id="comment" style="background-color: #ffffff"></div>
     </div>
   </div>
 </template>
@@ -77,6 +59,8 @@
 import ContentSide from "@/components/ContentSide";
 import {EDITOR_CONFIG} from "@/config/commonConfig";
 import {findArticleById} from "@/api/article";
+import "artalk/dist/Artalk.css";
+import Artalk from "artalk";
 
 export default {
   name: "Article",
@@ -114,11 +98,17 @@ export default {
       });
     }
   },
-  created() {
-  },
   mounted() {
     let articleId = this.$route.params.articleId;
     this.initArticleDetail(articleId);
+    // 初始化评论系统
+    new Artalk({
+      el: "#comment",
+      pageKey: articleId,
+      pageTitle: document.title,
+      server: "http://192.168.43.47:8888",
+      site: "ROOTELEMENT",
+    });
   },
   components: {
     ContentSide
@@ -162,7 +152,7 @@ export default {
     }
 
     .detail-header {
-      background-color: #fff;
+      background-color: #ffffff;
       margin-bottom: 2px;
 
       .article-title {
