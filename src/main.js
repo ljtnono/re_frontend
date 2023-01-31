@@ -32,6 +32,8 @@ Vue.filter("timeFormat", function (time) {
 });
 // 全局注册config
 Vue.prototype.$config = config;
+// 解决vConsole报错
+Vue.prototype.toJSON = () =>{}
 
 new Vue({
   router,

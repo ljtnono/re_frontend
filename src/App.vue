@@ -40,8 +40,7 @@ export default {
     MessageLabel
   },
   data() {
-    return {
-    }
+    return {}
   },
   computed: {
     ...mapState({

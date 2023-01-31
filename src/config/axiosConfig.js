@@ -45,7 +45,6 @@ INSTANCE.interceptors.response.use((response) => {
       center: false
     });
   } else {
-    console.log(error);
     ElementUI.Message.error({
       message: "未知异常",
       duration: 2000,

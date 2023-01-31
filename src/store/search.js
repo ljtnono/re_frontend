@@ -3,24 +3,38 @@ import {searchEsPageByCondition} from "@/api/blog";
 export default {
   namespaced: true,
   state: () => ({
-    condition: "", totalPages: 1, totalCount: 1, count: 10, page: 1, searchArticleList: [], articlesDefaultFlag: false
-  }), mutations: {
+    condition: "",
+    totalPages: 1,
+    totalCount: 1,
+    count: 10,
+    page: 1,
+    searchArticleList: [],
+    articlesDefaultFlag: false
+  }),
+  mutations: {
     setCondition(state, condition) {
       state.condition = condition;
-    }, setSearchArticleList(state, list) {
-      state.searchArticleList = list;
-    }, setTotalPages(state, totalPages) {
-      state.totalPages = totalPages;
-    }, setTotalCount(state, totalCount) {
-      state.totalCount = totalCount;
-    }, setPage(state, page) {
-      state.page = page;
-    }, setCount(state, count) {
-      state.count = count;
-    }, setArticlesDefaultFlag(state, flag) {
-      state.articlesDefaultFlag = flag;
     },
-  }, actions: {
+    setSearchArticleList(state, list) {
+      state.searchArticleList = list;
+    },
+    setTotalPages(state, totalPages) {
+      state.totalPages = totalPages;
+    },
+    setTotalCount(state, totalCount) {
+      state.totalCount = totalCount;
+    },
+    setPage(state, page) {
+      state.page = page;
+    },
+    setCount(state, count) {
+      state.count = count;
+    },
+    setArticlesDefaultFlag(state, flag) {
+      state.articlesDefaultFlag = flag;
+    }
+  },
+  actions: {
     searchEsPageByCondition({commit}, {condition, pageParam}) {
       commit("setArticlesDefaultFlag", true);
       searchEsPageByCondition(condition, pageParam)
@@ -37,10 +51,10 @@ export default {
           commit("setArticlesDefaultFlag", false);
         })
         .catch((e) => {
-          console.log(e);
           commit("setArticlesDefaultFlag", false);
         });
-    }, loadData({dispatch, state}, page) {
+    },
+    loadData({dispatch, state}, page) {
       let pageParam = {
         page: page, count: state.count,
       };
