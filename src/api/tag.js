@@ -1,8 +1,7 @@
 import axios from "@/config/axiosConfig";
 import {BASE_URL} from "@/constant/commonConstant";
 
-// #################### 标签相关接口 #################### //
-
+// #################### 前端标签模块相关接口 #################### //
 const pageRequestMapping = "/tag";
 
 /**

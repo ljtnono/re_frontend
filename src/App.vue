@@ -27,9 +27,10 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import MessageLabel from "@c/MessageLabel.vue";
 import ContentSide from "@c/ContentSide.vue";
-import {findFriendLinkList, findFrontendWebsiteConfig, FRONTEND_WEBSITE_CONFIG_ACQUIRE_TYPE_ALL,} from "@/api/sy";
+import {findFrontendWebsiteConfig, FRONTEND_WEBSITE_CONFIG_ACQUIRE_TYPE_ALL,} from "@/api/websiteConfig";
 import {mapState} from "vuex";
 import {findHotTagList} from "@/api/tag";
+import {findFriendLinkList} from "@/api/friendLink";
 
 export default {
   name: "App",

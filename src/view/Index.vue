@@ -33,7 +33,6 @@
 import ContentSide from "../components/ContentSide";
 import "swiper/dist/css/swiper.css";
 import ArticleItem from "../components/ArticleItem";
-import "../mock/index";
 import {findArticleScroll, findArticleTopList} from "@/api/article";
 
 export default {

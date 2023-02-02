@@ -21,7 +21,7 @@
 
 <script>
 import "../mock/common";
-import { findNoticeList } from "@/api/sy";
+import { findNoticeList } from "@/api/notice";
 import {
   HTTP_RESULT_SUCCESS_CODE,
   HTTP_RESULT_SUCCESS_MESSAGE,

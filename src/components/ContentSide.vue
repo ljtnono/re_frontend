@@ -83,18 +83,7 @@
 
 <script>
 import Loading from "./Loading";
-import axios from "axios";
 import "../mock/side";
-import { findFriendLinkList } from "@/api/sy";
-
-import {
-  DEFAULT_AUTHOR_NICKNAME,
-  DEFAULT_AUTHOR_ADDR,
-  DEFAULT_AUTHOR_EMAIL,
-  DEFAULT_AUTHOR_AVATAR,
-  HTTP_RESULT_SUCCESS_CODE,
-  HTTP_RESULT_SUCCESS_MESSAGE,
-} from "@/constant/commonConstant";
 import {mapState} from "vuex";
 
 export default {
@@ -125,7 +114,16 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../assets/scss/common";
+// 标签的颜色
+$tag-color-1: #15a287;
+$tag-color-2: #5cb85c;
+$tag-color-3: #d9534f;
+$tag-color-4: #567e95;
+$tag-color-5: #b433ff;
+$tag-color-6: #00a67c;
+$tag-color-7: #b37333;
+$tag-color-8: #f60;
+$tag-color-9: #4a4a4a;
 
 .content-side {
   width: 316px;

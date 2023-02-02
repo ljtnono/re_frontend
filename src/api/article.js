@@ -1,8 +1,7 @@
 import axios from "@/config/axiosConfig";
 import {BASE_URL} from "@/constant/commonConstant";
 
-// #################### 文章相关接口 #################### //
-
+// #################### 前端文章模块相关接口 #################### //
 const pageRequestMapping = "/article";
 
 /**

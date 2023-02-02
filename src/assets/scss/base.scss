@@ -1,11 +1,7 @@
 @charset "UTF-8";
 
-/**
-  @author lingjiatong
-  @time 2019/10/9
-  @description 前端通用css
- */
-/*样式重置*/
+//========== 前端通用css 样式重置==========//
+
 body,
 div,
 dl,
@@ -101,7 +97,7 @@ a {
   }
 }
 
-/*基础样式*/
+// 基础样式
 html,
 body {
   margin: 0;
@@ -118,10 +114,10 @@ body {
 *,
 *:before,
 *:after {
-  box-sizing: inherit;
+  box-sizing: border-box;
 }
 
-/*通用样式类*/
+// 通用样式类
 .fr {
   float: right;
 }

@@ -55,7 +55,6 @@
 
 <script>
 import {mapActions, mapState} from "vuex";
-import { DEFAULT_HEADER_LOGO_URL } from "@/constant/commonConstant";
 
 export default {
   name: "Header",
