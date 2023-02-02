@@ -47,3 +47,15 @@ export const findArticleRecommendList = (pageNum, pageSize) => {
 export const findArticleTopList = (pageNum, pageSize) => {
   return axios.get(BASE_URL + pageRequestMapping + "/topList?pageNum=" + pageNum + "&pageSize=" + pageSize);
 };
+
+/**
+ * 分页获取文章列表
+ *
+ * @param pageNum 页数
+ * @param pageSize 每页条数
+ * @param categoryId 文章分类id
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+export const findArticleList = (pageNum, pageSize, categoryId) => {
+  return axios.get(BASE_URL + pageRequestMapping + "/list?pageNum=" + pageNum + "&pageSize=" + pageSize + "&categoryId=" + categoryId);
+};

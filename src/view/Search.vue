@@ -31,23 +31,14 @@ import ContentSide from "../components/ContentSide";
 import ArticleItem from "../components/ArticleItem";
 import { BPagination } from "bootstrap-vue";
 import Loading from "../components/Loading";
-import { mapState, mapActions } from "vuex";
 
 export default {
   name: "Search",
   computed: {
-    ...mapState({
-      totalPages: (state) => state.search.totalPages,
-      totalCount: (state) => state.search.totalCount,
-      count: (state) => state.search.count,
-      page: (state) => state.search.page,
-      condition: (state) => state.search.condition,
-      searchArticleList: (state) => state.search.searchArticleList,
-      articlesDefaultFlag: (state) => state.search.articlesDefaultFlag,
-    }),
+
   },
   methods: {
-    ...mapActions(["loadData"]),
+
   },
   components: {
     ContentSide,

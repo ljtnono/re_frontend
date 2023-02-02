@@ -1,12 +1,12 @@
 <template>
   <div class="content-main flex flex-direction-column">
-    <!-- 导航路径 -->
-    <div class="nav-path mb15 p10 flex">
-      <i class="fa fa-home mr5" />
-      <span>技术文章</span>
-      <i class="fa fa-angle-double-right mr5 ml5" />
-      <span>{{ type }}</span>
-    </div>
+<!--    &lt;!&ndash; 导航路径 &ndash;&gt;-->
+<!--    <div class="nav-path mb15 p10 flex">-->
+<!--      <i class="fa fa-home mr5" />-->
+<!--      <span>技术文章</span>-->
+<!--      <i class="fa fa-angle-double-right mr5 ml5" />-->
+<!--      <span>{{ type }}</span>-->
+<!--    </div>-->
     <!-- 文章列表项 -->
     <div class="articles flex">
       <div v-if="articles.length === 0 && !articlesDefaultFlag" style="height: 1000px; text-align: center">
@@ -33,10 +33,11 @@ export default {
       totalCount: 1,
       count: 10,
       page: 1,
-      type: "ALL",
+      type: "ALL"
     };
   },
   methods: {
+
   },
   mounted() {
   },
@@ -44,7 +45,7 @@ export default {
     ContentSide,
     ArticleItem,
     BPagination,
-    Loading,
+    Loading
   },
 };
 </script>

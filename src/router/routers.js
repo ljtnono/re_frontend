@@ -9,14 +9,13 @@ export default [
     component: () => import("@v/Index.vue")
   },
   {
-    path: "/articles/:type",
+    path: "/articles",
     name: "Articles",
     meta: {
       title: "文章列表",
       hideInMenu: true
     },
-    component: () => import("@v/Articles.vue"),
-    props: true
+    component: () => import("@v/Articles.vue")
   },
   {
     path: "/article/:articleId",

@@ -65,7 +65,7 @@ export default {
       searchCondition: null,
       pages: [
         { title: "首页", name: "Index", url: "/", icon: "fa fa-home" },
-        { title: "技术文章", name: "Articles", url: "/articles/ALL", icon: "fa fa-wrench" },
+        { title: "技术文章", name: "Articles", url: "/articles", icon: "fa fa-wrench" },
         { title: "支持我", name: "Support", url: "/support", icon: "fa fa-thumbs-up" },
         { title: "关于作者", name: "About", url: "/about", icon: "fa fa-info-circle" },
       ],

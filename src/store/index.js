@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import search from "@/store/search";
 import category from "@/store/category";
 import common from "@/store/common";
 import VuexPersistence from "vuex-persist";
@@ -12,7 +11,7 @@ let vuexPersistence = new VuexPersistence({
   storage: window.sessionStorage,
   key: SESSION_STORAGE_KEY,
   supportCircular: true,
-  modules: ["common", "search", "category"]
+  modules: ["common", "category"]
 });
 
 export default new Vuex.Store({
@@ -21,7 +20,6 @@ export default new Vuex.Store({
   mutations: {},
   actions: {},
   modules: {
-    search,
     category,
     common
   },

@@ -36,7 +36,6 @@ import ArticleItem from "../components/ArticleItem";
 import "../mock/index";
 import {findArticleScroll, findArticleTopList} from "@/api/article";
 
-
 export default {
   name: "Index",
   data() {
@@ -140,7 +139,7 @@ export default {
 .content-main {
   min-height: 1870px;
 
-  // 热门文章
+  // 置顶文章
   .top {
     background-color: #ffffff;
     padding: 10px 20px;
