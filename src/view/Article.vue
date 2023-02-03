@@ -106,8 +106,8 @@ export default {
       el: "#comment",
       pageKey: articleId,
       pageTitle: document.title,
-      server: "http://192.168.43.47:8888",
-      site: "ROOTELEMENT",
+      server: "http://www.lingjiatong.cn:23366",
+      site: "re_frontend",
     });
   },
   components: {
