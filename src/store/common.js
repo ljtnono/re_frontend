@@ -8,6 +8,8 @@ export default {
     hotTagList: null,
     // 友情链接列表
     friendLinkList: null,
+    // 菜单列表
+    menus: null,
     // 博主相关信息
     author: {
       // 头像地址
@@ -80,6 +82,10 @@ export default {
     // 修改网站设置
     changeWebsiteConfig(state, websiteConfig) {
       state.websiteConfig = websiteConfig;
+    },
+    // 修改菜单
+    changeMenu(state, menus) {
+      state.menu = menus;
     }
   },
   actions: {},

@@ -31,6 +31,7 @@ import {findFrontendWebsiteConfig, FRONTEND_WEBSITE_CONFIG_ACQUIRE_TYPE_ALL,} fr
 import {mapState} from "vuex";
 import {findHotTagList} from "@/api/tag";
 import {findFriendLinkList} from "@/api/friendLink";
+import {findFrontendMenu} from "@/api/menu";
 
 export default {
   name: "App",
@@ -127,6 +128,12 @@ export default {
         this.$store.commit("common/changeAuthor", author);
         this.$store.commit("common/changeWebsiteConfig", websiteConfig);
       });
+    },
+    saveMenu() {
+      findFrontendMenu().then(res => {
+        let data = res.data.data;
+        this.$store.commit("common/changeMenu", data);
+      });
     }
   },
   mounted() {
@@ -134,6 +141,7 @@ export default {
     this.saveWebsiteConfig();
     this.saveHotTagList();
     this.saveFriendLinkList();
+    this.saveMenu();
   },
 };
 </script>
