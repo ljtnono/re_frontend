@@ -1,4 +1,4 @@
-# 根元素博客前端（re_frontend）
+<h1 align="center"> 根元素博客前端（re_frontend）</h1>
 
 # ROOTELEMENT 根元素个人博客前端页面
 
