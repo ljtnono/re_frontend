@@ -102,13 +102,13 @@ export default {
     let articleId = this.$route.params.articleId;
     this.initArticleDetail(articleId);
     // 初始化评论系统
-    new Artalk({
+    Artalk.init({
       el: "#comment",
       pageKey: articleId,
       pageTitle: document.title,
       server: "http://www.lingjiatong.cn:23366",
       site: "re_frontend",
-    });
+    })
   },
   components: {
     ContentSide

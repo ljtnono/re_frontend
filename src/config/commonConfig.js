@@ -34,16 +34,6 @@ const swiperOption = {
   },
 };
 
-const valineConfig = {
-  el: "#comments",
-  appId: "iyTC528gHvHe09Qg8b5HPrvj-gzGzoHsz",
-  appKey: "8ndLNYwjGS7FPLKdzgRKCfeL",
-  notify: false,
-  verify: false,
-  avatar: "wavatar",
-  placeholder: "评论请留下您的邮箱和昵称....",
-};
-
 // markdown编辑器配置
 const EDITOR_CONFIG = {
   // 开启滚动条样式(暂时仅支持chrome)
@@ -74,7 +64,6 @@ const EDITOR_CONFIG = {
 module.exports = {
   baseUrlMinio,
   swiperOption: swiperOption,
-  valineConfig,
   EDITOR_CONFIG,
   indexSliderList
 };
