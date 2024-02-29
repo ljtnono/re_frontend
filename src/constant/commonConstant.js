@@ -1,8 +1,8 @@
 // #################### 通用常量 #################### //
 
 // 页面基础访问url
-// export const BASE_URL = process.env.NODE_ENV === "production" ? "http://api.lingjiatong.cn:30152/api-frontend" : "http://127.0.0.1:8152/api-frontend";
-export const BASE_URL = "http://api.lingjiatong.cn:30152/api-frontend";
+export const BASE_URL = process.env.NODE_ENV === "production" ? "http://api.lingjiatong.cn:30152/api-frontend" : "http://127.0.0.1:8152/api-frontend";
+// export const BASE_URL = "http://api.lingjiatong.cn:30152/api-frontend";
 // 接口响应成功代码
 export const HTTP_RESULT_SUCCESS_CODE = 0;
 // 接口响应成功消息

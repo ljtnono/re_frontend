@@ -7,8 +7,8 @@ const pageRequestMapping = "/menu";
 
 /**
  * 获取菜单接口
- * 
+ *
  */
 export const findFrontendMenu = () => {
-  return axios.get(BASE_URL + pageRequestMapping + "/menu");
+  return axios.get(BASE_URL + pageRequestMapping);
 }
