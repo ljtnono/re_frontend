@@ -10,12 +10,12 @@ import moment from "moment";
 import mavonEditor from "mavon-editor";
 import * as echarts from "echarts";
 import ElementUI from "element-ui";
-import vueToTop from "vue-totop";
 
 // 引入全局css
 import "mavon-editor/dist/css/index.css";
 import "font-awesome/css/font-awesome.min.css";
 import "@a/css/style.min.css";
+import "@a/scss/theme.scss";
 import "element-ui/lib/theme-chalk/index.css";
 
 Vue.prototype.$echarts = echarts;
@@ -24,7 +24,6 @@ Vue.use(VueAxios, axios);
 Vue.use(VueRouter);
 // 使用ElementUI
 Vue.use(ElementUI);
-Vue.use(vueToTop);
 
 // 配置全局过滤器
 Vue.filter("timeFormat", function (time) {

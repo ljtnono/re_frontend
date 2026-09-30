@@ -55,6 +55,13 @@ export const findArticleTopList = (pageNum, pageSize) => {
  * @param categoryId 文章分类id
  * @returns {Promise<AxiosResponse<any>>}
  */
-export const findArticleList = (pageNum, pageSize, categoryId) => {
-  return axios.get(BASE_URL + pageRequestMapping + "/list?pageNum=" + pageNum + "&pageSize=" + pageSize + "&categoryId=" + categoryId);
+export const findArticleList = (pageNum, pageSize, categoryId, tagId) => {
+  let url = BASE_URL + pageRequestMapping + "/list?pageNum=" + pageNum + "&pageSize=" + pageSize;
+  if (categoryId !== undefined && categoryId !== null && categoryId !== "") {
+    url += "&categoryId=" + categoryId;
+  }
+  if (tagId !== undefined && tagId !== null && tagId !== "") {
+    url += "&tagId=" + tagId;
+  }
+  return axios.get(url);
 };

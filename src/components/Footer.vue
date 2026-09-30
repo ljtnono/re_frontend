@@ -1,75 +1,59 @@
 <template>
   <!-- footer部分 -->
-  <footer id="footer" class="mt30 pr">
-    <div class="footer-main flex flex-direction-row pr">
-      <div class="footer-main-item">
-        <header class="item-title">
-          <a href="javascript:">版权声明</a>
-        </header>
-        <p class="mt20" style="text-align: left">
-          {{ websiteConfig.FOOTER_COPYRIGHT }}
+  <footer id="footer">
+    <div class="footer-main">
+      <!-- 关于本站 -->
+      <div class="footer-item footer-about">
+        <div class="item-title">关于本站</div>
+        <div class="about-body">
+          <img class="about-avatar" :src="author.avatar || defaultAvatar" :alt="author.nickName" @error="authorAvatarError = true" v-if="!authorAvatarError" />
+          <img class="about-avatar" :src="defaultAvatar" :alt="author.nickName" v-else />
+          <p class="about-text">{{ websiteConfig.FOOTER_ABOUT_WEBSITE }}</p>
+        </div>
+        <a v-if="websiteConfig.GITHUB_WEBSITE" class="about-github" :href="websiteConfig.GITHUB_WEBSITE" target="_blank">
+          <i class="fa fa-github" />
+          GitHub 仓库
+        </a>
+      </div>
+
+      <!-- 版权声明 -->
+      <div class="footer-item">
+        <div class="item-title">版权声明</div>
+        <p class="copyright-text">{{ websiteConfig.FOOTER_COPYRIGHT }}</p>
+        <p class="copyright-sub">
+          基于 JAVA 构建 · 2019-10-20 至 {{ new Date() | timeFormat("YYYY-MM-DD") }}
         </p>
       </div>
-      <div class="footer-main-item">
-        <header class="item-title">
-          <a href="javascript:">网站驱动</a>
-        </header>
-      </div>
-      <div class="footer-main-item">
-        <header class="item-title">
-          <a href="javascript:">站长微信</a>
-        </header>
-        <div class="site-wechat mt20">
-          <img :src="author.wechatQrCodeUrl" alt="加我微信" />
+
+      <!-- 订阅本站 -->
+      <div class="footer-item">
+        <div class="item-title">订阅本站</div>
+        <p class="subscribe-tip">输入邮箱，获取最新文章推送</p>
+        <div class="subscribe-box">
+          <input type="email" placeholder="your@email.com" />
+          <button>
+            <i class="fa fa-rss" />
+            订阅
+          </button>
         </div>
-      </div>
-      <div class="footer-main-item">
-        <header class="item-title">
-          <a href="javascript:">关于本站</a>
-        </header>
-        <div class="site-rss mt20">
-          <div class="site-rss-info flex flex-direction-row flex-justify-content-space-between">
-            <img :src="author.avatar" :alt="author.nickName" :title="author.nickName"/>
-            <p style="width: 120px; text-align: left">
-              {{ websiteConfig.FOOTER_ABOUT_WEBSITE }}
-            </p>
-          </div>
-          <div class="site-rss-email mt20 flex flex-direction-row flex-justify-content-space-between">
-            <input type="email" placeholder="输入邮箱订阅本站" />
-            <button>
-              <i class="fa fa-rss" />
-              订阅
-            </button>
-          </div>
+        <div class="wechat-qr" v-if="author.wechatQrCodeUrl">
+          <img :src="author.wechatQrCodeUrl" alt="站长微信" />
+          <span>扫码加我微信</span>
         </div>
       </div>
     </div>
-    <div class="footer-info" style="border-top: 1px solid #03a9f4;background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAUAAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAAgICAgICAgICAgMCAgIDBAMCAgMEBQQEBAQEBQYFBQUFBQUGBgcHCAcHBgkJCgoJCQwMDAwMDAwMDAwMDAwMDAEDAwMFBAUJBgYJDQsJCw0PDg4ODg8PDAwMDAwPDwwMDAwMDA8MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwM/8AAEQgAAgAKAwERAAIRAQMRAf/EAEwAAQEAAAAAAAAAAAAAAAAAAAAJAQEAAAAAAAAAAAAAAAAAAAAAEAEBAAAAAAAAAAAAAAAAAAAAlREBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8Ah7DAhg//2Q==');background-repeat: repeat;">
-      <p>
-          <span class="author">
-            copyright
-            <i class="fa fa-copyright" aria-hidden="true" />
-            {{ author.nickName }}
-          </span>
-        |
+
+    <div class="footer-bar">
+      <div class="footer-bar-inner">
         <span>
-            版权所有 参考
-            <a href="https://gitcafe.net/"> GitCafe </a>
-            和
-            <a href="https://yusi123.com/">欲思主题</a>
-            创建
-          </span>
-      </p>
-      <p>基于JAVA构建 2019-10-20 至 {{ new Date() | timeFormat("YYYY-MM-DD") }}</p>
-      <p class="mr10">
-        <a href="javascript:"> {{ websiteConfig.WEBSITE_ICP_CODE }} </a>
-      </p>
-      <p class="mr10">
-        本项目github地址：
-        <a :href="websiteConfig.GITHUB_WEBSITE">
-          {{ websiteConfig.GITHUB_WEBSITE }}
-        </a>
-      </p>
+          <i class="fa fa-copyright" />
+          {{ author.nickName }} · 版权所有
+        </span>
+        <span class="divider">|</span>
+        <span>参考 <a href="https://gitcafe.net/" target="_blank">GitCafe</a> 与 <a href="https://yusi123.com/" target="_blank">欲思主题</a> 创建</span>
+        <span class="divider">|</span>
+        <a href="javascript:">{{ websiteConfig.WEBSITE_ICP_CODE }}</a>
+      </div>
     </div>
   </footer>
 </template>
@@ -77,11 +61,12 @@
 <script>
 import {mapState} from "vuex";
 
+import defaultAvatar from "@a/images/avatar.png";
+
 export default {
   name: "Footer",
   data() {
-    return {
-    };
+    return { defaultAvatar, authorAvatarError: false };
   },
   computed: {
     ...mapState({
@@ -89,162 +74,207 @@ export default {
       author: state => state.common.author
     })
   },
-  methods: {
-
-  },
-  mounted() {
-  },
 };
 </script>
 
 <style scoped lang="scss">
-
-// footer部分
 #footer {
-  background-color: #31353a;
-  background-image: -webkit-linear-gradient(top, #31353a, #2f3337);
-  text-align: center;
-  color: #707070;
-  overflow: hidden;
-  font-size: 12px;
-  z-index: 1000;
-  border-top: 2px solid #8e44ad;
+  margin-top: 30px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
 
-  .footer-main {
-    margin: 0 auto;
-    height: 245px;
-    width: 960px;
-    display: none;
+.footer-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 36px 20px 28px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 40px;
 
-    .footer-main-item {
-      width: 240px;
-      height: auto;
-      margin-right: 50px;
-
-      &:nth-of-type(2) {
-        .item-title {
-          background-color: #00b274;
-          background-image: -webkit-linear-gradient(top, #00b274, #00a46b);
-        }
-      }
-
-      &:nth-of-type(3) {
-        .item-title {
-          background-color: #d75ba2;
-          background-image: -webkit-linear-gradient(top, #d75ba2, #c75496);
-        }
-      }
-
-      &:nth-of-type(4) {
-        .item-title {
-          background-color: #e9ac40;
-          background-image: -webkit-linear-gradient(top, #e9ac40, #d89f3b);
-        }
-      }
-
-      .item-title {
-        background-color: #0096d6;
-        background-image: -webkit-linear-gradient(top, #0096d6, #008ac6);
-        text-align: center;
-        padding: 9px 0;
-        text-transform: uppercase;
-        box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
-        text-shadow: 0 1px rgba(0, 0, 0, 0.1);
-        font-weight: 700;
-        font-size: 0.875rem;
-        line-height: 1.125rem;
-        opacity: 0.9;
-
-        a {
-          color: #ffffff;
-          line-height: 100%;
-        }
-      }
-
-      .logo-container {
-        width: 100%;
-        height: auto;
-
-        .logo-container-row {
-          img {
-            width: 50%;
-            height: auto;
-            max-height: 32px;
-          }
-        }
-      }
-
-      .site-rss {
-        width: 100%;
-        height: auto;
-
-        .site-rss-info {
-          height: auto;
-
-          img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            -webkit-border-radius: 50%;
-            -moz-border-radius: 50%;
-            margin-right: 10px;
-          }
-        }
-
-        .site-rss-email {
-          text-align: left;
-
-          input[type="email"] {
-            padding: 5px;
-            font-size: 12px;
-            color: #777777;
-            border: none;
-            width: 120px;
-          }
-
-          button {
-            width: 55px;
-            height: 30px;
-            background-color: #0096d6;
-            border: none;
-            border-radius: 4px;
-            color: #ffffff;
-          }
-        }
-      }
-
-      .site-wechat {
-        width: 100%;
-        height: auto;
-
-        img {
-          width: 100%;
-        }
-      }
-    }
+  .footer-item {
+    min-width: 0;
   }
 
-  .footer-info {
-    position: relative;
-    padding: 10px;
+  .item-title {
     font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    position: relative;
+    padding-bottom: 8px;
 
-    p {
-      display: inline;
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 24px;
+      height: 2px;
+      background: var(--primary);
+      border-radius: 1px;
+    }
+  }
+
+  // 关于本站
+  .footer-about {
+    .about-body {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .about-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .about-text {
+      margin: 0;
+      line-height: 1.7;
+      color: var(--text-regular);
+    }
+
+    .about-github {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-regular);
+      padding: 5px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        color: var(--primary);
+        border-color: #c7d2fe;
+        background: var(--primary-light);
+      }
+    }
+  }
+
+  // 版权声明
+  .copyright-text {
+    margin: 0 0 8px;
+    line-height: 1.7;
+    color: var(--text-regular);
+  }
+
+  .copyright-sub {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-placeholder);
+  }
+
+  // 订阅
+  .subscribe-tip {
+    margin: 0 0 10px;
+    color: var(--text-regular);
+  }
+
+  .subscribe-box {
+    display: flex;
+    gap: 8px;
+
+    input {
+      flex: 1;
+      min-width: 0;
+      height: 34px;
+      padding: 0 12px;
+      font-size: 13px;
+      color: var(--text-primary);
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      outline: none;
+      transition: border-color 0.2s ease;
+
+      &:focus {
+        border-color: var(--primary);
+      }
+
+      &::placeholder {
+        color: var(--text-placeholder);
+      }
+    }
+
+    button {
+      height: 34px;
+      padding: 0 14px;
+      font-size: 13px;
+      color: #fff;
+      background: var(--primary);
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background 0.2s ease;
+
+      &:hover {
+        background: var(--primary-dark);
+      }
+    }
+  }
+
+  .wechat-qr {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    img {
+      width: 72px;
+      height: 72px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      object-fit: cover;
+    }
+
+    span {
+      font-size: 12px;
+      color: var(--text-placeholder);
     }
   }
 }
 
-// ipad 768px以上
-@media screen and (min-width: 768px) {
+.footer-bar {
+  border-top: 1px solid var(--border-light);
+  padding: 14px 20px;
+
+  .footer-bar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-placeholder);
+
+    a {
+      color: var(--text-secondary);
+
+      &:hover {
+        color: var(--primary);
+      }
+    }
+
+    .divider {
+      color: var(--border);
+    }
+  }
 }
 
-// web 1200px以上
-@media screen and (min-width: 1200px) {
-  #footer {
-    .footer-main {
-      display: flex;
-    }
+@media screen and (max-width: 768px) {
+  .footer-main {
+    grid-template-columns: 1fr;
+    gap: 28px;
   }
 }
 </style>

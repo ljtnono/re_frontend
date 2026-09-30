@@ -1,45 +1,31 @@
 <template>
-  <div class="article-item mb10 flex flex-direction-column">
-    <!-- 标题部分 -->
-    <div class="article-item-header mb10">
-      <a class="mr5" :href="'/articles/' + articleItem.category">
-        {{ articleItem.category }}
-      </a>
-      <a class="article-item-title f14" href="javascript:" @click="$router.push({path: '/article/' + articleItem.id})">
-        {{ articleItem.title }}
-      </a>
+  <div class="article-item" @click="$router.push({path: '/article/' + articleItem.id})">
+    <!-- 封面图 -->
+    <div class="article-thumb">
+      <img :src="articleItem.coverUrl" :alt="articleItem.title" />
+      <span class="article-category">{{ articleItem.category }}</span>
     </div>
-    <!-- 内容部分 -->
-    <div class="article-item-body flex flex-direction-row flex-justify-content-space-between" @click="$router.push({path: '/article/' + articleItem.id})">
-      <!-- 缩略图 -->
-      <div class="article-item-thumb cursor-pointer mr5 flex" >
-        <img :src="articleItem.coverUrl" :alt="articleItem.title" :title="articleItem.title"/>
-      </div>
-      <!-- 详情 -->
-      <div class="article-item-detail flex flex1">
-        <div class="article-item-summary">
-          <!-- 简介 -->
-          <p>{{ articleItem.summary }}</p>
-          <!-- 文章数据信息 -->
-          <div class="article-item-info" >
-            <a href="#" class="pr5">
-              <i class="fa fa-user pr5" aria-hidden="true"></i>
-              <span style="color: #00a67c">{{ articleItem.author }}</span>
-            </a>
-            <a href="#" class="pr5">
-              <i class="fa fa-clock-o pr5" aria-hidden="true"></i>
-              <span>{{ articleItem.modifyTime | timeFormat }}</span>
-            </a>
-            <a href="#" class="pr5">
-              <i class="fa fa-eye pr5" aria-hidden="true"></i>
-              <span>{{ articleItem.view }}浏览</span>
-            </a>
-            <a href="#" class="pr5">
-              <i class="fa fa-comment pr5" aria-hidden="true"></i>
-              <span>{{ articleItem.comment }}评论</span>
-            </a>
-          </div>
-        </div>
+    <!-- 内容 -->
+    <div class="article-content">
+      <h3 class="article-title">{{ articleItem.title }}</h3>
+      <p class="article-summary">{{ articleItem.summary }}</p>
+      <div class="article-meta">
+        <span class="meta-item">
+          <i class="fa fa-user" aria-hidden="true" />
+          {{ articleItem.author }}
+        </span>
+        <span class="meta-item">
+          <i class="fa fa-clock-o" aria-hidden="true" />
+          {{ articleItem.modifyTime | timeFormat }}
+        </span>
+        <span class="meta-item">
+          <i class="fa fa-eye" aria-hidden="true" />
+          {{ articleItem.view }}
+        </span>
+        <span class="meta-item">
+          <i class="fa fa-comment" aria-hidden="true" />
+          {{ articleItem.comment }}
+        </span>
       </div>
     </div>
   </div>
@@ -56,123 +42,136 @@ export default {
 
 <style scoped lang="scss">
 .article-item {
-  height: 115px;
-  width: 100%;
-  padding: 10px 10px 0;
-  background-color: #ffffff;
-  box-sizing: border-box;
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
 
-  .article-item-header {
+  &:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
 
-    .article-item-title {
-      vertical-align: middle;
-      color: #00a67c;
+    .article-thumb img {
+      transform: scale(1.05);
+    }
 
+    .article-title {
+      color: var(--primary);
     }
   }
 
-  .article-item-body {
-    height: 100%;
+  .article-thumb {
+    position: relative;
+    flex-shrink: 0;
+    width: 200px;
+    height: 125px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
 
-    .article-item-thumb {
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .article-category {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      padding: 2px 10px;
+      font-size: 12px;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.45);
+      border-radius: 10px;
+      backdrop-filter: blur(4px);
+    }
+  }
+
+  .article-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+
+    .article-title {
+      margin: 0 0 8px;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
       overflow: hidden;
-      width: 90px;
-      height: 60px;
-
-      &:hover {
-        img {
-          transform: scale(1.2);
-          -webkit-transform: scale(1.2);
-          -moz-transform: scale(1.2);
-        }
-      }
-
-      img {
-        width: 100%;
-        height: 100%;
-        display: block;
-        transition: all ease-in-out 0.8s;
-        -webkit-transition: all ease-in-out 0.8s;
-        -moz-transition: all ease-in-out 0.8s;
-      }
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: color 0.2s ease;
     }
 
-    .article-item-detail {
+    .article-summary {
+      margin: 0;
+      flex: 1;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
 
-      .article-item-summary {
-        height: 60px;
-        overflow: hidden;
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 10px;
 
-        p {
-          overflow: hidden;
-          display: inline-block !important;
-          color: #00a67c;
-          cursor: pointer;
+      .meta-item {
+        font-size: 12px;
+        color: var(--text-placeholder);
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
 
-          &:hover {
-            text-decoration: underline;
-            text-underline: #00a67c;
-          }
-        }
-
-        .article-item-info {
-          height: 18px;
-          a, span {
-            color: #999999;
-          }
+        i.fa {
+          font-size: 12px;
         }
       }
     }
   }
 }
 
-// ipad 768px以上
-@media screen and (min-width: 768px) {
+@media screen and (max-width: 767px) {
   .article-item {
-    height: 170px;
+    gap: 12px;
+    padding: 12px;
 
-    .article-item-body {
-
-      .article-item-thumb {
-        width: 180px;
-        height: 120px;
-      }
-
-      .article-item-detail {
-        height: 120px;
-
-        .article-item-summary {
-          height: 120px;
-          position: relative;
-
-          p {
-            height: 80px;
-            line-height: 16px;
-          }
-
-          .article-item-info {
-            height: 20px;
-
-            a {
-              height: 20px;
-              line-height: 20px;
-            }
-          }
-        }
-      }
+    .article-thumb {
+      width: 110px;
+      height: 80px;
     }
-  }
-}
 
-// 1200px以上
-@media screen and (min-width: 1200px) {
-  .article-item {
+    .article-content {
+      .article-title {
+        font-size: 15px;
+      }
 
-    .article-item-body {
+      .article-summary {
+        font-size: 12px;
+        -webkit-line-clamp: 2;
+      }
 
-      .article-item-thumb {
-        width: 180px;
-        height: 120px;
+      .article-meta {
+        gap: 10px;
+        flex-wrap: wrap;
+
+        .meta-item {
+          font-size: 11px;
+        }
       }
     }
   }

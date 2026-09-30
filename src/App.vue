@@ -3,22 +3,16 @@
     <!-- 头部 -->
     <Header/>
     <!-- 消息通知栏 -->
-    <MessageLabel/>
+    <MessageLabel v-if="messageLabelVisibility"/>
     <!-- 主要内容区域 -->
     <div class="content flex flex-direction-row flex-justify-content-space-between">
-      <router-view class="flex"/>
-      <content-side v-if="contentSideVisiablity" class="flex" />
+      <router-view class="main-view"/>
+      <content-side v-if="contentSideVisiablity" class="side-view" />
     </div>
     <!-- 底部信息 -->
     <Footer/>
     <!-- 回到顶部 -->
-    <vueToTop
-      type="4"
-      size="50"
-      color="#2189AE"
-      bottom="100"
-      top="0">
-    </vueToTop>
+    <ToTop/>
   </div>
 </template>
 
@@ -27,6 +21,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import MessageLabel from "@c/MessageLabel.vue";
 import ContentSide from "@c/ContentSide.vue";
+import ToTop from "@c/ToTop.vue";
 import {findFrontendWebsiteConfig, FRONTEND_WEBSITE_CONFIG_ACQUIRE_TYPE_ALL,} from "@/api/websiteConfig";
 import {mapState} from "vuex";
 import {findHotTagList} from "@/api/tag";
@@ -39,7 +34,8 @@ export default {
     ContentSide,
     Header,
     Footer,
-    MessageLabel
+    MessageLabel,
+    ToTop
   },
   data() {
     return {}
@@ -47,9 +43,13 @@ export default {
   computed: {
     ...mapState({
       // 右侧栏可见性
+      messageLabelVisibility: state => {
+        let route = state.common.activeRoute;
+        return route.name !== "404" && route.name !== "500";
+      },
       contentSideVisiablity: state => {
         let route = state.common.activeRoute;
-        if (route.name === "Support" || route.name === "About") {
+        if (route.name === "About" || route.name === "404" || route.name === "500") {
           return false;
         }
         return true;
@@ -149,17 +149,38 @@ export default {
 <style scoped lang="scss">
 #app {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   overflow-y: auto;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .content {
   height: auto;
-  width: auto;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+
+  .main-view {
+    flex: 1;
+    min-width: 0;
+  }
+
+
+  .side-view {
+    flex-shrink: 0;
+    width: 300px;
+  }
   max-width: 1200px;
-  margin: 15px auto 0;
+  margin: 14px auto 0;
+  padding: 0 20px;
+  box-sizing: border-box;
   z-index: 998;
   font: 14px Helvetica Neue, Helvetica, PingFang SC, Tahoma, Arial, sans-serif;
 }

@@ -4,8 +4,8 @@
     <div class="message-content flex flex-direction-row flex-align-items-start">
       <span :class="'flex' + iconClass ? iconClass : 'fa f20 fa-volume-on'" />
       <div class="flex message-list">
-        <div v-for="(notice, index) in noticeList" :key="index">
-          <a :href="notice.link" target="_blank" style="color: #00a67c">
+        <div v-for="(notice, index) in validNoticeList" :key="index">
+          <a :href="notice.link" target="_blank">
             <p class="f16" v-show="messageShowIndex === index">
               {{ notice.title }}
               &nbsp;&nbsp;&nbsp;
@@ -41,10 +41,13 @@ export default {
       iconClass: "fa f20 fa-volume-up",
       iconClassIndex: 1,
       iconClassList: ["fa f20 fa-volume-off", "fa f20 fa-volume-up"],
-      noticeList: null
+      noticeList: []
     };
   },
   computed: {
+    validNoticeList() {
+      return (this.noticeList || []).filter((item) => item != null);
+    },
     newsNoticeNew() {
       return NOTICE_NEWS_MESSAGE_STATE_NEW;
     },
@@ -115,47 +118,53 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@media screen and (min-width: 1200px) {
-  .message {
-    margin-bottom: 15px;
-  }
-}
-
 .message {
   height: 44px;
-  margin: 0 auto;
+  margin: 14px auto 0;
+  width: 100%;
   max-width: 1200px;
+  padding: 0 20px;
   box-sizing: border-box;
 
   .message-content {
-    color: #00a67c;
-    background-color: #ffffff;
+    color: var(--text-regular);
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
     height: 100%;
-    padding: 12px 10px;
-    max-width: 1200px;
+    padding: 12px 16px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 
-    span {
-      width: 20px;
-      height: 20px;
-
-      &:before {
-        position: relative;
-        left: 2px;
-        top: 2px;
-      }
+    span.fa {
+      color: var(--primary);
+      font-size: 16px;
     }
 
     .message-list {
-      padding-left: 20px;
+      flex: 1;
+      min-width: 0;
       position: relative;
+
+      a {
+        color: var(--text-regular);
+
+        &:hover {
+          color: var(--primary);
+        }
+      }
 
       p {
         height: 20px;
-        margin-bottom: 44px;
-        position: relative;
+        margin: 0;
+        font-size: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
   }

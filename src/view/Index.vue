@@ -1,37 +1,40 @@
 <template>
-  <!-- 内容区 -->
-  <div class="content-main flex flex-direction-column">
-    <!-- TODO 轮播图 -->
+  <div class="content-main">
     <!-- 置顶文章 -->
-    <div class="top f16 flex">
-      <div class="title f14">置顶文章</div>
-      <div class="top-content">
-        <ul class="top-list">
-          <li class="top-item mb10" v-for="(article, index) in topArticleList" :key="article.id">
-            <span class="top-label mr5">{{ index + 1 }}</span>
-            <a class="top-title f14" :href="'/article/' + article.id">{{ article.title }}</a>
-            <span class="top-view mr15 fr" style="color: #3db1ad">
-              <span>{{ article.view }} 浏览</span>
-            </span>
-            <span class="top-favorite mr15 fr" style="color: #ff8e8e">
-              <span>{{ article.favorite }} 喜欢</span>
-            </span>
-          </li>
-        </ul>
+    <div class="top-card" v-if="topArticleList.length > 0">
+      <div class="side-title">
+        <i class="fa fa-thumb-tack" aria-hidden="true" />
+        置顶文章
+      </div>
+      <div class="top-list">
+        <div class="top-item" v-for="(article, index) in topArticleList" :key="article.id"
+             @click="$router.push({path: '/article/' + article.id})">
+          <span class="top-rank" :class="'rank-' + (index + 1)">{{ index + 1 }}</span>
+          <span class="top-title">{{ article.title }}</span>
+          <span class="top-meta">
+            <span class="top-favorite"><i class="fa fa-heart" />{{ article.favorite }}</span>
+            <span class="top-view"><i class="fa fa-eye" />{{ article.view }}</span>
+          </span>
+        </div>
       </div>
     </div>
-    <!-- 无限滚动文章列表项 -->
-    <div class="articles flex flex-direction-column">
-      <ul class="infinite-list" v-infinite-scroll="getArticleScroll"  infinite-scroll-delay="200" infinite-scroll-distance="50" infinite-scroll-immediate="true">
-        <ArticleItem :articleItem="article" v-for="article of scrollArticleList" :key="article.id"/>
-      </ul>
+
+    <!-- 文章列表 -->
+    <div class="articles">
+      <ArticleItem :articleItem="article" v-for="article of scrollArticleList" :key="article.id" />
+      <!-- 加载更多触发点 -->
+      <div v-infinite-scroll="getArticleScroll" infinite-scroll-delay="200"
+           infinite-scroll-distance="50" infinite-scroll-immediate="true" />
+      <div class="load-end" v-if="scrollArticleTotal !== null && scrollArticleList.length >= scrollArticleTotal">
+        <span class="end-line" />
+        已经到底啦
+        <span class="end-line" />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import ContentSide from "../components/ContentSide";
-import "swiper/dist/css/swiper.css";
 import ArticleItem from "../components/ArticleItem";
 import {findArticleScroll, findArticleTopList} from "@/api/article";
 
@@ -39,77 +42,46 @@ export default {
   name: "Index",
   data() {
     return {
-      hotDefaultFlag: true,
-      articlesDefaultFlag: true,
-      swiperOption: this.$config.swiperOption,
-      count: 10,
-      page: 1,
-      articles: [],
-      totalPages: 1,
-      totalCount: 1,
-      slides: [],
-      swiperImageList: [],
-      // 置顶文章当前页码
       topArticleListPageNum: 1,
-      // 置顶文章每页条数
       topArticleListPageSize: 10,
-      // 置顶文章列表
       topArticleList: [],
-      // 无限滚动文章当前页码
       scrollArticlePageNum: 1,
-      // 无限滚动文章每页条数
       scrollArticlePageSize: 10,
       scrollArticleTotal: null,
       scrollArticleList: [],
     };
   },
-  computed: {
-  },
   components: {
-    ContentSide,
     ArticleItem
   },
   methods: {
-    // 去重
     unique(arr, key) {
-      let map = new Map()
-      arr.forEach((item, index) => {
+      let map = new Map();
+      arr.forEach((item) => {
         if (!map.has(item[key])) {
           map.set(item[key], item);
         }
-      })
+      });
       return [...map.values()];
     },
-    // 获取置顶文章列表
     getTopArticleList() {
-      let pageNum = this.topArticleListPageNum;
-      let pageSize = this.topArticleListPageSize;
-      findArticleTopList(pageNum, pageSize).then(res => {
-        let data = res.data.data;
-        this.topArticleList = data.records;
+      findArticleTopList(this.topArticleListPageNum, this.topArticleListPageSize).then(res => {
+        this.topArticleList = res.data.data.records;
       });
     },
-    // 初始化无限滚动
     initScrollData() {
       this.scrollArticleTotal = null;
       this.scrollArticlePageNum = 1;
       this.scrollArticlePageSize = 10;
       this.scrollArticleList = [];
     },
-    // 无限滚动获取文章列表
     getArticleScroll() {
-      let pageNum = this.scrollArticlePageNum;
-      let pageSize = this.scrollArticlePageSize;
-      // 判断是否发送请求
       let total = this.scrollArticleTotal;
       let length = this.scrollArticleList.length;
-      let scrollArticleList = [...this.scrollArticleList];
       if (length < total || total === null) {
-        findArticleScroll(pageNum, pageSize).then(res => {
+        findArticleScroll(this.scrollArticlePageNum, this.scrollArticlePageSize).then(res => {
           let data = res.data.data;
-          let records = data.records;
-          // 去重
-          scrollArticleList.push(...records);
+          let scrollArticleList = [...this.scrollArticleList, ...data.records];
           this.scrollArticleList = this.unique(scrollArticleList, "id");
           this.scrollArticlePageSize = data.size;
           this.scrollArticlePageNum = data.current + 1;
@@ -119,93 +91,112 @@ export default {
     },
   },
   mounted() {
-    // 获取置顶文章列表
     this.getTopArticleList();
-    // 初始化无限滚动
     this.initScrollData();
   }
 };
 </script>
 
 <style scoped lang="scss">
-.ivu-scroll-wrapper {
-  ::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-// 主要部分
 .content-main {
-  min-height: 1870px;
+  flex: 1;
+  min-width: 0;
 
-  // 置顶文章
-  .top {
-    background-color: #ffffff;
-    padding: 10px 20px;
-    display: none;
+  .side-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--border-light);
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
-    .title {
-      width: 100%;
-      height: 26px;
-      color: #1abc9c;
-      border-bottom: 1px solid #1abc9c;
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      width: 32px;
+      height: 2px;
+      background: var(--primary);
+      border-radius: 1px;
     }
 
-    .top-content {
-      width: 100%;
-      margin-top: 2px;
+    i.fa {
+      color: var(--primary);
+      font-size: 14px;
+    }
+  }
 
-      .top-list {
-        width: 100%;
-        height: auto;
+  // 置顶文章
+  .top-card {
+    display: none;
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 18px;
+    margin-bottom: 14px;
 
-        .top-item {
-          &:nth-of-type(1) {
-            .top-label {
-              background-color: #ff858e;
-            }
-          }
+    .top-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 24px;
 
-          &:nth-of-type(2) {
-            .top-label {
-              background-color: #6fc299;
-            }
-          }
+      .top-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 0;
+        cursor: pointer;
+        border-bottom: 1px dashed var(--border-light);
+        font-size: 14px;
 
-          &:nth-of-type(3) {
-            .top-label {
-              background-color: #81c1f2;
-            }
-          }
+        &:nth-last-child(-n + 2) {
+          border-bottom: none;
+        }
 
-          span {
-            display: inline-block;
-            font-size: 14px;
-          }
+        &:hover .top-title {
+          color: var(--primary);
+        }
 
-          .top-label {
-            width: 20px;
-            height: 20px;
-            color: #ffffff;
-            display: inline-block;
-            background-color: #999999;
-            font-size: 14px;
-            text-align: center;
-          }
+        .top-rank {
+          flex-shrink: 0;
+          width: 20px;
+          height: 20px;
+          line-height: 20px;
+          text-align: center;
+          font-size: 12px;
+          color: var(--text-secondary);
+          background: var(--border-light);
+          border-radius: var(--radius-sm);
 
-          .top-title {
-            color: #00a67c;
+          &.rank-1 { color: #fff; background: #f53f3f; }
+          &.rank-2 { color: #fff; background: #ff7d00; }
+          &.rank-3 { color: #fff; background: #ffb400; }
+        }
 
-            &:hover {
-              text-decoration: underline;
-            }
-          }
+        .top-title {
+          flex: 1;
+          min-width: 0;
+          color: var(--text-regular);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          transition: color 0.2s ease;
+        }
 
-          .top-view,
-          .top-favorite,
-          .top-comment {
-            color: #666666;
-          }
+        .top-meta {
+          flex-shrink: 0;
+          display: flex;
+          gap: 12px;
+          font-size: 12px;
+          color: var(--text-placeholder);
+
+          .top-favorite i.fa { color: #f53f3f; margin-right: 3px; }
+          .top-view i.fa { margin-right: 3px; }
         }
       }
     }
@@ -213,36 +204,27 @@ export default {
 
   // 文章列表
   .articles {
-    font-size: 10px;
-  }
+    .load-end {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 24px 0;
+      font-size: 13px;
+      color: var(--text-placeholder);
 
-  // 轮播图
-  .swiper-slide {
-    img {
-      width: 100%;
-      height: auto;
+      .end-line {
+        width: 60px;
+        height: 1px;
+        background: var(--border);
+      }
     }
   }
 }
 
-// ipad 768px以上
-@media screen and (min-width: 768px) {
-  .content-main {
-    max-width: 100%;
-    .articles {
-      font-size: 14px;
-    }
-  }
-}
-
-// 1200px以上
 @media screen and (min-width: 1200px) {
   .content-main {
-    max-width: 850px;
-
-    .top {
-      margin-top: 15px;
-      margin-bottom: 15px;
+    .top-card {
       display: block;
     }
   }

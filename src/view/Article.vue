@@ -106,8 +106,9 @@ export default {
       el: "#comment",
       pageKey: articleId,
       pageTitle: document.title,
-      server: "http://www.lingjiatong.cn:23366",
-      site: "re_frontend",
+      server:
+        process.env.VUE_APP_ARTALK_SERVER || "http://127.0.0.1:30610",
+      site: process.env.VUE_APP_ARTALK_SITE || "re_frontend",
     })
   },
   components: {

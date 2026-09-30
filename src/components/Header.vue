@@ -1,74 +1,70 @@
 <template>
-  <!-- 头部分 -->
   <header id="header">
-    <!-- logo -->
-    <div class="logo">
-      <a href="/" class="cursor-pointer">
-        <h1><img :src="HEADER_LOGO_URL" alt="RootElement根元素" class="logo-word" title="RootElement根元素" /></h1>
-      </a>
-    </div>
-    <!-- 导航按钮和搜索按钮 -->
-    <div class="side-nav-header">
-      <div class="side-nav-bar cursor-pointer fl" @click="showMiniMenuFlag = !showMiniMenuFlag">
+    <div class="header-inner">
+      <!-- logo -->
+      <div class="logo">
+        <a href="/">
+          <img :src="HEADER_LOGO_URL || defaultLogo" alt="RootElement根元素" class="logo-word" @error="logoError = true" v-if="!logoError" />
+        <img :src="defaultLogo" alt="RootElement根元素" class="logo-word" v-else />
+        </a>
+      </div>
+      <!-- 移动端菜单按钮 -->
+      <div class="side-nav-bar cursor-pointer" @click="showMiniMenuFlag = !showMiniMenuFlag">
         <i class="fa fa-bars" aria-hidden="true" />
       </div>
-<!--      <div class="side-nav-search cursor-pointer fr">-->
-<!--        <i class="fa fa-search" aria-hidden="true" @click="doSearch" />-->
-<!--      </div>-->
-<!--      <div class="side-nav-input cursor-pointer fr">-->
-<!--        <el-input v-model="searchCondition" type="text" placeholder="请输入关键字" @keyup.enter.native="doSearch" />-->
-<!--      </div>-->
+      <!-- 导航菜单 -->
+      <nav class="nav">
+        <ul class="nav-menu">
+          <li class="nav-item" v-for="page in pages" :key="page.name">
+            <a href="javascript:" :class="{ 'nav-active': activeMenuClass(page.name) }" @click="$router.push({path: page.url})">
+              <i :class="page.icon" aria-hidden="true" />
+              {{ page.title }}
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- 搜索框 -->
+      <div class="nav-search">
+        <el-input
+          v-model="searchCondition"
+          size="small"
+          placeholder="搜索文章..."
+          prefix-icon="el-icon-search"
+          @keyup.enter.native="doSearch" />
+      </div>
     </div>
-    <!-- 小分辨率下的导航栏 -->
-    <ul class="nav-mini flex flex-direction-column mb10" v-show="showMiniMenuFlag">
-      <li v-for="page in pages" :key="page.name">
-        <a href="javascript:" @click="$router.push({name: page.name})">
-          <i :class="page.icon" aria-hidden="true" />
-          {{ page.title }}
-        </a>
-      </li>
-    </ul>
-    <!-- 导航栏 -->
-    <nav class="nav pr">
-      <ul class="nav-menu">
-        <li class="nav-item fl" v-for="page in pages" :key="page.name" >
-          <a href="javascript:" :class="activeMenuClass(page.name)" @click="$router.push({path: page.url})">
+    <!-- 移动端展开菜单 -->
+    <transition name="slide">
+      <ul class="nav-mini" v-show="showMiniMenuFlag">
+        <li v-for="page in pages" :key="page.name" @click="showMiniMenuFlag = false">
+          <a href="javascript:" @click="$router.push({path: page.url})">
             <i :class="page.icon" aria-hidden="true" />
             {{ page.title }}
           </a>
         </li>
-        <li class="nav-item nav-search fr ml10" @click="doSearch">
-          <a href="javascript:">
-            <i class="fa fa-search" aria-hidden="true" />
-            搜索
-          </a>
-        </li>
-        <li class="nav-item fr" style="line-height: 60px">
-          <el-input  v-model="searchCondition" type="text" placeholder="请输入关键字" @keyup.enter.native="doSearch" />
-        </li>
       </ul>
-    </nav>
-    <!-- 分割线 -->
-    <div class="line h10" style="opacity: 0.9" />
+    </transition>
   </header>
 </template>
 
 <script>
 import {mapActions, mapState} from "vuex";
 
+import defaultLogo from "@a/images/logo.png";
+
 export default {
   name: "Header",
   data() {
     return {
+      defaultLogo,
+      logoError: false,
       showMiniMenuFlag: false,
       searchCondition: null,
       pages: [
         { title: "首页", name: "Index", url: "/", icon: "fa fa-home" },
-        { title: "技术文章", name: "Articles", url: "/articles", icon: "fa fa-wrench" },
-        { title: "支持我", name: "Support", url: "/support", icon: "fa fa-thumbs-up" },
+        { title: "博客", name: "Articles", url: "/articles", icon: "fa fa-book" },
         { title: "关于作者", name: "About", url: "/about", icon: "fa fa-info-circle" },
       ],
-      currentPage: this.getCurrentPage()
     };
   },
   computed: {
@@ -79,209 +75,185 @@ export default {
   methods: {
     activeMenuClass(name) {
       let routeName = this.$route.name;
-      let path = this.$route.path;
       if (name === routeName) {
-        return "nav-active";
+        return true;
       } else if (routeName === "Article" && name === "Articles") {
-        return "nav-active";
-      } else {
-        return "";
+        return true;
       }
+      return false;
     },
     ...mapActions({
       searchEsPageByCondition: "search/searchEsPageByCondition"
     }),
-    getCurrentPage() {
-      let articleRex = /\/article[s]?|\/search/;
-      if (articleRex.test(this.$route.path)) {
-        return "/articles/ALL";
-      } else {
-        return this.$route.path;
-      }
-    },
     doSearch() {
       let data = {
         condition: this.searchCondition,
-        pageParam: {
-          page: 1,
-          count: 10,
-        },
+        pageParam: { page: 1, count: 10 },
       };
-      let searchRex = /\/search[#]?/;
       this.searchEsPageByCondition(data);
-      if (!searchRex.test(this.$route.path)) {
-        this.$router.push({
-          name: "search",
-        });
+      if (this.$route.name !== "search") {
+        this.$router.push({ name: "search" });
       }
-      this.currentPage = this.getCurrentPage();
     },
-  },
-  components: {
-  },
-  mounted() {
   },
 };
 </script>
 
 <style scoped lang="scss">
-@keyframes color-change-5x {
-  0% {
-    background: #19dcea;
-  }
-  25% {
-    background: #b22cff;
-  }
-  50% {
-    background: #ea2222;
-  }
-  75% {
-    background: #f5be10;
-  }
-  100% {
-    background: #3bd80d;
-  }
-}
-
-// header
 #header {
-  max-width: 100%;
-  background: #1bdaea;
-  text-align: center;
-  animation: color-change-5x 10s ease-in-out 0.2s infinite alternate both;
-  position: relative;
+  background: var(--bg-card);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 
-  .logo {
-    padding: 10px 15px 10px 15px;
-    text-align: center;
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
 
-    a {
-      h1 {
-        padding: 20px 0 20px 0;
+    .logo {
+      flex-shrink: 0;
+
+      a {
+        display: flex;
+        align-items: center;
 
         .logo-word {
-          height: auto;
-          max-width: 100%;
-          border: 0;
-          vertical-align: middle;
+          height: 36px;
+          max-width: 180px;
+          object-fit: contain;
         }
       }
     }
-  }
 
-  .side-nav-header {
-    width: 100%;
-    height: auto;
-    position: absolute;
-    top: 0;
-    left: 0;
-    color: #ffffff;
-
-    .side-nav-input {
-      height: auto;
-      width: 200px;
-      position: relative;
-      top: 8px;
+    .side-nav-bar {
+      display: block;
+      color: var(--text-regular);
+      font-size: 18px;
+      padding: 8px;
+      margin-left: auto;
     }
 
-    .side-nav-bar,
-    .side-nav-search {
-      padding: 10px;
+    .nav {
+      display: none;
+      flex: 1;
 
-      i.fa {
-        font-size: 16px;
-      }
-    }
-  }
+      .nav-menu {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
 
-  .nav {
-    width: 100%;
-    display: none;
-    height: 60px;
-    background-color: #4a4a4a;
-    bottom: 0;
-    opacity: 0.9;
-
-    .nav-menu {
-      width: auto;
-      margin: 0 auto;
-      max-width: 1200px;
-
-      .nav-item {
-        height: 100%;
-        color: #ffffff;
-
-        .nav-search {
-          height: 100%;
+        .nav-item {
           a {
-            display: block;
-            height: 100%;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0 18px;
+            height: 60px;
+            color: var(--text-regular);
+            font-size: 15px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+
+            i.fa {
+              font-size: 14px;
+            }
+
+            &:hover {
+              color: var(--primary);
+            }
+
+            &.nav-active {
+              color: var(--primary);
+              border-bottom-color: var(--primary);
+              font-weight: 600;
+            }
           }
         }
+      }
+    }
 
-        a {
-          display: block;
-          width: 110px;
-          padding: 20px 0;
+    .nav-search {
+      display: none;
+      width: 220px;
+      flex-shrink: 0;
 
-          &.nav-active {
-            background-color: #5f9ea0;
-          }
+      ::v-deep .el-input__inner {
+        border-radius: 16px;
+        background: var(--border-light);
+        border-color: transparent;
 
-          &:hover {
-            background-color: #5f9ea0;
-          }
+        &:focus {
+          background: #fff;
+          border-color: var(--primary);
         }
       }
     }
   }
 
   .nav-mini {
-    width: 100%;
-    height: auto;
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+    border-top: 1px solid var(--border-light);
+    background: var(--bg-card);
 
     li {
-      width: 100%;
-      height: 36px;
-      text-align: left;
-      line-height: 36px;
-      padding-left: 20px;
-
       a {
-        color: #ffffff;
-        font-size: 16px;
+        display: block;
+        padding: 12px 24px;
+        color: var(--text-regular);
+        font-size: 15px;
 
         i.fa {
-          padding-right: 10px;
+          width: 20px;
+          margin-right: 8px;
+        }
+
+        &:hover {
+          color: var(--primary);
+          background: var(--primary-light);
         }
       }
     }
   }
 }
 
-// ipad 768px以上
+.slide-enter-active, .slide-leave-active {
+  transition: all 0.25s ease;
+  max-height: 300px;
+  overflow: hidden;
+}
+.slide-enter, .slide-leave-to {
+  max-height: 0;
+}
+
 @media screen and (min-width: 768px) {
   #header {
-    .side-nav-header {
-      display: none;
-    }
+    .header-inner {
+      .side-nav-bar {
+        display: none;
+      }
 
-    .side-nav {
-      display: none !important;
-    }
+      .nav {
+        display: block;
+      }
 
-    .nav {
-      display: block;
+      .nav-search {
+        display: block;
+        margin-left: auto;
+      }
     }
 
     .nav-mini {
       display: none;
     }
   }
-}
-
-// web 1200px以上
-@media screen and (min-width: 1200px) {
-
 }
 </style>

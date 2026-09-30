@@ -28,15 +28,6 @@ export default [
     props: true
   },
   {
-    path: "/support",
-    name: "Support",
-    meta: {
-      title: "支持我",
-      hideInMenu: true
-    },
-    component: () => import("@v/Support.vue")
-  },
-  {
     path: "/about",
     name: "About",
     meta: {

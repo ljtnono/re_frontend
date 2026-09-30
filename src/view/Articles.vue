@@ -1,101 +1,102 @@
 <template>
-  <div class="content-main flex flex-direction-column">
-<!--    &lt;!&ndash; 导航路径 &ndash;&gt;-->
-<!--    <div class="nav-path mb15 p10 flex">-->
-<!--      <i class="fa fa-home mr5" />-->
-<!--      <span>技术文章</span>-->
-<!--      <i class="fa fa-angle-double-right mr5 ml5" />-->
-<!--      <span>{{ type }}</span>-->
-<!--    </div>-->
-    <!-- 文章列表项 -->
-    <div class="articles flex">
-      <div v-if="articles.length === 0 && !articlesDefaultFlag" style="height: 1000px; text-align: center">
-        <h1 class="f16">没有数据</h1>
+  <div class="content-main">
+    <!-- 文章列表 -->
+    <div class="articles" v-loading="loading">
+      <div class="empty" v-if="!loading && articles.length === 0">
+        <i class="fa fa-inbox" />
+        <p>暂无文章</p>
       </div>
-      <ArticleItem v-else :articleItem="article" v-for="article in articles" :key="article.id" />
+      <ArticleItem :articleItem="article" v-for="article in articles" :key="article.id" />
+    </div>
+
+    <!-- 分页 -->
+    <div class="pager" v-if="total > pageSize">
+      <el-pagination
+        background
+        layout="prev, pager, next, total"
+        :total="total"
+        :page-size="pageSize"
+        :current-page.sync="page"
+        @current-change="handlePageChange"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import ContentSide from "../components/ContentSide";
 import ArticleItem from "../components/ArticleItem";
-import Loading from "../components/Loading";
-import { BPagination } from "bootstrap-vue";
+import {findArticleList} from "@/api/article";
 
 export default {
   name: "Articles",
   data() {
     return {
-      articlesDefaultFlag: true,
+      loading: false,
       articles: [],
-      totalPages: 1,
-      totalCount: 1,
-      count: 10,
+      total: 0,
       page: 1,
-      type: "ALL"
+      pageSize: 10
     };
   },
+  components: {
+    ArticleItem
+  },
   methods: {
-
+    getArticleList() {
+      this.loading = true;
+      findArticleList(this.page, this.pageSize, "").then(res => {
+        let data = res.data.data;
+        this.articles = data.records || [];
+        this.total = data.total || 0;
+      }).finally(() => {
+        this.loading = false;
+      });
+    },
+    handlePageChange(page) {
+      this.page = page;
+      this.getArticleList();
+      // 回到内容区顶部
+      let content = document.querySelector(".content");
+      if (content) {
+        content.scrollIntoView({behavior: "smooth"});
+      }
+    }
   },
   mounted() {
-  },
-  components: {
-    ContentSide,
-    ArticleItem,
-    BPagination,
-    Loading
-  },
+    this.getArticleList();
+  }
 };
 </script>
 
 <style scoped lang="scss">
-// 主要部分
 .content-main {
-  min-height: 1870px;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
 
-  // 文章列表
   .articles {
-    font-size: 10px;
-  }
-  // 导航路径
-  .nav-path {
-    background-color: #ffffff;
-
-    span, i {
-      font-size: 15px;
-      color: #797979;
-      cursor: pointer;
-
-      &:hover {
-        color: #00a46b;
-      }
-    }
-
-    i.fa-home {
-      font-size: 15px !important;
-    }
+    min-height: 600px;
   }
 
-}
+  .empty {
+    padding: 120px 0;
+    text-align: center;
+    color: var(--text-placeholder);
 
-// ipad 768px以上
-@media screen and (min-width: 768px) {
-  .content-main {
-    max-width: 100%;
-    .articles {
+    i.fa {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      margin: 0;
       font-size: 14px;
     }
   }
-}
 
-// 1200px以上
-@media screen and (min-width: 1200px) {
-  .content-main {
-    max-width: 850px;
+  .pager {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0 8px;
   }
 }
-
 </style>
