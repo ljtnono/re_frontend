@@ -1,123 +1,86 @@
 <template>
   <!-- 消息通知栏 -->
   <div class="message">
-    <div class="message-content flex flex-direction-row flex-align-items-start">
-      <span :class="'flex' + iconClass ? iconClass : 'fa f20 fa-volume-on'" />
-      <div class="flex message-list">
-        <div v-for="(notice, index) in validNoticeList" :key="index">
-          <a :href="notice.link" target="_blank">
-            <p class="f16" v-show="messageShowIndex === index">
+    <div class="message-content">
+      <i class="fa" :class="iconClass" />
+      <div class="message-list">
+        <template v-for="(notice, index) in validNoticeList" :key="index">
+          <a :href="notice.link" target="_blank" v-show="messageShowIndex === index">
+            <p>
               {{ notice.title }}
-              &nbsp;&nbsp;&nbsp;
-              <i class="fa fa fa-bolt" v-if="newsNoticeNew === notice.newsState"  style="display: inline; color: #fffc3f" />
-              <i class="fa fa-fire" v-if="newsNoticeHot === notice.newsState" style="display: inline; color: #ff1a1e"/>
+              <i class="fa fa-bolt" v-if="newsNoticeNew === notice.newsState" style="color: #f7ba2a" />
+              <i class="fa fa-fire" v-if="newsNoticeHot === notice.newsState" style="color: #f56c6c" />
             </p>
           </a>
-        </div>
+        </template>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import "../mock/common";
-import { findNoticeList } from "@/api/notice";
-import {
-  HTTP_RESULT_SUCCESS_CODE,
-  HTTP_RESULT_SUCCESS_MESSAGE,
-} from "@/constant/commonConstant";
-import {
-  NOTICE_NEWS_MESSAGE_STATE_NEW,
-  NOTICE_NEWS_MESSAGE_STATE_HOT,
-} from "@/constant/messageContant";
+<script setup>
+import {computed, onMounted, onBeforeUnmount, ref} from "vue";
+import {findNoticeList} from "@/api/notice";
+import {HTTP_RESULT_SUCCESS_CODE, HTTP_RESULT_SUCCESS_MESSAGE} from "@/constant/commonConstant";
 
-export default {
-  name: "MessageLabel",
-  data() {
-    return {
-      messageInterval: null,
-      messageShowIndex: null,
-      iconClassInterval: null,
-      iconClass: "fa f20 fa-volume-up",
-      iconClassIndex: 1,
-      iconClassList: ["fa f20 fa-volume-off", "fa f20 fa-volume-up"],
-      noticeList: []
-    };
-  },
-  computed: {
-    validNoticeList() {
-      return (this.noticeList || []).filter((item) => item != null);
-    },
-    newsNoticeNew() {
-      return NOTICE_NEWS_MESSAGE_STATE_NEW;
-    },
-    newsNoticeHot() {
-      return NOTICE_NEWS_MESSAGE_STATE_HOT;
-    },
-  },
-  methods: {
-    // 切换消息
-    toggleMessage() {
-      this.messageShowIndex += 1;
-      this.messageShowIndex %= this.noticeList.length;
-      window.sessionStorage.setItem("messageShowIndex", this.messageShowIndex);
-    },
-    // 切换小喇叭状态
-    toggleIconClass() {
-      this.iconClassIndex += 1;
-      this.iconClassIndex %= 2;
-      this.iconClass = this.iconClassList[this.iconClassIndex];
-    },
-  },
-  created() {
-    // 首先查询sessionStorage里面是否存在，如果不存在，那么调用接口获取并存放在sessionStorage里面
-    let messages = window.sessionStorage.getItem("messages");
-    if (messages == null) {
-      let that = this;
-      findNoticeList().then((res) => {
-        let outerData = res.data;
-        if (
-          HTTP_RESULT_SUCCESS_CODE === outerData.code &&
-          HTTP_RESULT_SUCCESS_MESSAGE === outerData.message
-        ) {
-          let innerData = outerData.data;
-          let noticeList = [];
-          for (let item of innerData) {
-            noticeList.push(item);
-          }
-          that.noticeList = noticeList;
-          window.sessionStorage.setItem("messages", JSON.stringify(noticeList));
-        }
-      });
-    } else {
-      // 如果messages字段存在，那么直接使用
-      this.noticeList = JSON.parse(messages);
-    }
+const NOTICE_NEWS_STATE_NEW = 1;
+const NOTICE_NEWS_STATE_HOT = 2;
 
-    let messageShowIndex = window.sessionStorage.getItem("messageShowIndex");
-    if (messageShowIndex == null) {
-      this.messageShowIndex = 0;
-      window.sessionStorage.setItem("messageShowIndex", "0");
-    } else {
-      this.messageShowIndex = parseInt(messageShowIndex);
-    }
+const newsNoticeNew = NOTICE_NEWS_STATE_NEW;
+const newsNoticeHot = NOTICE_NEWS_STATE_HOT;
 
-    if (this.messageInterval) {
-      clearInterval(this.messageInterval);
-      clearInterval(this.iconClassInterval);
-    } else {
-      this.messageInterval = setInterval(this.toggleMessage, 5000);
-      this.iconClassInterval = setInterval(this.toggleIconClass, 1000);
-    }
-  },
-  beforeDestroy() {
-    clearInterval(this.messageInterval);
-    clearInterval(this.iconClassInterval);
+const noticeList = ref([]);
+const messageShowIndex = ref(0);
+// 小喇叭动态效果：有声/无声交替
+const iconClass = ref("fa-volume-up");
+let messageInterval = null;
+let iconClassInterval = null;
+
+const validNoticeList = computed(() => (noticeList.value || []).filter((item) => item != null));
+
+function toggleMessage() {
+  if (validNoticeList.value.length === 0) {
+    return;
   }
-};
+  messageShowIndex.value = (messageShowIndex.value + 1) % validNoticeList.value.length;
+}
+
+onMounted(() => {
+  let messages = window.sessionStorage.getItem("messages");
+  if (messages == null) {
+    findNoticeList().then((res) => {
+      let outerData = res.data;
+      if (HTTP_RESULT_SUCCESS_CODE === outerData.code && HTTP_RESULT_SUCCESS_MESSAGE === outerData.message) {
+        noticeList.value = outerData.data || [];
+        window.sessionStorage.setItem("messages", JSON.stringify(noticeList.value));
+      }
+    });
+  } else {
+    noticeList.value = JSON.parse(messages);
+  }
+
+  let savedIndex = window.sessionStorage.getItem("messageShowIndex");
+  if (savedIndex != null) {
+    messageShowIndex.value = parseInt(savedIndex);
+  }
+
+  messageInterval = setInterval(() => {
+    toggleMessage();
+    window.sessionStorage.setItem("messageShowIndex", String(messageShowIndex.value));
+  }, 5000);
+  // 小喇叭每秒在 有声/无声 之间切换
+  iconClassInterval = setInterval(() => {
+    iconClass.value = iconClass.value === "fa-volume-up" ? "fa-volume-off" : "fa-volume-up";
+  }, 1000);
+});
+
+onBeforeUnmount(() => {
+  clearInterval(messageInterval);
+  clearInterval(iconClassInterval);
+});
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .message {
   height: 44px;
   margin: 14px auto 0;
@@ -140,9 +103,23 @@ export default {
     align-items: center;
     gap: 10px;
 
-    span.fa {
+    > i.fa {
       color: var(--primary);
-      font-size: 16px;
+      font-size: 14px;
+      width: 16px;
+      text-align: center;
+      animation: volumePulse 1s ease-in-out infinite;
+    }
+
+    @keyframes volumePulse {
+      0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.55;
+        transform: scale(0.92);
+      }
     }
 
     .message-list {

@@ -1,216 +1,158 @@
 <template>
   <!-- 内容区 -->
-  <div class="content-main flex flex-direction-column">
-    <!-- 导航路径 -->
-    <div class="nav-path mb15 p10 flex">
-      <i class="fa fa-home mr5" />
-      <span>关键字</span>
-      <i class="fa fa-angle-double-right mr5 ml5" />
-      <span>{{ condition }}</span>
+  <div class="content-main">
+    <!-- 搜索关键字 -->
+    <div class="search-bar">
+      <i class="fa fa-search" />
+      <span class="search-label">关键字</span>
+      <span class="search-keyword">{{ condition }}</span>
+      <span class="search-count" v-if="!loading">共 {{ total }} 条结果</span>
     </div>
+
     <!-- 文章列表项 -->
-    <div class="articles flex">
-      <Loading :show="articlesDefaultFlag" style="top: 20px"></Loading>
-      <div v-if="searchArticleList.length === 0 && !articlesDefaultFlag" style="height: 1000px; text-align: center">
-        <h1 class="f16">没有数据</h1>
+    <div class="articles" v-loading="loading">
+      <div class="empty" v-if="!loading && articles.length === 0">
+        <i class="fa fa-inbox" />
+        <p>没有找到与「{{ condition }}」相关的文章</p>
       </div>
-      <ArticleItem
-        v-else
-        :articleItem="article"
-        v-for="article in searchArticleList"
-        :key="article.id">
-      </ArticleItem>
+      <ArticleItem :articleItem="article" v-for="article in articles" :key="article.id" />
     </div>
-    <!-- 分页导航 -->
-    <div></div>
+
+    <!-- 分页 -->
+    <div class="pager" v-if="total > 0">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="total"
+        :page-size="pageSize"
+        :current-page="page"
+        @current-change="handlePageChange"
+      />
+      <span class="pager-total">共 {{ total }} 条</span>
+    </div>
   </div>
 </template>
 
-<script>
-import ContentSide from "../components/ContentSide";
-import ArticleItem from "../components/ArticleItem";
-import { BPagination } from "bootstrap-vue";
-import Loading from "../components/Loading";
+<script setup>
+import {onMounted, ref, watch} from "vue";
+import {useRoute} from "vue-router";
+import ArticleItem from "@c/ArticleItem.vue";
+import {findArticleSearch} from "@/api/article";
 
-export default {
-  name: "Search",
-  computed: {
+const route = useRoute();
 
-  },
-  methods: {
+const loading = ref(false);
+const articles = ref([]);
+const total = ref(0);
+const page = ref(1);
+const pageSize = ref(10);
+const condition = ref("");
 
-  },
-  components: {
-    ContentSide,
-    ArticleItem,
-    BPagination,
-    Loading,
-  },
-  mounted() {},
-};
+function getSearchList() {
+  if (!condition.value) {
+    articles.value = [];
+    total.value = 0;
+    return;
+  }
+  loading.value = true;
+  findArticleSearch(condition.value, page.value, pageSize.value).then(res => {
+    let data = res.data.data;
+    articles.value = data.records || [];
+    total.value = data.total || 0;
+  }).finally(() => {
+    loading.value = false;
+  });
+}
+
+function handlePageChange(currentPage) {
+  page.value = currentPage;
+  getSearchList();
+  let content = document.querySelector(".content");
+  if (content) {
+    content.scrollIntoView({behavior: "smooth"});
+  }
+}
+
+onMounted(() => {
+  condition.value = route.query.q || "";
+  getSearchList();
+});
+
+// 关键字变化时重新搜索（同组件复用）
+watch(() => route.query.q, (q) => {
+  condition.value = q || "";
+  page.value = 1;
+  getSearchList();
+});
 </script>
 
 <style scoped lang="scss">
-// 主要部分
 .content-main {
-  min-height: 1870px;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
 
-  // 文章列表
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 12px 18px;
+    margin-bottom: 14px;
+    font-size: 14px;
+
+    i.fa-search {
+      color: var(--primary);
+    }
+
+    .search-label {
+      color: var(--text-secondary);
+    }
+
+    .search-keyword {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .search-count {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--text-placeholder);
+    }
+  }
+
   .articles {
-    font-size: 10px;
+    min-height: max(400px, calc(100vh - 420px));
   }
 
-  // 导航路径
-  .nav-path {
-    background-color: #ffffff;
+  .empty {
+    padding: 100px 0;
+    text-align: center;
+    color: var(--text-placeholder);
 
-    span,
-    i {
-      font-size: 15px;
-      color: #797979;
-      cursor: pointer;
-
-      &:hover {
-        color: #00a46b;
-      }
+    i.fa {
+      font-size: 48px;
+      margin-bottom: 12px;
     }
 
-    i.fa-home {
-      font-size: 15px !important;
-    }
-  }
-
-  .content-detail {
-    .detail-nav {
-      background-color: #ffffff;
-      margin-bottom: 2px;
-
-      i {
-        color: #bbbbbb;
-      }
-
-      a {
-        i.fa-home {
-          color: #00a67c;
-          font-size: 16px;
-        }
-
-        span {
-          color: #00a67c;
-          font-size: 14px;
-        }
-      }
-    }
-
-    .detail-header {
-      background-color: #fff;
-      margin-bottom: 2px;
-
-      .article-title {
-        color: #000000;
-      }
-
-      a {
-        &:nth-of-type(1),
-        &:nth-of-type(2) {
-          span {
-            color: #00a67c;
-          }
-        }
-
-        i.fa {
-          color: #999999;
-          margin-right: 2px;
-        }
-
-        color: #999999;
-      }
-    }
-
-    .detail-content {
-      background-color: #ffffff;
-      margin-bottom: 2px;
-    }
-
-    .detail-label {
-      background-color: #ffffff;
-
-      i {
-        color: #999999;
-      }
-
-      .label {
-        width: 70px;
-        height: auto;
-        position: relative;
-        color: #ffffff;
-        display: inline-block !important;
-        background-color: #d9534f;
-        text-align: center;
-        border-radius: 0;
-      }
-    }
-
-    .detail-pre-next {
-      background-color: #fbfbfb;
-      margin-bottom: 2px;
-
-      .pre,
-      .next {
-        a {
-          color: #00a67c;
-        }
-      }
-    }
-
-    .title {
-      background-color: #ffffff;
-      width: 100%;
-      color: #00a67c;
-      border-bottom: 1px solid #00a67c;
-    }
-
-    .detail-hot-list {
-      background-color: #ffffff;
-      margin-bottom: 2px;
-
-      ul {
-        li {
-          height: 30px;
-          overflow: hidden;
-          line-height: 30px;
-          color: #bbb;
-
-          i {
-            vertical-align: middle;
-          }
-
-          a {
-            color: #00a67c;
-          }
-        }
-      }
-    }
-  }
-
-}
-
-// ipad 768px以上
-@media screen and (min-width: 768px) {
-  .content-main {
-    max-width: 100%;
-    .articles {
+    p {
+      margin: 0;
       font-size: 14px;
     }
   }
-}
 
-// 1200px以上
-@media screen and (min-width: 1200px) {
-  .content-main {
-    max-width: 850px;
+  .pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px 0 8px;
+
+    .pager-total {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
   }
 }
-
 </style>

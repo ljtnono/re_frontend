@@ -1,5 +1,5 @@
 <template>
-  <div class="article-item" @click="$router.push({path: '/article/' + articleItem.id})">
+  <div class="article-item" @click="goDetail">
     <!-- 封面图 -->
     <div class="article-thumb">
       <img :src="articleItem.coverUrl" :alt="articleItem.title" />
@@ -16,7 +16,7 @@
         </span>
         <span class="meta-item">
           <i class="fa fa-clock-o" aria-hidden="true" />
-          {{ articleItem.modifyTime | timeFormat }}
+          {{ formatTime(articleItem.modifyTime) }}
         </span>
         <span class="meta-item">
           <i class="fa fa-eye" aria-hidden="true" />
@@ -31,13 +31,22 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "ArticleItem",
-  props: {
-    articleItem: Object
+<script setup>
+import {useRouter} from "vue-router";
+import {formatTime} from "@/util/format";
+
+const props = defineProps({
+  articleItem: {
+    type: Object,
+    default: () => ({})
   }
-};
+});
+
+const router = useRouter();
+
+function goDetail() {
+  router.push({path: "/article/" + props.articleItem.id});
+}
 </script>
 
 <style scoped lang="scss">
@@ -78,19 +87,18 @@ export default {
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 0.4s ease;
+      transition: transform 0.3s ease;
     }
 
     .article-category {
       position: absolute;
-      top: 8px;
-      left: 8px;
+      left: 0;
+      top: 0;
       padding: 2px 10px;
       font-size: 12px;
       color: #fff;
-      background: rgba(0, 0, 0, 0.45);
-      border-radius: 10px;
-      backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.55);
+      border-radius: 0 0 10px 0;
     }
   }
 
@@ -105,7 +113,6 @@ export default {
       font-size: 17px;
       font-weight: 600;
       color: var(--text-primary);
-      line-height: 1.4;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -113,11 +120,11 @@ export default {
     }
 
     .article-summary {
-      margin: 0;
       flex: 1;
+      margin: 0 0 10px;
       font-size: 13px;
-      color: var(--text-secondary);
       line-height: 1.7;
+      color: var(--text-secondary);
       overflow: hidden;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -128,14 +135,13 @@ export default {
       display: flex;
       align-items: center;
       gap: 16px;
-      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text-placeholder);
 
       .meta-item {
-        font-size: 12px;
-        color: var(--text-placeholder);
-        display: inline-flex;
+        display: flex;
         align-items: center;
-        gap: 5px;
+        gap: 4px;
 
         i.fa {
           font-size: 12px;
@@ -145,33 +151,16 @@ export default {
   }
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 768px) {
   .article-item {
-    gap: 12px;
-    padding: 12px;
-
     .article-thumb {
-      width: 110px;
+      width: 120px;
       height: 80px;
     }
 
     .article-content {
-      .article-title {
-        font-size: 15px;
-      }
-
       .article-summary {
-        font-size: 12px;
         -webkit-line-clamp: 2;
-      }
-
-      .article-meta {
-        gap: 10px;
-        flex-wrap: wrap;
-
-        .meta-item {
-          font-size: 11px;
-        }
       }
     }
   }

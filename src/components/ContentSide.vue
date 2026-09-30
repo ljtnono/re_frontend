@@ -3,8 +3,8 @@
     <!-- 博主信息 -->
     <div class="side-card author-card">
       <div class="author-header">
-        <img class="author-avatar" :src="author.avatar || defaultAvatar" :alt="author.nickName" @error="authorAvatarError = true" v-if="!authorAvatarError" />
-        <img class="author-avatar" :src="defaultAvatar" :alt="author.nickName" v-else />
+        <img class="author-avatar" :src="authorAvatarError ? defaultAvatar : (author.avatar || defaultAvatar)"
+             :alt="author.nickName" @error="authorAvatarError = true" />
         <div class="author-name">{{ author.nickName }}</div>
         <div class="author-tags">
           <span class="author-tag" v-for="(tag, i) in author.tagList.slice(0, 3)" :key="i">{{ tag }}</span>
@@ -36,7 +36,7 @@
     <div class="side-card">
       <div class="side-title">热门标签</div>
       <div class="tag-list">
-        <a href="javascript:" class="tag-item" v-for="tag in hotTagList" :key="tag.id">
+        <a href="javascript:" class="tag-item" v-for="tag in hotTagList" :key="tag.id" @click="goTag(tag)">
           {{ tag.name }}
           <span class="tag-count">{{ tag.articleCount }}</span>
         </a>
@@ -56,25 +56,23 @@
   </aside>
 </template>
 
-<script>
-import {mapState} from "vuex";
+<script setup>
+import {ref} from "vue";
+import {useRouter} from "vue-router";
+import {storeToRefs} from "pinia";
+import {useCommonStore} from "@/store";
 
 import defaultAvatar from "@a/images/avatar.png";
 
-export default {
-  name: "ContentSide",
-  data() {
-    return { defaultAvatar, authorAvatarError: false };
-  },
-  computed: {
-    ...mapState({
-      hotTagList: state => state.common.hotTagList,
-      author: state => state.common.author,
-      friendLinkList: state => state.common.friendLinkList,
-      websiteConfig: state => state.common.websiteConfig
-    })
-  },
-};
+const commonStore = useCommonStore();
+const {author, websiteConfig, hotTagList, friendLinkList} = storeToRefs(commonStore);
+
+const authorAvatarError = ref(false);
+
+const router = useRouter();
+function goTag(tag) {
+  router.push({path: "/articles", query: {tagId: tag.id, tagName: tag.name}});
+}
 </script>
 
 <style scoped lang="scss">
@@ -257,7 +255,6 @@ export default {
       &:hover {
         color: var(--primary);
         background: var(--primary-light);
-        border-color: #c7d2fe;
       }
     }
   }

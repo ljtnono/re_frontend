@@ -1,53 +1,60 @@
-import Router from "vue-router";
-import routes from "./routers";
-import state from "@/store";
+import {createRouter, createWebHistory} from "vue-router";
+import {useCommonStore} from "@/store";
 
-// 特殊页面数组
-const SPECIAL_PAGES = ["/404", "/500", "/401"];
-// 解决重复点击路由报错的BUG
-const originalPush = Router.prototype.push;
-Router.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch((err) => err);
-}
-let router = new Router({
-  routes,
-  base: "/",
-  mode: "history"
+const routes = [
+  {
+    path: "/",
+    name: "Index",
+    meta: {title: "首页"},
+    component: () => import("@v/Index.vue")
+  },
+  {
+    path: "/articles",
+    name: "Articles",
+    meta: {title: "博客"},
+    component: () => import("@v/Articles.vue")
+  },
+  {
+    path: "/article/:articleId",
+    name: "Article",
+    meta: {title: "文章详情"},
+    component: () => import("@v/Article.vue"),
+    props: true
+  },
+  {
+    path: "/about",
+    name: "About",
+    meta: {title: "关于作者"},
+    component: () => import("@v/About.vue")
+  },
+  {
+    path: "/search",
+    name: "Search",
+    meta: {title: "搜索"},
+    component: () => import("@v/Search.vue")
+  },
+  {
+    path: "/500",
+    name: "500",
+    meta: {title: "服务器异常"},
+    component: () => import("@v/error-page/500.vue")
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "404",
+    meta: {title: "404"},
+    component: () => import("@v/error-page/404.vue")
+  }
+];
+
+const router = createRouter({
+  history: createWebHistory("/"),
+  routes
 });
 
-// 设置路由守卫
 router.beforeEach((to, from, next) => {
-  let toPath = to.path;
-  let toName = to.name;
-  state.commit("common/changeActiveRoute", to);
-
-
-  // // 设置面包屑导航
-  // let breadcrumbList = RouteUtil.getBreadcrumb(toName);
-  // store.commit("systemSetting/changeBreadcrumbList", breadcrumbList);
-  //
-  // // 如果token存在，并且路由路径为/,那么直接跳转到工作台页面
-  // if (toPath === "/" + ROUT_HOME_NAME) {
-  //   next({ name: "Workspace" });
-  // }
-  // // 除了特殊页面之外，如果跳转到正常页面，需要校验token等信息是否存在
-  // if (!SPECIAL_PAGES.includes(toPath)) {
-  //   let userInfo = store.state.user.userInfo;
-  //   let tokeInfo = store.state.user.tokenInfo;
-  //   let menus = store.state.user.menus;
-  //   if (menus && tokeInfo && userInfo) {
-  //     next();
-  //   } else {
-  //     // 弹出错误消息
-  //     ElementUI.Message.error({
-  //       message: "用户未认证",
-  //       duration: 2000,
-  //       center: false
-  //     });
-  //     next({ name: "Login" });
-  //   }
-  // }
-
+  const commonStore = useCommonStore();
+  commonStore.changeActiveRoute(to);
   next();
 });
 

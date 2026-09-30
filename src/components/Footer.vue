@@ -6,8 +6,8 @@
       <div class="footer-item footer-about">
         <div class="item-title">关于本站</div>
         <div class="about-body">
-          <img class="about-avatar" :src="author.avatar || defaultAvatar" :alt="author.nickName" @error="authorAvatarError = true" v-if="!authorAvatarError" />
-          <img class="about-avatar" :src="defaultAvatar" :alt="author.nickName" v-else />
+          <img class="about-avatar" :src="authorAvatarError ? defaultAvatar : (author.avatar || defaultAvatar)"
+               :alt="author.nickName" @error="authorAvatarError = true" />
           <p class="about-text">{{ websiteConfig.FOOTER_ABOUT_WEBSITE }}</p>
         </div>
         <a v-if="websiteConfig.GITHUB_WEBSITE" class="about-github" :href="websiteConfig.GITHUB_WEBSITE" target="_blank">
@@ -21,7 +21,7 @@
         <div class="item-title">版权声明</div>
         <p class="copyright-text">{{ websiteConfig.FOOTER_COPYRIGHT }}</p>
         <p class="copyright-sub">
-          基于 JAVA 构建 · 2019-10-20 至 {{ new Date() | timeFormat("YYYY-MM-DD") }}
+          基于 JAVA 构建 · 2019-10-20 至 {{ today }}
         </p>
       </div>
 
@@ -58,23 +58,19 @@
   </footer>
 </template>
 
-<script>
-import {mapState} from "vuex";
+<script setup>
+import {computed, ref} from "vue";
+import {storeToRefs} from "pinia";
+import {useCommonStore} from "@/store";
+import {formatTime} from "@/util/format";
 
 import defaultAvatar from "@a/images/avatar.png";
 
-export default {
-  name: "Footer",
-  data() {
-    return { defaultAvatar, authorAvatarError: false };
-  },
-  computed: {
-    ...mapState({
-      websiteConfig: state => state.common.websiteConfig,
-      author: state => state.common.author
-    })
-  },
-};
+const commonStore = useCommonStore();
+const {websiteConfig, author} = storeToRefs(commonStore);
+
+const authorAvatarError = ref(false);
+const today = computed(() => formatTime(new Date(), "YYYY-MM-DD"));
 </script>
 
 <style scoped lang="scss">

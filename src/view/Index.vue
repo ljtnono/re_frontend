@@ -8,7 +8,7 @@
       </div>
       <div class="top-list">
         <div class="top-item" v-for="(article, index) in topArticleList" :key="article.id"
-             @click="$router.push({path: '/article/' + article.id})">
+             @click="router.push({path: '/article/' + article.id})">
           <span class="top-rank" :class="'rank-' + (index + 1)">{{ index + 1 }}</span>
           <span class="top-title">{{ article.title }}</span>
           <span class="top-meta">
@@ -23,8 +23,7 @@
     <div class="articles">
       <ArticleItem :articleItem="article" v-for="article of scrollArticleList" :key="article.id" />
       <!-- 加载更多触发点 -->
-      <div v-infinite-scroll="getArticleScroll" infinite-scroll-delay="200"
-           infinite-scroll-distance="50" infinite-scroll-immediate="true" />
+      <div class="scroll-trigger" ref="scrollTrigger" />
       <div class="load-end" v-if="scrollArticleTotal !== null && scrollArticleList.length >= scrollArticleTotal">
         <span class="end-line" />
         已经到底啦
@@ -34,67 +33,91 @@
   </div>
 </template>
 
-<script>
-import ArticleItem from "../components/ArticleItem";
+<script setup>
+import {onBeforeUnmount, onMounted, ref} from "vue";
+import {useRouter} from "vue-router";
+import ArticleItem from "@c/ArticleItem.vue";
 import {findArticleScroll, findArticleTopList} from "@/api/article";
 
-export default {
-  name: "Index",
-  data() {
-    return {
-      topArticleListPageNum: 1,
-      topArticleListPageSize: 10,
-      topArticleList: [],
-      scrollArticlePageNum: 1,
-      scrollArticlePageSize: 10,
-      scrollArticleTotal: null,
-      scrollArticleList: [],
-    };
-  },
-  components: {
-    ArticleItem
-  },
-  methods: {
-    unique(arr, key) {
-      let map = new Map();
-      arr.forEach((item) => {
-        if (!map.has(item[key])) {
-          map.set(item[key], item);
-        }
-      });
-      return [...map.values()];
-    },
-    getTopArticleList() {
-      findArticleTopList(this.topArticleListPageNum, this.topArticleListPageSize).then(res => {
-        this.topArticleList = res.data.data.records;
-      });
-    },
-    initScrollData() {
-      this.scrollArticleTotal = null;
-      this.scrollArticlePageNum = 1;
-      this.scrollArticlePageSize = 10;
-      this.scrollArticleList = [];
-    },
-    getArticleScroll() {
-      let total = this.scrollArticleTotal;
-      let length = this.scrollArticleList.length;
-      if (length < total || total === null) {
-        findArticleScroll(this.scrollArticlePageNum, this.scrollArticlePageSize).then(res => {
-          let data = res.data.data;
-          let scrollArticleList = [...this.scrollArticleList, ...data.records];
-          this.scrollArticleList = this.unique(scrollArticleList, "id");
-          this.scrollArticlePageSize = data.size;
-          this.scrollArticlePageNum = data.current + 1;
-          this.scrollArticleTotal = data.total;
-        });
-      }
-    },
-  },
-  mounted() {
-    this.getTopArticleList();
-    this.initScrollData();
+const router = useRouter();
+
+// 置顶文章
+const topArticleList = ref([]);
+
+// 无限滚动文章
+const scrollArticlePageNum = ref(1);
+const scrollArticlePageSize = ref(10);
+const scrollArticleTotal = ref(null);
+const scrollArticleList = ref([]);
+const scrollLoading = ref(false);
+const scrollTrigger = ref(null);
+
+function unique(arr, key) {
+  let map = new Map();
+  arr.forEach((item) => {
+    if (!map.has(item[key])) {
+      map.set(item[key], item);
+    }
+  });
+  return [...map.values()];
+}
+
+function getTopArticleList() {
+  findArticleTopList(1, 10).then(res => {
+    topArticleList.value = res.data.data.records || [];
+  });
+}
+
+function initScrollData() {
+  scrollArticleTotal.value = null;
+  scrollArticlePageNum.value = 1;
+  scrollArticlePageSize.value = 10;
+  scrollArticleList.value = [];
+}
+
+function getArticleScroll() {
+  if (scrollLoading.value) {
+    return;
   }
-};
+  let total = scrollArticleTotal.value;
+  let length = scrollArticleList.value.length;
+  if (total !== null && length >= total) {
+    return;
+  }
+  scrollLoading.value = true;
+  findArticleScroll(scrollArticlePageNum.value, scrollArticlePageSize.value).then(res => {
+    let data = res.data.data;
+    scrollArticleList.value = unique([...scrollArticleList.value, ...data.records], "id");
+    scrollArticlePageSize.value = data.size;
+    scrollArticlePageNum.value = data.current + 1;
+    scrollArticleTotal.value = data.total;
+  }).finally(() => {
+    scrollLoading.value = false;
+  });
+}
+
+// 滚动接近底部时加载下一页
+function onWindowScroll() {
+  let el = scrollTrigger.value;
+  if (!el) {
+    return;
+  }
+  let rect = el.getBoundingClientRect();
+  if (rect.top <= window.innerHeight + 100) {
+    getArticleScroll();
+  }
+}
+
+onMounted(() => {
+  getTopArticleList();
+  initScrollData();
+  getArticleScroll();
+  window.addEventListener("scroll", onWindowScroll);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", onWindowScroll);
+});
 </script>
 
 <style scoped lang="scss">

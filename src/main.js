@@ -1,41 +1,15 @@
-import Vue from "vue";
-import App from "./App";
-import axios from "@/config/axiosConfig";
-import VueAxios from "vue-axios";
-import VueRouter from "vue-router";
-import router from "./router";
-import store from "./store";
-import config from "./config/commonConfig";
-import moment from "moment";
-import mavonEditor from "mavon-editor";
-import * as echarts from "echarts";
-import ElementUI from "element-ui";
-
-// 引入全局css
-import "mavon-editor/dist/css/index.css";
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import ElementPlus from "element-plus";
+import "element-plus/dist/index.css";
 import "font-awesome/css/font-awesome.min.css";
-import "@a/css/style.min.css";
+import "@a/scss/base.scss";
 import "@a/scss/theme.scss";
-import "element-ui/lib/theme-chalk/index.css";
+import App from "./App.vue";
+import router from "./router";
 
-Vue.prototype.$echarts = echarts;
-Vue.use(mavonEditor);
-Vue.use(VueAxios, axios);
-Vue.use(VueRouter);
-// 使用ElementUI
-Vue.use(ElementUI);
-
-// 配置全局过滤器
-Vue.filter("timeFormat", function (time) {
-  return moment(time).format("YYYY-MM-DD");
-});
-// 全局注册config
-Vue.prototype.$config = config;
-// 解决vConsole报错
-Vue.prototype.toJSON = () =>{}
-
-new Vue({
-  router,
-  store,
-  render: (h) => h(App),
-}).$mount("#app");
+const app = createApp(App);
+app.use(createPinia());
+app.use(router);
+app.use(ElementPlus);
+app.mount("#app");

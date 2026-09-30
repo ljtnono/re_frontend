@@ -6,31 +6,27 @@
   </transition>
 </template>
 
-<script>
-export default {
-  name: "ToTop",
-  data() {
-    return {
-      visible: false,
-      scrollHandler: null
-    };
-  },
-  mounted() {
-    this.scrollHandler = () => {
-      this.visible = window.scrollY > 300 || document.documentElement.scrollTop > 300;
-    };
-    window.addEventListener("scroll", this.scrollHandler, {passive: true});
-    this.scrollHandler();
-  },
-  beforeDestroy() {
-    window.removeEventListener("scroll", this.scrollHandler);
-  },
-  methods: {
-    scrollToTop() {
-      window.scrollTo({top: 0, behavior: "smooth"});
-    }
-  }
-};
+<script setup>
+import {ref, onMounted, onBeforeUnmount} from "vue";
+
+const visible = ref(false);
+let scrollHandler = null;
+
+onMounted(() => {
+  scrollHandler = () => {
+    visible.value = window.scrollY > 300 || document.documentElement.scrollTop > 300;
+  };
+  window.addEventListener("scroll", scrollHandler, {passive: true});
+  scrollHandler();
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", scrollHandler);
+});
+
+function scrollToTop() {
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
 </script>
 
 <style scoped lang="scss">
@@ -61,7 +57,7 @@ export default {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.fade-enter, .fade-leave-to {
+.fade-enter-from, .fade-leave-to {
   opacity: 0;
   transform: translateY(10px);
 }

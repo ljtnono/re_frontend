@@ -5,18 +5,18 @@
       <div class="logo">
         <a href="/">
           <img :src="HEADER_LOGO_URL || defaultLogo" alt="RootElement根元素" class="logo-word" @error="logoError = true" v-if="!logoError" />
-        <img :src="defaultLogo" alt="RootElement根元素" class="logo-word" v-else />
+          <img :src="defaultLogo" alt="RootElement根元素" class="logo-word" v-else />
         </a>
       </div>
       <!-- 移动端菜单按钮 -->
-      <div class="side-nav-bar cursor-pointer" @click="showMiniMenuFlag = !showMiniMenuFlag">
+      <div class="side-nav-bar" @click="showMiniMenuFlag = !showMiniMenuFlag">
         <i class="fa fa-bars" aria-hidden="true" />
       </div>
       <!-- 导航菜单 -->
       <nav class="nav">
         <ul class="nav-menu">
           <li class="nav-item" v-for="page in pages" :key="page.name">
-            <a href="javascript:" :class="{ 'nav-active': activeMenuClass(page.name) }" @click="$router.push({path: page.url})">
+            <a href="javascript:" :class="{ 'nav-active': activeMenuClass(page.name) }" @click="go(page.url)">
               <i :class="page.icon" aria-hidden="true" />
               {{ page.title }}
             </a>
@@ -29,15 +29,15 @@
           v-model="searchCondition"
           size="small"
           placeholder="搜索文章..."
-          prefix-icon="el-icon-search"
-          @keyup.enter.native="doSearch" />
+          :prefix-icon="Search"
+          @keyup.enter="doSearch" />
       </div>
     </div>
     <!-- 移动端展开菜单 -->
     <transition name="slide">
       <ul class="nav-mini" v-show="showMiniMenuFlag">
         <li v-for="page in pages" :key="page.name" @click="showMiniMenuFlag = false">
-          <a href="javascript:" @click="$router.push({path: page.url})">
+          <a href="javascript:" @click="go(page.url)">
             <i :class="page.icon" aria-hidden="true" />
             {{ page.title }}
           </a>
@@ -47,56 +47,49 @@
   </header>
 </template>
 
-<script>
-import {mapActions, mapState} from "vuex";
+<script setup>
+import {ref, computed} from "vue";
+import {useRouter, useRoute} from "vue-router";
+import {Search} from "@element-plus/icons-vue";
+import {storeToRefs} from "pinia";
+import {useCommonStore} from "@/store";
 
 import defaultLogo from "@a/images/logo.png";
 
-export default {
-  name: "Header",
-  data() {
-    return {
-      defaultLogo,
-      logoError: false,
-      showMiniMenuFlag: false,
-      searchCondition: null,
-      pages: [
-        { title: "首页", name: "Index", url: "/", icon: "fa fa-home" },
-        { title: "博客", name: "Articles", url: "/articles", icon: "fa fa-book" },
-        { title: "关于作者", name: "About", url: "/about", icon: "fa fa-info-circle" },
-      ],
-    };
-  },
-  computed: {
-    ...mapState({
-      HEADER_LOGO_URL: state => state.common.websiteConfig.HEADER_LOGO_URL
-    })
-  },
-  methods: {
-    activeMenuClass(name) {
-      let routeName = this.$route.name;
-      if (name === routeName) {
-        return true;
-      } else if (routeName === "Article" && name === "Articles") {
-        return true;
-      }
-      return false;
-    },
-    ...mapActions({
-      searchEsPageByCondition: "search/searchEsPageByCondition"
-    }),
-    doSearch() {
-      let data = {
-        condition: this.searchCondition,
-        pageParam: { page: 1, count: 10 },
-      };
-      this.searchEsPageByCondition(data);
-      if (this.$route.name !== "search") {
-        this.$router.push({ name: "search" });
-      }
-    },
-  },
-};
+const router = useRouter();
+const route = useRoute();
+const commonStore = useCommonStore();
+const {websiteConfig} = storeToRefs(commonStore);
+const HEADER_LOGO_URL = computed(() => websiteConfig.value.HEADER_LOGO_URL);
+
+const logoError = ref(false);
+const showMiniMenuFlag = ref(false);
+const searchCondition = ref("");
+
+const pages = [
+  {title: "首页", name: "Index", url: "/", icon: "fa fa-home"},
+  {title: "博客", name: "Articles", url: "/articles", icon: "fa fa-book"},
+  {title: "关于作者", name: "About", url: "/about", icon: "fa fa-info-circle"}
+];
+
+function go(url) {
+  router.push(url);
+}
+
+function activeMenuClass(name) {
+  let routeName = route.name;
+  if (name === routeName) {
+    return true;
+  }
+  return routeName === "Article" && name === "Articles";
+}
+
+function doSearch() {
+  if (!searchCondition.value) {
+    return;
+  }
+  router.push({name: "Search", query: {q: searchCondition.value}});
+}
 </script>
 
 <style scoped lang="scss">
@@ -137,6 +130,7 @@ export default {
       font-size: 18px;
       padding: 8px;
       margin-left: auto;
+      cursor: pointer;
     }
 
     .nav {
@@ -184,14 +178,14 @@ export default {
       width: 220px;
       flex-shrink: 0;
 
-      ::v-deep .el-input__inner {
+      :deep(.el-input__wrapper) {
         border-radius: 16px;
         background: var(--border-light);
-        border-color: transparent;
+        box-shadow: none;
 
-        &:focus {
+        &.is-focus {
           background: #fff;
-          border-color: var(--primary);
+          box-shadow: 0 0 0 1px var(--primary) inset;
         }
       }
     }
@@ -230,7 +224,8 @@ export default {
   max-height: 300px;
   overflow: hidden;
 }
-.slide-enter, .slide-leave-to {
+
+.slide-enter-from, .slide-leave-to {
   max-height: 0;
 }
 

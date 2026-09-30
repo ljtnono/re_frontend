@@ -18,17 +18,17 @@
 
     <!-- 个人简介 -->
     <div class="about-card">
-        <div class="card-title">个人简介</div>
+      <div class="card-title">个人简介</div>
       <div class="profile">
         <div class="avatar-wrap">
-          <img class="avatar" :src="author.avatar || defaultAvatar" :alt="author.nickName" :title="author.nickName" @error="authorAvatarError = true" v-if="!authorAvatarError" />
-          <img class="avatar" :src="defaultAvatar" :alt="author.nickName" :title="author.nickName" v-else />
+          <img class="avatar" :src="authorAvatarError ? defaultAvatar : (author.avatar || defaultAvatar)"
+               :alt="author.nickName" :title="author.nickName" @error="authorAvatarError = true" />
         </div>
         <p class="nick-name">{{ author.nickName }}</p>
         <div class="tag-list" v-if="author.tagList && author.tagList.length > 0">
           <span class="tag-item" v-for="(tag, i) in author.tagList" :key="i">{{ tag }}</span>
         </div>
-        <p class="about-line" v-for="(item, index) in author.about.split('\n')" :key="index">{{ item }}</p>
+        <p class="about-line" v-for="(item, index) in aboutLines" :key="index">{{ item }}</p>
 
         <div class="stat-row">
           <div class="stat-item">
@@ -84,8 +84,10 @@
   </div>
 </template>
 
-<script>
-import {mapState} from "vuex";
+<script setup>
+import {computed, ref} from "vue";
+import {storeToRefs} from "pinia";
+import {useCommonStore} from "@/store";
 
 import defaultAvatar from "@a/images/avatar.png";
 
@@ -133,38 +135,29 @@ const SKILLS = [
   {name: "JVM", size: 12, opacity: 0.75},
 ];
 
-export default {
-  name: "About",
-  data() {
-    return {
-      defaultAvatar,
-      authorAvatarError: false,
-      skillList: SKILLS
-    };
-  },
-  computed: {
-    ...mapState({
-      author: state => state.common.author,
-      websiteConfig: state => state.common.websiteConfig
-    }),
-    // 一年中的第几天，作为每日鸡汤的随机种子
-    todayIndex() {
-      let now = new Date();
-      let start = new Date(now.getFullYear(), 0, 0);
-      return Math.floor((now - start) / 86400000) % SOUP_LIST.length;
-    },
-    todaySoup() {
-      return SOUP_LIST[this.todayIndex];
-    },
-    todayStr() {
-      let now = new Date();
-      return `${now.getFullYear()} 年 ${now.getMonth() + 1} 月 ${now.getDate()} 日`;
-    },
-    siteDays() {
-      return Math.max(1, Math.floor((new Date() - SITE_BIRTHDAY) / 86400000));
-    }
-  },
-};
+const commonStore = useCommonStore();
+const {author, websiteConfig} = storeToRefs(commonStore);
+
+const defaultAvatarError = ref(false);
+const authorAvatarError = defaultAvatarError;
+const skillList = SKILLS;
+
+const aboutLines = computed(() => (author.value.about || "").split("\n"));
+
+// 一年中的第几天，作为每日鸡汤的随机种子
+const todayIndex = computed(() => {
+  let now = new Date();
+  let start = new Date(now.getFullYear(), 0, 0);
+  return Math.floor((now - start) / 86400000) % SOUP_LIST.length;
+});
+const todaySoup = computed(() => SOUP_LIST[todayIndex.value]);
+const todayStr = computed(() => {
+  let now = new Date();
+  return `${now.getFullYear()} 年 ${now.getMonth() + 1} 月 ${now.getDate()} 日`;
+});
+const siteDays = computed(() =>
+  Math.max(1, Math.floor((new Date() - SITE_BIRTHDAY) / 86400000))
+);
 </script>
 
 <style scoped lang="scss">

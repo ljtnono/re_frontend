@@ -1,224 +1,418 @@
 <template>
+  <!-- 左侧悬浮文章大纲 -->
+  <div class="catalog-card" v-show="catalogVisible" :style="{left: catalogLeft + 'px'}">
+    <div class="catalog-title">
+      <i class="fa fa-list-ul" />
+      文章大纲
+    </div>
+    <div class="catalog-body">
+      <MdCatalog editorId="article-preview" :scrollElement="scrollElement" />
+    </div>
+  </div>
+
   <!-- 文章详情部分 -->
-  <div class="content-main flex flex-direction-column">
-    <div class="content-detail">
-<!--       文章详情头部-->
-      <header class="detail-header p10">
-        <a href="javascript:" class="mr5">
+  <div class="content-main" ref="contentMain">
+    <div class="article-card">
+      <!-- 文章标题 -->
+      <h1 class="article-title">{{ article.title }}</h1>
+
+      <!-- 文章详情头部 -->
+      <header class="detail-header">
+        <span class="meta-item">
           <i class="fa fa-list" />
-          <span>{{ article.category }}</span>
-        </a>
-        <a href="javascript:" class="mr5">
+          {{ article.category }}
+        </span>
+        <span class="meta-item">
           <i class="fa fa-user" />
-          <span>{{ article.author }}</span>
-        </a>
-        <a href="javascript:" class="mr5">
+          {{ article.author }}
+        </span>
+        <span class="meta-item">
           <i class="fa fa-calendar-times-o" />
-          <span>{{ article.finalUpdateTime | timeFormat("YYYY-MM-DD HH:mm:ss") }}</span>
-        </a>
-        <a href="javascript:" class="mr5"><i class="fa fa-eye" />
-          <span>{{ article.view }}浏览</span>
-        </a>
-        <a href="javascript:" class="mr5">
+          {{ formatTime(article.finalUpdateTime, "YYYY-MM-DD HH:mm:ss") }}
+        </span>
+        <span class="meta-item">
+          <i class="fa fa-eye" />
+          {{ article.view }} 浏览
+        </span>
+        <span class="meta-item">
           <i class="fa fa-comment" />
-          <span>{{ article.favorite }}评论</span>
-        </a>
+          {{ article.favorite }} 评论
+        </span>
       </header>
-      <!-- 文章内容部分 -->
-      <div class="detail-content" id="detail-content" style="min-height: 1000px">
-        <mavon-editor
-          ref="md"
-          :scroll-style="editorConfig.scrollStyle"
-          :box-shadow="editorConfig.boxShadow"
-          :transition="editorConfig.transition"
-          :subfield="editorConfig.subfield"
-          :defaultOpen="editorConfig.defaultOpen"
-          :editable="editorConfig.editable"
-          :code-style="editorConfig.codeStyle"
-          :toolbars-flag="editorConfig.toolbarsFlag"
-          :ishljs="editorConfig.ishljs"
-          :preview-background="editorConfig.previewBackground"
-          :value="article.markdownContent"
-          style="width: 100%; height: 100%; box-sizing: border-box; border-radius: 0;" />
-        <!-- 文章底部相关信息 -->
-        <div class="detail-label p10" style="width: 100%; box-sizing: border-box">
-          <i class="fa fa-tag f20" />
-          <a class="label" :href="'/articles/' + article.category">
-            {{ article.category }}
-          </a>
-        </div>
+
+      <!-- 文章内容部分（与后台编辑器同一渲染管线） -->
+      <MdPreview v-if="article.markdownContent" class="detail-content" :modelValue="article.markdownContent"
+                 editorId="article-preview" />
+
+      <!-- 文章底部相关标签 -->
+      <div class="detail-label" v-if="article.tagList && article.tagList.length">
+        <i class="fa fa-tags" />
+        <a class="tag-chip" href="javascript:" v-for="(tag, i) in article.tagList" :key="tag.id || i" @click="goTag(tag)">
+          <span class="tag-hash">#</span>{{ tag.name }}
+        </a>
       </div>
-      <!--留言区-->
-      <div class="title p10 mt20">网友评论</div>
-      <div id="comment" style="background-color: #ffffff"></div>
+    </div>
+
+    <!--留言区-->
+    <div class="comment-card">
+      <div class="comment-title">网友评论</div>
+      <div id="comment" />
     </div>
   </div>
 </template>
 
-<script>
-import ContentSide from "@/components/ContentSide";
-import {EDITOR_CONFIG} from "@/config/commonConfig";
-import {findArticleById} from "@/api/article";
-import "artalk/dist/Artalk.css";
+<script setup>
+import {onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {MdCatalog, MdPreview} from "md-editor-v3";
+import "md-editor-v3/lib/style.css";
+import {useRoute, useRouter} from "vue-router";
 import Artalk from "artalk";
+import "artalk/dist/Artalk.css";
+import {findArticleById} from "@/api/article";
+import {ARTALK_SERVER, ARTALK_SITE} from "@/constant/commonConstant";
+import {formatTime} from "@/util/format";
 
-export default {
-  name: "Article",
-  data() {
-    return {
-      // 文章详情
-      article: {
-        id: null,
-        title: null,
-        summary: null,
-        markdownContent: null,
-        htmlContent: null,
-        category: null,
-        author: null,
-        coverUrl: "",
-        view: 0,
-        favorite: 0,
-        recommend: 0,
-        top: 0,
-        createType: 1,
-        transportInfo: null,
-        quoteInfo: null,
-        finalUpdateTime: null,
-        tagList: []
-      },
-      // mavonEditor配置项
-      editorConfig: EDITOR_CONFIG
-    };
-  },
-  methods: {
-    // 初始化文章详情数据
-    initArticleDetail(articleId) {
-      findArticleById(articleId).then(res => {
-        this.article = res.data.data;
-      });
-    }
-  },
-  mounted() {
-    let articleId = this.$route.params.articleId;
-    this.initArticleDetail(articleId);
-    // 初始化评论系统
-    Artalk.init({
-      el: "#comment",
-      pageKey: articleId,
-      pageTitle: document.title,
-      server:
-        process.env.VUE_APP_ARTALK_SERVER || "http://127.0.0.1:30610",
-      site: process.env.VUE_APP_ARTALK_SITE || "re_frontend",
-    })
-  },
-  components: {
-    ContentSide
+const route = useRoute();
+const router = useRouter();
+
+function goTag(tag) {
+  router.push({path: "/articles", query: {tagId: tag.id, tagName: tag.name}});
+}
+
+// 文章详情
+const article = ref({
+  id: null,
+  title: null,
+  summary: null,
+  markdownContent: null,
+  htmlContent: null,
+  category: null,
+  author: null,
+  coverUrl: "",
+  view: 0,
+  favorite: 0,
+  recommend: 0,
+  top: 0,
+  createType: 1,
+  transportInfo: null,
+  quoteInfo: null,
+  finalUpdateTime: null,
+  tagList: []
+});
+
+let artalkInstance = null;
+
+// 左侧大纲卡片：定位到文章卡片左侧，屏幕宽度不足时隐藏
+const contentMain = ref(null);
+const catalogVisible = ref(false);
+const catalogLeft = ref(0);
+const scrollElement = "html";
+const CATALOG_WIDTH = 250;
+const CATALOG_GAP = 24;
+
+function updateCatalogPosition() {
+  let el = contentMain.value;
+  if (!el) {
+    return;
   }
-};
+  let cardLeft = el.getBoundingClientRect().left;
+  let left = cardLeft - CATALOG_GAP - CATALOG_WIDTH;
+  catalogVisible.value = left >= 16;
+  catalogLeft.value = Math.max(left, 16);
+}
+
+// 初始化文章详情数据
+function initArticleDetail(articleId) {
+  findArticleById(articleId).then(res => {
+    article.value = res.data.data;
+  });
+}
+
+// 初始化评论系统
+function initComment(articleId) {
+  if (artalkInstance) {
+    artalkInstance.destroy();
+    artalkInstance = null;
+  }
+  artalkInstance = Artalk.init({
+    el: "#comment",
+    pageKey: articleId,
+    pageTitle: document.title,
+    server: ARTALK_SERVER,
+    site: ARTALK_SITE
+  });
+}
+
+onMounted(() => {
+  let articleId = route.params.articleId;
+  initArticleDetail(articleId);
+  initComment(articleId);
+  updateCatalogPosition();
+  window.addEventListener("resize", updateCatalogPosition);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", updateCatalogPosition);
+});
+
+// 路由参数变化时重新加载（同组件复用）
+watch(() => route.params.articleId, (articleId) => {
+  if (articleId) {
+    initArticleDetail(articleId);
+    initComment(articleId);
+  }
+});
+
+onBeforeUnmount(() => {
+  if (artalkInstance) {
+    artalkInstance.destroy();
+    artalkInstance = null;
+  }
+});
 </script>
 
 <style scoped lang="scss">
+// 左侧悬浮大纲卡片
+.catalog-card {
+  position: fixed;
+  top: 90px;
+  width: 250px;
+  max-height: calc(100vh - 140px);
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 10;
 
-// 修复部分因base.scss文件中重置样式导致的markdown渲染问题
-::v-deep ul, ::v-deep ol {
-  list-style: disc;
+  .catalog-title {
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    i.fa {
+      color: var(--primary);
+      font-size: 13px;
+    }
+  }
+
+  .catalog-body {
+    overflow-y: auto;
+    padding: 8px 0;
+
+    :deep(.md-editor-catalog-active) {
+      > span {
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      border-left-color: var(--primary);
+    }
+
+    // 注意：:hover 必须写在 :deep() 参数内部，
+    // 否则 Vue 会编译成 .catalog-body:hover 导致整列变色
+    :deep(.md-editor-catalog-link:hover > span) {
+      color: var(--primary);
+    }
+  }
 }
 
-// 主要部分
 .content-main {
+  flex: 1;
+  min-width: 0;
+  max-width: 850px;
 
-  width: 100%;
+  .article-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 28px 30px 20px;
+    margin-bottom: 14px;
+  }
 
-  .content-detail {
+  .article-title {
+    margin: 0 0 14px;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
 
-    .detail-nav {
-      background-color: #ffffff;
-      margin-bottom: 2px;
+  .detail-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-light);
 
-      i {
-        color: #bbbbbb;
+    .meta-item {
+      font-size: 13px;
+      color: var(--text-placeholder);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+
+      i.fa {
+        color: var(--text-placeholder);
+      }
+
+      &:nth-of-type(1),
+      &:nth-of-type(2) {
+        color: var(--primary);
+      }
+    }
+  }
+
+  // 正文渲染样式（md-editor-v3 预览）
+  .detail-content {
+    font-size: 15px;
+    // 关键：把 md-editor 内部的 z-index（如 code-head 的 10000）锁进本层叠上下文，
+    // 让整个预览区域永远处于顶部导航（z-100）之下
+    position: relative;
+    z-index: 0;
+
+    // 代码块头部吸顶条：博客页直接禁用吸顶，
+    // 否则代码块滚出可视区时 sticky 元素会被容器顶上去，仍然会盖住顶部导航
+    :deep(.md-editor-code-head) {
+      position: relative;
+      top: auto;
+      z-index: auto;
+    }
+
+    :deep(.md-editor) {
+      background: transparent;
+      color: var(--text-regular);
+      font-size: 15px;
+    }
+
+    :deep(.md-editor-preview-wrapper) {
+      padding: 0;
+    }
+
+    :deep(.default-theme) {
+      h1, h2, h3, h4, h5, h6 {
+        color: var(--text-primary);
       }
 
       a {
-        i.fa-home {
-          color: #00a67c;
-          font-size: 16px;
+        color: var(--primary);
+      }
+
+      img {
+        border-radius: var(--radius-sm);
+      }
+
+      blockquote {
+        color: var(--text-secondary);
+        border-left-color: var(--primary);
+        background: var(--bg-page);
+      }
+
+      table {
+        th, td {
+          border-color: var(--border);
         }
 
-        span {
-          color: #00a67c;
-          font-size: 14px;
-        }
-      }
-    }
-
-    .detail-header {
-      background-color: #ffffff;
-      margin-bottom: 2px;
-
-      .article-title {
-        color: #000000;
-      }
-
-      a {
-        &:nth-of-type(1),
-        &:nth-of-type(2) {
-          span {
-            color: #00a67c;
-          }
+        th {
+          background: var(--bg-page);
+          color: var(--text-primary);
         }
 
-        i.fa {
-          color: #999999;
-          margin-right: 2px;
+        tr:nth-of-type(2n) {
+          background: var(--bg-page);
         }
-
-        color: #999999;
-      }
-    }
-
-    .detail-content {
-      margin-bottom: 2px;
-    }
-
-    .detail-label {
-      background-color: #ffffff;
-
-      i {
-        color: #999999;
       }
 
-      .label {
-        width: 70px;
-        height: auto;
-        position: relative;
-        color: #ffffff;
-        display: inline-block !important;
-        background-color: #d9534f;
-        text-align: center;
-        border-radius: 0;
+      hr {
+        border-top-color: var(--border);
+      }
+
+    }
+  }
+
+  .detail-label {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-top: 16px;
+    margin-top: 20px;
+    border-top: 1px dashed var(--border-light);
+
+    i.fa-tags {
+      color: var(--text-placeholder);
+      margin-right: 2px;
+    }
+
+    .tag-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--text-regular);
+      background: #f4f5f7;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+
+      .tag-hash {
+        margin-right: 3px;
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      &:hover {
+        color: var(--primary);
+        background: var(--primary-light);
+        border-color: #c7d2fe;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.16);
       }
     }
-    .title {
-      background-color: #ffffff;
-      color: #00a67c;
-      border-bottom: 1px solid #00a67c;
+  }
+
+  .comment-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 20px 24px;
+    margin-bottom: 14px;
+
+    .comment-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border-light);
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -1px;
+        width: 32px;
+        height: 2px;
+        background: var(--primary);
+        border-radius: 1px;
+      }
     }
   }
 }
 
-// ipad 768px以上
-@media screen and (min-width: 768px) {
-  .content-main {
-    max-width: 100%;
-  }
-}
-
-// 1200px以上
 @media screen and (min-width: 1200px) {
   .content-main {
     max-width: 850px;
   }
 }
-
 </style>

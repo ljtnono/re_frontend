@@ -6,9 +6,6 @@ const pageRequestMapping = "/article";
 
 /**
  * 获取文章详情
- *
- * @param articleId 文章id
- * @returns {Promise<AxiosResponse<any>>}
  */
 export const findArticleById = (articleId) => {
   return axios.get(BASE_URL + pageRequestMapping + "/" + articleId);
@@ -16,44 +13,20 @@ export const findArticleById = (articleId) => {
 
 /**
  * 无限滚动获取文章列表
- *
- * @param pageNum 获取页数
- * @param pageSize 每页条数
- * @returns {Promise<AxiosResponse<any>>}
  */
 export const findArticleScroll = (pageNum, pageSize) => {
   return axios.get(BASE_URL + pageRequestMapping + "/scroll?pageNum=" + pageNum + "&pageSize=" + pageSize);
 };
 
 /**
- * 分页获取推荐文章列表
- *
- * @param pageNum 获取页数
- * @param pageSize 每页条数
- * @returns {Promise<AxiosResponse<any>>}
- */
-export const findArticleRecommendList = (pageNum, pageSize) => {
-  return axios.get(BASE_URL + pageRequestMapping + "/recommendList?pageNum=" + pageNum + "&pageSize=" + pageSize);
-};
-
-/**
  * 分页获取文章置顶列表
- *
- * @param pageNum 获取页数
- * @param pageSize 每页条数
- * @returns {Promise<AxiosResponse<any>>}
  */
 export const findArticleTopList = (pageNum, pageSize) => {
   return axios.get(BASE_URL + pageRequestMapping + "/topList?pageNum=" + pageNum + "&pageSize=" + pageSize);
 };
 
 /**
- * 分页获取文章列表
- *
- * @param pageNum 页数
- * @param pageSize 每页条数
- * @param categoryId 文章分类id
- * @returns {Promise<AxiosResponse<any>>}
+ * 分页获取文章列表，categoryId / tagId 可选
  */
 export const findArticleList = (pageNum, pageSize, categoryId, tagId) => {
   let url = BASE_URL + pageRequestMapping + "/list?pageNum=" + pageNum + "&pageSize=" + pageSize;
@@ -64,4 +37,11 @@ export const findArticleList = (pageNum, pageSize, categoryId, tagId) => {
     url += "&tagId=" + tagId;
   }
   return axios.get(url);
+};
+
+/**
+ * 搜索文章
+ */
+export const findArticleSearch = (searchCondition, pageNum, pageSize) => {
+  return axios.get(BASE_URL + pageRequestMapping + "/search?searchCondition=" + encodeURIComponent(searchCondition) + "&pageNum=" + pageNum + "&pageSize=" + pageSize);
 };

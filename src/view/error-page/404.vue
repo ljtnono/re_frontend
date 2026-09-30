@@ -16,15 +16,8 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import MiniGame from "./MiniGame.vue";
-
-export default {
-  name: "NotFound",
-  components: {
-    MiniGame
-  }
-};
 </script>
 
 <style scoped lang="scss">
