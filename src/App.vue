@@ -97,6 +97,12 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .content {
   flex: 1;
   width: 100%;
